@@ -11,10 +11,10 @@ export const useDetectConnection = () => {
   }, [isSlow]);
 
   useEffect(() => {
-    // @ts-ignore
+    // @ts-ignore - no need explication
     const isChromium = window?.chrome;
     if (isChromium) {
-      // @ts-ignore
+      // @ts-ignore - no need explication
       navigator?.connection?.addEventListener("change", (c) => {
         setIsSlow(c?.target?.downlink > 0 && c?.target?.downlink < 2);
       });

@@ -10,10 +10,13 @@ import cookieParser from "cookie-parser";
 import { MainRouter } from "./app/routes/routes";
 import dotenv from "dotenv";
 import { discordPassport } from "./app/auth/auth";
+import MongoDB from "./app/database/database";
+import { DiscordBot } from "./utils/discord-bot/discordBot";
 
 dotenv.config();
 
 const sessionSecret = process.env.SESSION_SECRET;
+const discordBotToken = process.env.DISCORD_BOT_TOKEN;
 const nodeEnv = process.env.NODE_ENV || "dev";
 
 if (!sessionSecret) {
@@ -39,17 +42,18 @@ app.use(
   }),
 );
 
-// Rate Limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 100, // limit each IP to 100 requests per windowMs
+  limit: 100,
 });
 app.use(limiter);
+
+const bot = new DiscordBot();
+bot.start();
 
 app.use(discordPassport.initialize());
 app.use(discordPassport.session());
 
-// Routes
 app.use("/api", MainRouter);
 
 app.use(express.static(__dirname + "/assets"));

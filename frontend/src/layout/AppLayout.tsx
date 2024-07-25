@@ -1,6 +1,6 @@
 import React from "react";
-import { CustomErrorBoundary } from "../components/CustomErrorBoundary.tsx";
-import { OnBoarding } from "../pages/onboarding/OnBoarding.tsx";
+import { CustomErrorBoundary } from "../components/CustomErrorBoundary";
+import { OnBoarding } from "../pages/onboarding/OnBoarding";
 
 export const RootLayout: React.FC = () => {
   return (
