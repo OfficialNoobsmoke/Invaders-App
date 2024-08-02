@@ -1,7 +1,7 @@
 import React, { ErrorInfo, PropsWithChildren } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useLocation } from "react-router-dom";
-import { useDeviceDetect } from "../helpers/useDeviceDetect.tsx";
+import { useDeviceDetect } from "../helpers/useDeviceDetect";
 import { ErrorIcon } from "react-hot-toast";
 
 export const CustomErrorBoundary: React.FC<PropsWithChildren> = ({

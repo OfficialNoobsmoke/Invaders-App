@@ -1,16 +1,17 @@
-import { createBrowserRouter, RouteObject } from "react-router-dom";
-import { OnBoarding } from "./pages/onboarding/OnBoarding";
-import React from "react";
+import { createBrowserRouter, RouteObject } from 'react-router-dom';
+import { RootLayout } from './layout/AppLayout';
+import { Home } from './pages/home/Home';
+import React from 'react';
 
 const AppRoutes: RouteObject[] = [
   {
     path: "/",
-    element: <OnBoarding />,
+    element: <RootLayout />,
     children: [
-      // {
-      //     path: '/home',
-      //     element: <Home />,
-      // },
+      {
+        path: "/home",
+        element: <Home />,
+      },
       // {
       //     path: '/notificare',
       //     element: <ListaNotificari />,

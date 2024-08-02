@@ -1,0 +1,6 @@
+node_modules
+.idea
+Dockerfile
+ci-cd
+public
+package-lock.json

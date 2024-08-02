@@ -5,9 +5,9 @@ const characterSchema = new mongoose.Schema({
   class: { type: String, required: true },
   mainSpec: { type: String, required: true },
   gearScoreMainSpec: { type: Number, required: true },
-  offSpec: { type: String, default: null },
-  gearScoreOffSpec: { type: Number, default: null },
-  skill: { type: Number, default: null },
+  offSpec: { type: String, default: undefined },
+  gearScoreOffSpec: { type: Number, default: undefined },
+  skill: { type: Number, default: undefined },
   faction: { type: String, enum: ["Alliance", "Horde"], required: true },
 });
 
@@ -16,12 +16,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: () => new mongoose.Types.ObjectId().toString(),
   },
+  discordId: { type: String, required: true },
   username: { type: String, required: true },
   display_name: { type: String, required: true },
-  email: { type: String, default: null },
+  email: { type: String, default: undefined },
   roles: { type: [String], required: true },
-  characters: { type: [characterSchema], default: null },
-  administrator: { type: Boolean, default: null },
+  joinedAt: { type: String, default: null },
+  characters: { type: [characterSchema], default: undefined },
+  administrator: { type: Boolean, default: undefined },
 });
 
 const User = mongoose.model("User", userSchema, "users");

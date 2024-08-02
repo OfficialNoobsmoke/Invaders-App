@@ -3,6 +3,28 @@ import MongoDB from "../../app/database/database";
 
 const { DISCORD_BOT_TOKEN } = process.env;
 
+export type DiscordUserType = {
+  discordId: string;
+  username: string;
+  display_name: string | undefined;
+  email: string | undefined;
+  roles: string[];
+  characters: CharacterType[] | undefined;
+  joinedAt: Date | null;
+  administrator: boolean;
+};
+
+export type CharacterType = {
+  name: string;
+  class: string;
+  mainSpec: string;
+  gearScoreMainSpec: number;
+  offSpec: string | undefined;
+  gearScoreOffSpec: number | undefined;
+  skill: number | undefined;
+  faction: "Alliance" | "Horde";
+};
+
 export class DiscordBot {
   allowedRoles = [
     "Member",
@@ -22,15 +44,14 @@ export class DiscordBot {
       intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
     });
 
-    // this.client.on("ready", this.insertAllUsers.bind(this));
     this.client.on("interactionCreate", this.test_connection.bind(this));
+    // this.client.on("ready", this.insertAllUsers.bind(this));
   }
 
   async insertAllUsers() {
     console.log(`Logged in as ${this.client.user?.tag}!`);
 
     const mongo_db = new MongoDB();
-    await mongo_db.connect();
 
     let timeout: NodeJS.Timeout;
 
@@ -56,13 +77,14 @@ export class DiscordBot {
           );
 
           if (hasAllowedRole) {
-            const userData = {
-              _id: member.id,
+            const userData: DiscordUserType = {
+              discordId: member.id,
               username: member.user.username,
               display_name: member.displayName || "N/A",
-              email: null,
+              email: undefined,
               roles: userRoles,
-              characters: null,
+              joinedAt: member.joinedAt,
+              characters: undefined,
               administrator: false,
             };
 

@@ -1,15 +1,6 @@
-import React, { useEffect } from "react";
+import React from 'react';
 
 export const OnBoarding: React.FC = () => {
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const user = urlParams.get("user");
-
-    if (user) {
-      const userData = JSON.parse(decodeURIComponent(user));
-      console.log("User Data:", userData);
-    }
-  }, []);
 
   return (
     <div className="m-24 mx-auto max-w-md flex flex-col items-center font-sans">
