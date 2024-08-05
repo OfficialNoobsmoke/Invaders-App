@@ -3,7 +3,6 @@ import { Strategy as DiscordStrategy } from "passport-discord";
 import dotenv from "dotenv";
 import User from "../database/schemas/UserSchema";
 import jwt from "jsonwebtoken";
-import MongoDB from "../database/database";
 
 dotenv.config();
 
@@ -44,7 +43,7 @@ class DiscordAuth {
               username: profile.username,
             });
             if (user) {
-              console.log(`User ${profile.username} logged in`);
+              console.log(`User ${profile.username} authorized`);
               return done(null, user);
             } else {
               return done(null, false, { message: "User not found" });

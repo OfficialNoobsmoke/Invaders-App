@@ -1,9 +1,11 @@
 import React, { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import { hideSplashScreen } from '../../helpers/SplashScreenService';
+import { OnBoarding } from '../../pages/onboarding/OnBoarding';
+import { useQuery } from '@tanstack/react-query';
+import { AUTH_UserReadController_getUser } from '../../clients/auth/AUTH_UserReadController_findUser';
 
 
 type AuthenticationContextType = {
-  isAuthenticated: boolean
   discordId: string
   username: string
 }
@@ -15,42 +17,34 @@ export const UserContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
 
-  const [user, setUser] = useState<{ discordId?: string; username?: string } | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const getCookie = (name: string) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift();
+    return null;
+  };
+
+  const AuthCookie = getCookie("user_data");
+
+
+  const { data: user } = useQuery({
+    queryKey: ['discord-user'],
+    queryFn: () => {
+      return AUTH_UserReadController_getUser();
+    },
+  });
 
   useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/api/auth/discord/user", {
-          credentials: "include",
-        });
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        console.error("Error checking authentication status:", error);
-        setIsAuthenticated(false);
-      }
-    };
-    checkAuthStatus();
-  }, []);
-
-  useEffect(() => {
-    if (user) {
+    if (user && AuthCookie) {
       hideSplashScreen();
     }
-  }, [user]);
+  }, [user,AuthCookie]);
 
-  if (!isAuthenticated && !user) return <></>;
+  if (!user && !AuthCookie) return <OnBoarding/>;
 
   return (
     <UserContext.Provider
       value={{
-        isAuthenticated: isAuthenticated,
         discordId: user?.discordId || '',
         username: user?.username || '',
       }}

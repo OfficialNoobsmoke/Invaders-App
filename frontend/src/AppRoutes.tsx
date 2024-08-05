@@ -10,7 +10,7 @@ const AppRoutes: RouteObject[] = [
     children: [
       {
         path: "/home",
-        element: <Home />,
+        element: <Home />
       },
       // {
       //     path: '/notificare',

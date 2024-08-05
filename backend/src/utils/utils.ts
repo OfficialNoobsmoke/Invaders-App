@@ -1,0 +1,40 @@
+type RoleHierarchy = {
+  [key: string]: number;
+};
+
+class Utils {
+  roleHierarchy: RoleHierarchy = {
+    "Guild Master": 7,
+    "Raid Leader": 6,
+    Assistant: 5,
+    Grandmaster: 4,
+    Core: 3,
+    Raider: 2,
+    Member: 1,
+  };
+
+  getFactions(roles: string[]) {
+    let factions: string[] = [];
+    for (let role of roles) {
+      if (role === "Alliance" || role === "Horde") {
+        factions.push(role);
+      }
+    }
+    return factions;
+  }
+
+  getHighestRank(roles: string[]) {
+    let highestRole = "Member";
+    roles.forEach((role) => {
+      if (
+        this.roleHierarchy[role] !== undefined &&
+        this.roleHierarchy[role] > this.roleHierarchy[highestRole]
+      ) {
+        highestRole = role;
+      }
+    });
+    return highestRole;
+  }
+}
+
+export const utils = new Utils();

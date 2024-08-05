@@ -1,4 +1,6 @@
 import React from "react";
+import { UserMenu } from './user-menu/User.menu';
+import { ThemeConfig } from '../../storybook/theme-config/ThemeConfig';
 
 export const Toolbar: React.FC = () => {
   const classes =
@@ -8,7 +10,43 @@ export const Toolbar: React.FC = () => {
   return (
     <div className="border-b bg-card px-4 pr-6">
       <div className="flex h-16 w-full items-center justify-between">
-        Toolbar
+        <div className={'flex items-center gap-2'}>
+          {/*<Logo />*/}
+          {/*<div className={'ml-20 hidden items-center gap-4 lg:flex'}>*/}
+          {/*  <NavLink*/}
+          {/*    className={({ isActive }) => twMerge(classes, isActive ? activeClasses : '')}*/}
+          {/*    to="/entitate-juridica">*/}
+          {/*    <ThemeIcons.Building2 className={'text-lg'} />*/}
+          {/*    Entități juridice*/}
+          {/*  </NavLink>*/}
+          {/*  <NavLink*/}
+          {/*    className={({ isActive }) => twMerge(classes, isActive ? activeClasses : '')}*/}
+          {/*    to="/proiect">*/}
+          {/*    <LuFolderTree className={'text-lg'} />*/}
+          {/*    Proiecte*/}
+          {/*  </NavLink>*/}
+          {/*  <NavLink*/}
+          {/*    className={({ isActive }) => twMerge(classes, isActive ? activeClasses : '')}*/}
+          {/*    to="/achizitie">*/}
+          {/*    <FaAcquisitionsIncorporated className={'text-lg'} />*/}
+          {/*    Achiziții*/}
+          {/*  </NavLink>*/}
+          {/*</div>*/}
+        </div>
+        <div className="flex items-center gap-3">
+          {/*<CustomEnvironmentChip />*/}
+
+          {/*<ThemeConfig*/}
+          {/*  variant={'outline'}*/}
+          {/*  isIconOnly={true}*/}
+          {/*/>*/}
+          <ThemeConfig
+            variant={'outline'}
+            isIconOnly={true}
+          />
+          <UserMenu />
+          {/*<NotificariMenu />*/}
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { Client, GatewayIntentBits } from "discord.js";
 import MongoDB from "../../app/database/database";
+import { utils } from "../utils";
 
 const { DISCORD_BOT_TOKEN } = process.env;
 
@@ -8,7 +9,8 @@ export type DiscordUserType = {
   username: string;
   display_name: string | undefined;
   email: string | undefined;
-  roles: string[];
+  factions: string[];
+  highestRole: string;
   characters: CharacterType[] | undefined;
   joinedAt: Date | null;
   administrator: boolean;
@@ -34,7 +36,8 @@ export class DiscordBot {
     "Assistant",
     "Raid Leader",
     "Guild Master",
-    "Sentry",
+    "Alliance",
+    "Horde",
   ];
 
   client: Client;
@@ -77,12 +80,16 @@ export class DiscordBot {
           );
 
           if (hasAllowedRole) {
+            let factions = utils.getFactions(userRoles);
+            let highestRole = utils.getHighestRank(userRoles);
+
             const userData: DiscordUserType = {
               discordId: member.id,
               username: member.user.username,
               display_name: member.displayName || "N/A",
               email: undefined,
-              roles: userRoles,
+              factions: factions,
+              highestRole: highestRole,
               joinedAt: member.joinedAt,
               characters: undefined,
               administrator: false,
@@ -90,10 +97,12 @@ export class DiscordBot {
 
             try {
               await mongo_db.insertUser(userData);
-              console.log(`Saved user: ${member.user.username}`);
+              console.log(
+                `User with id: ${member.id} was inserted in database.`,
+              );
               resetTimeout(); // Reset timeout on activity
             } catch (error) {
-              console.error("Error saving user:", error);
+              console.error("Error inserting user:", error);
             }
           } else {
             console.log(

@@ -1,4 +1,3 @@
-import './App.css';
 import { useDetectConnection } from './helpers/useDetectConnection';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './AppRoutes';

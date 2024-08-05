@@ -1,11 +1,9 @@
-const notImplemented = () => {
-  throw Error("Not implemented");
-};
-
 type ClientType = {
-  call: typeof fetch;
+  call: (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 };
 
 export const fetcher: ClientType = {
-  call: notImplemented,
+  call: (input, init) => {
+    return fetch(input, init);
+  },
 };

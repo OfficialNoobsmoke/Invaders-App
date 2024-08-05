@@ -6,15 +6,11 @@ import { UserContext } from './context/UserContext';
 
 export const RootLayout: React.FC = () => {
 
-  const { isAuthenticated } = useContext(UserContext)
-
-
-  console.log(isAuthenticated);
-
+const { username} = useContext(UserContext)
 
   return (
     <CustomErrorBoundary>
-      {isAuthenticated ? <Layout /> : <OnBoarding />}
+      {username ? <Layout /> : <OnBoarding />}
     </CustomErrorBoundary>
   );
 };
