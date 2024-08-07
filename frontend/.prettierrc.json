@@ -10,5 +10,7 @@
   "endOfLine": "lf",
   "htmlWhitespaceSensitivity": "strict",
   "arrowParens": "always",
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "plugins": [
+    "prettier-plugin-tailwindcss"
+  ]
 }

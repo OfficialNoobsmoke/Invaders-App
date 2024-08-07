@@ -6,7 +6,8 @@ import { UserContext } from './context/UserContext';
 
 export const RootLayout: React.FC = () => {
 
-const { username} = useContext(UserContext)
+  const { username } = useContext(UserContext);
+
 
   return (
     <CustomErrorBoundary>

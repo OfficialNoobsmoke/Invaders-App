@@ -44,7 +44,7 @@ class DiscordAuth {
             });
             if (user) {
               console.log(`User ${profile.username} authorized`);
-              return done(null, user);
+              return done(null, { user, accessToken });
             } else {
               return done(null, false, { message: "User not found" });
             }

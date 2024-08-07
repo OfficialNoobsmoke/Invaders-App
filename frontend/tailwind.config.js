@@ -1,4 +1,4 @@
-import { nextui } from '@nextui-org/react'
+import { nextui } from '@nextui-org/react';
 
 const colors = {
   slate: {
@@ -83,6 +83,7 @@ const colors = {
     '800': '#991b1b',
     '900': '#7f1d1d',
     '950': '#450a0a',
+    'horde': '#D53200',
     DEFAULT: '#ef4444',
   },
   orange: {
@@ -223,6 +224,7 @@ const colors = {
     '800': '#1e40af',
     '900': '#1e3a8a',
     '950': '#172554',
+    'alliance': '#062d66',
     DEFAULT: '#3b82f6',
   },
   indigo: {

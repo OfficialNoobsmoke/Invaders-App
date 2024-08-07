@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import User from "./schemas/UserSchema";
-import { mongo_db } from "../../main";
 
 const { DB_USER, DB_NAME, DB_USER_PWD } = process.env;
 
@@ -35,13 +34,15 @@ class MongoDB {
     }
   }
 
-  findUserById(id: string) {
+  async findUserById(id: string) {
     try {
-      const user = User.findById(id);
-      return !!user;
+      const user = await User.findOne({ discordId: id });
+      if (!user) {
+        throw new Error("User not found");
+      }
+      return user;
     } catch (error) {
       console.error("Error finding user:", error);
-      return false;
     }
   }
 }

@@ -9,32 +9,63 @@ router.get(
   "/discord/redirect",
   DiscordPassport.authenticate("discord", { failureRedirect: "/" }),
   (req, res) => {
-    const { discordId, username } = req.user as {
-      discordId: string;
-      username: string;
+    const { user, accessToken } = req.user as {
+      user: { discordId: string; username: string };
+      accessToken: string;
     };
-    if (mongo_db.findUserById(discordId)) {
-      const cookie = { discordId, username };
+    if (accessToken) {
+      const cookie = {
+        accessToken,
+        user: { discordId: user.discordId, username: user.username },
+      };
       res
         .cookie("user_data", cookie, {
           signed: true,
-          // httpOnly: true, // DE PUS IN PRODUCTIE
+          httpOnly: true, // DE PUS IN PRODUCTIE
           secure: true,
         })
         .redirect(`http://localhost:4001/home`);
-    } else res.status(401).send("User not found");
+    } else res.status(401).send("Error while authenticating!");
   },
 );
 
-router.get("/discord/user", (req, res) => {
-  if (req.signedCookies.user_data) {
-    const { discordId, username, factions, highestRole } =
-      req.signedCookies.user_data;
-    const user: UserDto = { discordId, username, factions, highestRole };
-    res.status(200).json(user);
+router.get("/discord/user", async (req, res) => {
+  const userData = req.signedCookies.user_data;
+  if (userData && userData.accessToken) {
+    try {
+      const db_user = await mongo_db.findUserById(userData.user.discordId);
+      if (db_user) {
+        const user: UserDto = {
+          discordId: db_user.discordId,
+          username: db_user.username,
+          highestRole: db_user.highestRole,
+          factions: db_user.factions,
+        };
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error", error });
+    }
   } else {
     res.status(401).json({ message: "Not authenticated" });
   }
+});
+
+router.post("/logout", async (req, res) => {
+  try {
+    const authHeader = req.headers["cookie"];
+    if (!authHeader) return res.sendStatus(204);
+    res.setHeader("Clear-Site-Data", '"cookies"');
+    res.status(200).redirect("http://localhost:4001");
+  } catch (err) {
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+  res.end();
 });
 
 export const AuthRouter: Router = router;

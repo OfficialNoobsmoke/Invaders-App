@@ -4,6 +4,7 @@ export type UserDto = {
   discordId: string;
   username: string;
   factions: string[];
+  highestRole: string;
 };
 
 const urlBuilder = () => {
@@ -14,14 +15,14 @@ export const AUTH_UserReadController_getUser = () => {
 
   return fetcher
     .call(urlBuilder(), {
-      method: "GET",
-      credentials: "include", // Ensure cookies are included
+      method: 'GET',
+      credentials: 'include', // Ensure cookies are included
     })
     .then<UserDto>(async (value) => {
       if (!value.ok) {
         const errorResponse = await value.json();
-        console.error("Error fetching user:", errorResponse); // Debugging log
-        throw new Error(errorResponse.message || "Failed to fetch user");
+        console.error('Error fetching user:', errorResponse); // Debugging log
+        throw new Error(errorResponse.message || 'Failed to fetch user');
       }
 
       const user: UserDto = await value.json();

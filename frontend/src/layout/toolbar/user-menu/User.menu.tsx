@@ -5,7 +5,7 @@ import { IconBadge } from '../../../storybook/icon-badge/IconBadge';
 import { ThemeIcons } from '../../../storybook/theme-icons/ThemeIcons';
 
 export const UserMenu: React.FC = () => {
-  const { username } = useContext(UserContext);
+  const { username, factions } = useContext(UserContext);
   const ref = useRef<HTMLFormElement>(null);
 
   const onAction = (key: React.Key) => {
@@ -15,6 +15,35 @@ export const UserMenu: React.FC = () => {
         break;
       default:
         break;
+    }
+  };
+
+  const renderFaction = (faction: string) => {
+    switch (faction) {
+      case 'Alliance':
+        return (
+          <span className="flex items-center text-blue-alliance mt-1">
+            <img
+              src="https://cdn3.emoji.gg/emojis/7890_alliance_wow.png"
+              alt="Alliance"
+              style={{ width: '16px', height: '16px' }}
+            />
+            Alliance
+          </span>
+        );
+      case 'Horde':
+        return (
+          <span className="flex items-center text-red-horde mt-1">
+            <img
+              src="https://cdn3.emoji.gg/emojis/2665_horde_wow.png"
+              alt="Horde"
+              style={{ width: '16px', height: '16px' }}
+            />
+            Horde
+          </span>
+        );
+      default:
+        return;
     }
   };
 
@@ -44,22 +73,32 @@ export const UserMenu: React.FC = () => {
                 <span className="max-w-[350px] truncate font-semibold">
                   {username}
                 </span>
+                <span className="max-w-[350px] truncate font-semibold">
+                  {factions.length === 1 ? (
+                    renderFaction(factions[0])
+                  ) : (
+                    <span className="flex items-center">
+                      {renderFaction('Alliance')} &nbsp; {renderFaction('Horde')}
+                    </span>
+                  )}
+                </span>
               </div>
             </DropdownItem>
           </DropdownSection>
           <DropdownSection showDivider={true}>
             <DropdownItem
-              key={'identitate'}
-              aria-label={'Date personale'}
+              key={'info'}
+              aria-label={'Player info'}
               startContent={<ThemeIcons.IdCard className="size-5" />}>
-              Date personale
+              Player info
             </DropdownItem>
-
+          </DropdownSection>
+          <DropdownSection showDivider={true}>
             <DropdownItem
-              key={'identificare-electronica'}
-              aria-label={'Identificare electronică'}
-              startContent={<ThemeIcons.Certificate className="size-5" />}>
-              Identificare electronică
+              key={'info'}
+              aria-label={'Player info'}
+              startContent={<ThemeIcons.UserCheck className="size-5" />}>
+              Characters
             </DropdownItem>
           </DropdownSection>
           <DropdownSection>
@@ -67,13 +106,13 @@ export const UserMenu: React.FC = () => {
               key={'logout'}
               aria-label={'Logout'}
               startContent={<ThemeIcons.Logout className="size-5" />}>
-              Delogare
+              Log out
             </DropdownItem>
           </DropdownSection>
         </DropdownMenu>
       </Dropdown>
       <form
-        action="/logout"
+        action="http://localhost:4000/api/auth/logout"
         method="post"
         ref={ref}
         className="hidden"

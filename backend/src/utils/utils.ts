@@ -23,6 +23,12 @@ class Utils {
     return factions;
   }
 
+  concatFactions(factions: string[]) {
+    if (factions.length == 2) {
+      return factions[0] + " & " + factions[1];
+    } else return factions[0];
+  }
+
   getHighestRank(roles: string[]) {
     let highestRole = "Member";
     roles.forEach((role) => {
