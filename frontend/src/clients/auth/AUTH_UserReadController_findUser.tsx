@@ -5,6 +5,19 @@ export type UserDto = {
   username: string;
   factions: string[];
   highestRole: string;
+  displayName: string | undefined;
+  characters: CharacterDto[] | undefined;
+};
+
+export type CharacterDto = {
+  name: string;
+  class: string;
+  mainSpec: string;
+  gearScoreMainSpec: number;
+  offSpec: string | undefined;
+  gearScoreOffSpec: number | undefined;
+  skill: number | undefined;
+  faction: 'Alliance' | 'Horde';
 };
 
 const urlBuilder = () => {

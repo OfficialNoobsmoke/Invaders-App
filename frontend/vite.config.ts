@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
 import eslint from '@nabla/vite-plugin-eslint';
+import path from 'path';
 
 export default defineConfig({
   build: {
@@ -24,6 +25,11 @@ export default defineConfig({
     }),
     // svgLoader(),
   ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   server: {
     open: 'http://localhost:4001',
     port: 4001,

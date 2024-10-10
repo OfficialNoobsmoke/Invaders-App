@@ -7,7 +7,7 @@ const { DISCORD_BOT_TOKEN } = process.env;
 export type DiscordUserType = {
   discordId: string;
   username: string;
-  display_name: string | undefined;
+  displayName: string | undefined;
   email: string | undefined;
   factions: string[];
   highestRole: string;
@@ -86,7 +86,7 @@ export class DiscordBot {
             const userData: DiscordUserType = {
               discordId: member.id,
               username: member.user.username,
-              display_name: member.displayName || "N/A",
+              displayName: member.displayName || "N/A",
               email: undefined,
               factions: factions,
               highestRole: highestRole,

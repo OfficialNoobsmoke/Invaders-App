@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
   },
   discordId: { type: String, required: true },
   username: { type: String, required: true },
-  display_name: { type: String, required: true },
+  displayName: { type: String, required: true },
   email: { type: String, default: undefined },
   factions: { type: [String], required: true },
   highestRole: { type: String, required: true },

@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
-import { UserContext } from '../../layout/context/UserContext';
+import React from 'react';
 
 export const Home: React.FC = () => {
   // const { username} = useContext(UserContext)
 
 
-  return <div>Home</div>;
+  return <div></div>;
 };

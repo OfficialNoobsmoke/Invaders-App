@@ -41,7 +41,7 @@ app.use(
       maxAge: 1000 * 60 * 60 * 24,
     },
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
   }),
 );
 

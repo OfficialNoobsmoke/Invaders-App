@@ -3,135 +3,80 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 240 0% 98.8%;
-    --foreground: 222.2 84% 4.9%;
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 222.2 47.4% 11.2%;
 
-    --border: 214.3 31.8% 91.4%;
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 47.4% 11.2%;
 
-    --neutral: 210 40% 96.1%;
-    --neutral-foreground: 222.2 47.4% 11.2%;
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 222.2 47.4% 11.2%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+        --primary: 222.2 47.4% 11.2%;
+        --primary-foreground: 210 40% 98%;
 
-    --secondary-foreground: 222.2 47.4% 11.2%;
+        --secondary: 210 40% 96.1%;
+        --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted-foreground: 215.4 16.3% 46.9%;
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222.2 47.4% 11.2%;
 
-    --danger: 0 72% 51%;
-    --danger-foreground: 210 40% 98%;
+        --destructive: 0 100% 50%;
+        --destructive-foreground: 210 40% 98%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 210 40% 98%;
+        --ring: 215 20.2% 65.1%;
 
-    --success: 160, 84%, 39%;
-    --success-foreground: 210 40% 98%;
-  }
+        --radius: 0.5rem;
+    }
 
-  .dark {
-    --background: 222.2 84% 3.9%;
-    --foreground: 210 40% 98%;
+    .dark {
+        --background: 224 71% 4%;
+        --foreground: 213 31% 91%;
 
-    --border: 217.2 32.6% 17.5%;
+        --muted: 223 47% 11%;
+        --muted-foreground: 215.4 16.3% 56.9%;
 
-    --card: 222.2 85% 4.3%;
-    --card-foreground: 210 40% 98%;
+        --accent: 216 34% 17%;
+        --accent-foreground: 210 40% 98%;
 
-    --neutral: 217.2 32.6% 17.5%;
-    --neutral-foreground: 210 40% 98%;
+        --popover: 224 71% 4%;
+        --popover-foreground: 215 20.2% 65.1%;
 
-    /*unused*/
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+        --border: 216 34% 17%;
+        --input: 216 34% 17%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+        --card: 224 71% 4%;
+        --card-foreground: 213 31% 91%;
 
-    --secondary-foreground: 210 40% 98%;
-    --muted-foreground: 215 20.2% 65.1%;
+        --primary: 210 40% 98%;
+        --primary-foreground: 222.2 47.4% 1.2%;
 
-    --danger: 0 84% 60%;
-    --danger-foreground: 210 40% 98%;
+        --secondary: 222.2 47.4% 11.2%;
+        --secondary-foreground: 210 40% 98%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 210 40% 98%;
+        --destructive: 0 63% 31%;
+        --destructive-foreground: 210 40% 98%;
 
-    --success: 160, 84%, 39%;
-    --success-foreground: 210 40% 98%;
-  }}
+        --ring: 216 34% 17%;
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  html {
-    @apply bg-background text-foreground;
-  }
+        --radius: 0.5rem;
+    }
 }
 
 @layer base {
-  input[type='number']::-webkit-outer-spin-button,
-  input[type='number']::-webkit-inner-spin-button,
-  input[type='number'] {
-    -webkit-appearance: none;
-    margin: 0;
-    -moz-appearance: textfield !important;
-  }
-}
+    * {
+        @apply border-border;
+    }
 
-@layer components {
-  html {
-    @apply flex h-screen max-h-screen min-h-screen flex-col overflow-hidden border-r bg-background text-default;
-  }
-
-  body {
-    @apply flex flex-auto flex-grow overflow-y-auto overflow-x-hidden;
-  }
-
-  #root {
-    @apply flex grow flex-col;
-  }
-
-  ::-webkit-scrollbar {
-    @apply h-2 w-2 bg-background dark:bg-background;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply rounded-md;
-    border: 1px solid transparent;
-    box-shadow: inset 0 0 0 12px rgba(47, 58, 75, 0.4);
-  }
-
-  ::-webkit-scrollbar-thumb:active,
-  ::-webkit-scrollbar-thumb:hover {
-    box-shadow: inset 0 0 0 12px rgba(47, 58, 75, 0.5);
-  }
-
-  .dark ::-webkit-scrollbar-thumb {
-    box-shadow: inset 0 0 0 12px rgba(255, 255, 255, 0.15);
-  }
-
-  .dark ::-webkit-scrollbar-thumb:active,
-  .dark ::-webkit-scrollbar-thumb:hover {
-    box-shadow: inset 0 0 0 12px rgba(255, 255, 255, 0.18);
-  }
-
-  .card {
-    @apply overflow-hidden rounded-xl border bg-card;
-  }
-
-  .link {
-    @apply cursor-pointer font-medium text-primary hover:underline;
-  }
-
-  #root-portal {
-    @apply z-50;
-  }
+    body {
+        @apply bg-background text-foreground;
+        font-feature-settings: "rlig" 1, "calt" 1;
+    }
 }

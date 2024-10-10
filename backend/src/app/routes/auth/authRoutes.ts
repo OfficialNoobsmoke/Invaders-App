@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { DiscordPassport } from "../../auth/auth";
 import { mongo_db } from "../../../main";
-import { UserDto } from "../../auth/UserDto";
+import { UserDto } from "../../dto/UserDto";
 
 const router: Router = Router();
 
@@ -40,6 +40,19 @@ router.get("/discord/user", async (req, res) => {
           username: db_user.username,
           highestRole: db_user.highestRole,
           factions: db_user.factions,
+          displayName: db_user.displayName,
+          characters: db_user.characters
+            ? db_user.characters.map((char) => ({
+                name: char.name,
+                class: char.class,
+                mainSpec: char.mainSpec,
+                gearScoreMainSpec: char.gearScoreMainSpec,
+                offSpec: char.offSpec ?? undefined,
+                gearScoreOffSpec: char.gearScoreOffSpec ?? undefined,
+                skill: char.skill ?? undefined,
+                faction: char.faction,
+              }))
+            : undefined,
         };
         res.status(200).json(user);
       } else {

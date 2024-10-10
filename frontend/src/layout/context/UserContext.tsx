@@ -2,18 +2,20 @@ import React, { createContext, PropsWithChildren, useEffect } from 'react';
 import { hideSplashScreen } from '../../helpers/SplashScreenService';
 import { OnBoarding } from '../../pages/onboarding/OnBoarding';
 import { useQuery } from '@tanstack/react-query';
-import { AUTH_UserReadController_getUser } from '../../clients/auth/AUTH_UserReadController_findUser';
+import { AUTH_UserReadController_getUser, CharacterDto } from '../../clients/auth/AUTH_UserReadController_findUser';
 
 
-type AuthenticationContextType = {
-  discordId: string
-  username: string
-  factions: string[]
-  highestRole: string
+type UserContextType = {
+  discordId: string;
+  username: string;
+  factions: string[];
+  highestRole: string;
+  displayName: string | undefined;
+  characters: CharacterDto[] | undefined;
 }
 
 
-export const UserContext = createContext<AuthenticationContextType>({} as AuthenticationContextType);
+export const UserContext = createContext<UserContextType>({} as UserContextType);
 
 export const UserContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
@@ -41,6 +43,8 @@ export const UserContextProvider: React.FC<PropsWithChildren> = ({ children }) =
         username: user?.username,
         factions: user?.factions,
         highestRole: user?.highestRole,
+        displayName: user?.displayName,
+        characters: user?.characters,
       }}
     >
       {children}

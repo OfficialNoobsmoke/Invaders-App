@@ -1,17 +1,26 @@
 import React, { useContext, useRef } from 'react';
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger } from '@nextui-org/react';
 import { UserContext } from '../../context/UserContext';
-import { IconBadge } from '../../../storybook/icon-badge/IconBadge';
-import { ThemeIcons } from '../../../storybook/theme-icons/ThemeIcons';
+import { UserIcon } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 export const UserMenu: React.FC = () => {
   const { username, factions } = useContext(UserContext);
   const ref = useRef<HTMLFormElement>(null);
+  const navigate = useNavigate();
 
   const onAction = (key: React.Key) => {
     switch (key) {
       case 'logout':
+        localStorage.removeItem('user_data');
         ref?.current?.submit();
+        break;
+      case 'info':
+        navigate('/user-info');
+        break;
+      case 'chars':
+        navigate('/characters');
         break;
       default:
         break;
@@ -48,7 +57,7 @@ export const UserMenu: React.FC = () => {
   };
 
   return (
-    <>
+    <AnimatePresence>
       <Dropdown
         classNames={{ base: 'min-w-[200px]', content: 'bg-card' }}
         radius={'sm'}>
@@ -57,7 +66,7 @@ export const UserMenu: React.FC = () => {
             color="default"
             variant={'ghost'}
             isIconOnly={true}
-            startContent={<ThemeIcons.User className={'size-5'} />}
+            startContent={<UserIcon />}
           />
         </DropdownTrigger>
         <DropdownMenu
@@ -67,13 +76,12 @@ export const UserMenu: React.FC = () => {
             <DropdownItem
               key={'title'}
               aria-label={'Title'}
-              startContent={<IconBadge icon={ThemeIcons.User} />}
               isReadOnly={true}>
               <div className="flex flex-col">
                 <span className="max-w-[350px] truncate font-semibold">
                   {username}
                 </span>
-                <span className="max-w-[350px] truncate font-semibold">
+                <span className="max-w-[350px] truncate font-semibold mt-1">
                   {factions.length === 1 ? (
                     renderFaction(factions[0])
                   ) : (
@@ -89,15 +97,15 @@ export const UserMenu: React.FC = () => {
             <DropdownItem
               key={'info'}
               aria-label={'Player info'}
-              startContent={<ThemeIcons.IdCard className="size-5" />}>
+            >
               Player info
             </DropdownItem>
           </DropdownSection>
           <DropdownSection showDivider={true}>
             <DropdownItem
-              key={'info'}
-              aria-label={'Player info'}
-              startContent={<ThemeIcons.UserCheck className="size-5" />}>
+              key={'chars'}
+              aria-label={'Characters'}
+            >
               Characters
             </DropdownItem>
           </DropdownSection>
@@ -105,7 +113,7 @@ export const UserMenu: React.FC = () => {
             <DropdownItem
               key={'logout'}
               aria-label={'Logout'}
-              startContent={<ThemeIcons.Logout className="size-5" />}>
+            >
               Log out
             </DropdownItem>
           </DropdownSection>
@@ -117,6 +125,6 @@ export const UserMenu: React.FC = () => {
         ref={ref}
         className="hidden"
       />
-    </>
+    </AnimatePresence>
   );
 };
