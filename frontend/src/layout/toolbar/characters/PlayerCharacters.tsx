@@ -7,6 +7,7 @@ export const PlayerCharacters: React.FC = () => {
   return (
     <Card>
       <CardHeader>
+
         <CardTitle>Characters</CardTitle>
       </CardHeader>
       <CardContent className={`grid grid-cols-5 grid-rows-${characters?.length} gap-6`}>

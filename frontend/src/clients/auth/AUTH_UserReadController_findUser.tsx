@@ -1,6 +1,7 @@
 import { fetcher } from '../../_fetcher';
 
 export type UserDto = {
+  id: string;
   discordId: string;
   username: string;
   factions: string[];
@@ -10,6 +11,7 @@ export type UserDto = {
 };
 
 export type CharacterDto = {
+  id: string;
   name: string;
   class: string;
   mainSpec: string;
@@ -42,3 +44,5 @@ export const AUTH_UserReadController_getUser = () => {
       return user;
     });
 };
+
+

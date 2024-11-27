@@ -24,7 +24,7 @@ export const PlayerInfo: React.FC = () => {
         </div>
         <div className="p-4">
           <h4 className="font-bold">Factions</h4>
-          <p className="border-b pb-1 pt-4">{factions.join(' & ')}</p>
+          <p className="border-b pb-1 pt-4">{factions?.length > 1 ? factions.join(' & ') : factions}</p>
         </div>
         <div className="p-4">
           <h4 className="font-bold">Highest role</h4>
