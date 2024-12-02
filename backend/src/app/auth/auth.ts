@@ -1,10 +1,7 @@
 import passport from "passport";
 import { Strategy as DiscordStrategy } from "passport-discord";
-import dotenv from "dotenv";
-import User from "../database/schemas/UserSchema";
+import User from "../database/schemas/userSchema";
 import jwt from "jsonwebtoken";
-
-dotenv.config();
 
 const {
   DISCORD_CLIENT_ID,
