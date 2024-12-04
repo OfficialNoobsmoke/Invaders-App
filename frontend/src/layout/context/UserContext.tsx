@@ -28,24 +28,25 @@ export const UserContextProvider: React.FC<PropsWithChildren> = ({ children }) =
   });
 
 
-  useEffect(() => {
-    if (user) {
-      hideSplashScreen();
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     hideSplashScreen();
+  //   }
+  // }, [user]);
 
-  if (!user) return <OnBoarding />;
+  // if (!user) return <OnBoarding />;
+  const userDummy = {
+    discordId: "123",
+    username: "Test",
+    factions: ["Alliance"],
+    highestRole: "TestRole",
+    displayName: "Test",
+    characters: [],
+  }
 
   return (
     <UserContext.Provider
-      value={{
-        discordId: user?.discordId,
-        username: user?.username,
-        factions: user?.factions,
-        highestRole: user?.highestRole,
-        displayName: user?.displayName,
-        characters: user?.characters,
-      }}
+      value={userDummy}
     >
       {children}
     </UserContext.Provider>
