@@ -9,6 +9,7 @@ frontend/.env
 #IDE config
 .idea/
 
+backend/dist
 
 #FRONTEND
 
