@@ -1,13 +1,6 @@
 import mongoose from "mongoose";
-import User from "./schemas/UserSchema";
-
-const { DB_USER, DB_NAME, DB_USER_PWD } = process.env;
-
-if (!DB_USER || !DB_USER_PWD || !DB_NAME) {
-  throw new Error("One or more Mongo environment variables are missing");
-}
-
-const uri = `mongodb+srv://${DB_USER}:${DB_USER_PWD}@clusterinvaders.wavmtox.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`;
+import User from "./schemas/userSchema";
+import dbConstants from "../constants/db"
 
 class MongoDB {
   constructor() {
@@ -18,7 +11,11 @@ class MongoDB {
 
   async connect() {
     try {
-      await mongoose.connect(uri, {});
+      const { DB_CONNECTION_STRING } = process.env;
+      if (!DB_CONNECTION_STRING) {
+        throw new Error(dbConstants.COULD_NOT_CONNECT_TO_DB);
+      }
+      await mongoose.connect(DB_CONNECTION_STRING, {});
     } catch (error) {
       console.error("Error connecting to MongoDB:", error);
     }

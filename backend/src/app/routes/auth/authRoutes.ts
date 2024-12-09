@@ -2,6 +2,8 @@ import { Router } from "express";
 import { DiscordPassport } from "../../auth/auth";
 import { mongo_db } from "../../../main";
 import { UserDto } from "../../dto/UserDto";
+import roleController from "../../controllers/roleController"
+import asyncHandler from "../../middlewares/asyncHandler";
 
 const router: Router = Router();
 
@@ -9,10 +11,7 @@ router.get(
   "/discord/redirect",
   DiscordPassport.authenticate("discord", { failureRedirect: "/" }),
   (req, res) => {
-    const { user, accessToken } = req.user as {
-      user: { discordId: string; username: string };
-      accessToken: string;
-    };
+    const { user, accessToken } = req
     if (accessToken) {
       const cookie = {
         accessToken,
@@ -41,18 +40,7 @@ router.get("/discord/user", async (req, res) => {
           highestRole: db_user.highestRole,
           factions: db_user.factions,
           displayName: db_user.displayName,
-          characters: db_user.characters
-            ? db_user.characters.map((char) => ({
-                name: char.name,
-                class: char.class,
-                mainSpec: char.mainSpec,
-                gearScoreMainSpec: char.gearScoreMainSpec,
-                offSpec: char.offSpec ?? undefined,
-                gearScoreOffSpec: char.gearScoreOffSpec ?? undefined,
-                skill: char.skill ?? undefined,
-                faction: char.faction,
-              }))
-            : undefined,
+          characters: [] // TODO: Fix this to fetch from characters table
         };
         res.status(200).json(user);
       } else {
@@ -80,5 +68,8 @@ router.post("/logout", async (req, res) => {
   }
   res.end();
 });
+
+router.post("/role", asyncHandler(roleController.createRole))
+router.delete("/role", asyncHandler(roleController.deleteRole))
 
 export const AuthRouter: Router = router;

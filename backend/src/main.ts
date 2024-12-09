@@ -7,12 +7,10 @@ import rateLimit from "express-rate-limit";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import { MainRouter } from "./app/routes/routes";
-import dotenv from "dotenv";
 import { DiscordBot } from "./utils/discord-bot/discordBot";
 import MongoDB from "./app/database/database";
 import { DiscordPassport } from "./app/auth/auth";
-
-dotenv.config();
+import errorHandler from "./app/middlewares/errorHandler";
 
 const sessionSecret = process.env.SESSION_SECRET;
 const nodeEnv = process.env.NODE_ENV || "dev";
@@ -62,6 +60,7 @@ app.use(DiscordPassport.session());
 app.use("/api", MainRouter);
 
 app.use(express.static(__dirname + "/assets"));
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
 
