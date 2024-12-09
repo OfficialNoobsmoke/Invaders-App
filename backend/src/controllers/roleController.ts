@@ -1,11 +1,7 @@
 import { Request, Response } from 'express';
 import Role from '../database/schemas/roleSchema';
-import { CreateRoleRequest } from '../interfaces/roleRequest';
 
-const createRole = async (
-  req: Request<object, object, CreateRoleRequest>,
-  res: Response
-): Promise<Response> => {
+const createRole = async (req: Request, res: Response): Promise<Response> => {
   const { name } = req.body;
   if (!name) {
     return res.status(400).json({ message: 'Name is required' });

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Permissions } from '../constants/permissions';
 import User from '../database/schemas/userSchema';
-import IRole from '../database/types/IRole';
+import IRole from '../interfaces/IRole';
 
 const checkPermissions = (requiredPermissions: Permissions[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {

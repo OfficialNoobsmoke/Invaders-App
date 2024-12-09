@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Strategy as DiscordStrategy } from 'passport-discord';
 import User from '../database/schemas/userSchema';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
 const {
@@ -82,12 +82,12 @@ class DiscordAuth {
     jwt.verify(
       token,
       JWT_SECRET as string,
-      (err: jwt.VerifyErrors | null, user: typeof User | undefined) => {
-        console.log(err);
-
+      (err: VerifyErrors | null, decoded: JwtPayload | string | undefined) => {
         if (err) return res.sendStatus(403);
 
-        req.user = user;
+        if (typeof decoded === 'object' && decoded !== null) {
+          req.user = decoded as { discordId: string; username: string };
+        }
         next();
       }
     );
