@@ -1,0 +1,33 @@
+# Node modules folder
+node_modules/
+
+# Build output directories
+dist/
+build/
+
+# Log files
+*.log
+
+# Environment variable files
+.env
+
+# TypeScript type declaration files (optional)
+*.d.ts
+
+# Coverage folder from testing tools like Jest
+coverage/
+
+# Temporary files
+*.tmp
+*.bak
+
+# Configuration files (optional)
+.eslintrc.json
+.prettierrc
+tsconfig.json
+package.json
+package-lock.json
+.prettierignore
+.DS_Store
+.eslintignore
+.vscode

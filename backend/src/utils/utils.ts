@@ -4,8 +4,8 @@ type RoleHierarchy = {
 
 class Utils {
   roleHierarchy: RoleHierarchy = {
-    "Guild Master": 7,
-    "Raid Leader": 6,
+    'Guild Master': 7,
+    'Raid Leader': 6,
     Assistant: 5,
     Grandmaster: 4,
     Core: 3,
@@ -14,9 +14,9 @@ class Utils {
   };
 
   getFactions(roles: string[]) {
-    let factions: string[] = [];
-    for (let role of roles) {
-      if (role === "Alliance" || role === "Horde") {
+    const factions: string[] = [];
+    for (const role of roles) {
+      if (role === 'Alliance' || role === 'Horde') {
         factions.push(role);
       }
     }
@@ -25,12 +25,12 @@ class Utils {
 
   concatFactions(factions: string[]) {
     if (factions.length == 2) {
-      return factions[0] + " & " + factions[1];
+      return factions[0] + ' & ' + factions[1];
     } else return factions[0];
   }
 
   getHighestRank(roles: string[]) {
-    let highestRole = "Member";
+    let highestRole = 'Member';
     roles.forEach((role) => {
       if (
         this.roleHierarchy[role] !== undefined &&
