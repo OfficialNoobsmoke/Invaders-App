@@ -2,14 +2,13 @@ import mongoose from 'mongoose';
 import User from './schemas/userSchema';
 import dbConstants from '../constants/db';
 
-class MongoDB {
   constructor() {
     this.connect().then(() =>
       console.log('Successfully connected to MongoDB using Mongoose!')
     );
   }
 
-  async connect() {
+  export function async connect() {
     try {
       const { DB_CONNECTION_STRING } = process.env;
       if (!DB_CONNECTION_STRING) {
