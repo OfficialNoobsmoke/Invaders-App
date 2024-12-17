@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy as DiscordStrategy } from 'passport-discord';
-import User from '../database/schemas/userSchema';
+import User from '../database/schema/user';
 import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 

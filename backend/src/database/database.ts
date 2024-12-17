@@ -1,5 +1,4 @@
-import mongoose from 'mongoose';
-import User from './schemas/userSchema';
+import User from './schema/user';
 import dbConstants from '../constants/db';
 
   constructor() {

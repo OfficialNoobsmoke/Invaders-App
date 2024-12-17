@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { Permissions } from '../constants/permissions';
-import User from '../database/schemas/userSchema';
+import User from '../database/schema/user';
 import IRole from '../interfaces/IRole';
 
 const checkPermissions = (requiredPermissions: Permissions[]) => {

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Role from '../database/schemas/roleSchema';
+import Role from '../database/schema/roleSchema';
 
 const createRole = async (req: Request, res: Response): Promise<Response> => {
   const { name } = req.body;

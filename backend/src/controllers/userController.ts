@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import User from '../database/schemas/userSchema';
-import Role from '../database/schemas/roleSchema';
+import User from '../database/schema/user';
+import Role from '../database/schema/roleSchema';
 import { AssignRoleToUserRequest } from '../interfaces/userRequest';
 
 export const assignRoleToUser = async (
