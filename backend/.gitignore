@@ -1,0 +1,11 @@
+# Ignore node_modules directories
+node_modules/
+
+#ENV
+.env
+
+#IDE config
+.idea/
+
+dist
+.eslintcache

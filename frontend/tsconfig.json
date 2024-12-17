@@ -34,11 +34,11 @@
   "include": [
     "src",
     "index.d.ts",
-    "src/main.tsx",
+    "main.tsx",
     "src/*.ts",
     "src/*.tsx",
     "src/**/*.ts",
     "src/**/*.tsx",
     "vite.config.ts"
-  ]
+, "App.tsx"  ]
 }

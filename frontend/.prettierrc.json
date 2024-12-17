@@ -11,6 +11,5 @@
   "htmlWhitespaceSensitivity": "strict",
   "arrowParens": "always",
   "plugins": [
-    "prettier-plugin-tailwindcss"
   ]
 }
