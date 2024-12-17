@@ -23,7 +23,6 @@ export default defineConfig({
     checker({
       typescript: true,
     }),
-    // svgLoader(),
   ],
   resolve: {
     alias: {
