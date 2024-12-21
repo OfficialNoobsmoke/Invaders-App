@@ -129,20 +129,8 @@
 //   }
 // }
 
-
 // const bot = new DiscordBot();
 // bot.start();
 
 // app.use(DiscordPassport.initialize());
 // app.use(DiscordPassport.session());
-
-// app.use("/api", MainRouter);
-
-// app.use(express.static(__dirname + "/assets"));
-// app.use(errorHandler);
-
-// const PORT = process.env.PORT || 4000;
-
-// app.listen(PORT, () => {
-//   console.info(`server up on port ${PORT}`);
-// });

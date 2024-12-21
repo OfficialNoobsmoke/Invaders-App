@@ -1,8 +1,8 @@
 import passport from 'passport';
 import { Strategy as DiscordStrategy } from 'passport-discord';
-import User from '../database/schemas/userSchema';
 import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import { getUserByDiscordId } from 'repositories/userRepository';
 
 const {
   DISCORD_CLIENT_ID,
@@ -36,10 +36,7 @@ class DiscordAuth {
         },
         async (accessToken, refreshToken, profile, done) => {
           try {
-            const user = await User.findOne({
-              discordId: profile.id,
-              username: profile.username,
-            });
+            const user = await getUserByDiscordId(profile.id);
             if (user) {
               console.log(`User ${profile.username} authorized`);
               return done(null, { user, accessToken });
@@ -59,18 +56,9 @@ class DiscordAuth {
       done(null, user);
     });
 
-    passport.deserializeUser((obj: typeof User | null | undefined, done) => {
-      return done(null, obj);
-    });
-  }
-
-  async getUser(username: string) {
-    try {
-      return User.findOne({ username });
-    } catch (err) {
-      console.error('Error fetching user:', err);
-      throw new Error('User not found');
-    }
+    // passport.deserializeUser((obj: typeof User | null | undefined, done) => {
+    //   return done(null, obj);
+    // });
   }
 
   authenticateToken(req: Request, res: Response, next: NextFunction) {
