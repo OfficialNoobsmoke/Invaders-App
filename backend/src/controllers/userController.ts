@@ -1,23 +1,22 @@
 import { Request, Response } from 'express';
-import * as userRepository from '../repositories/userRepository';
+import * as userService from '../services/userService';
 
 export const createUser = async (req: Request, res: Response) => {
   const { discordId, username, displayName, email } = req.body;
 
-  const newUser = await userRepository.createUser({
+  const newUser = await userService.createUser(
     discordId,
     username,
     displayName,
-    email,
-  });
-
+    email
+  );
   res.status(201).json(newUser);
 };
 
 export const getUserById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const user = await userRepository.getUserById(id);
+  const user = await userService.getUserById(id);
 
   res.status(200).json(user);
 };
@@ -25,7 +24,7 @@ export const getUserById = async (req: Request, res: Response) => {
 export const getUserByUsername = async (req: Request, res: Response) => {
   const { username } = req.params;
 
-  const user = await userRepository.getUserByUsername(username);
+  const user = await userService.getUserByUsername(username);
 
   res.status(200).json(user);
 };
@@ -34,7 +33,7 @@ export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { displayName, email } = req.body;
 
-  const updatedUser = await userRepository.updateUser(id, {
+  const updatedUser = await userService.updateUser(id, {
     displayName,
     email,
   });
@@ -45,13 +44,13 @@ export const updateUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  await userRepository.deleteUser(id);
+  await userService.deleteUser(id);
 
-  res.status(204);
+  res.status(204).send();
 };
 
 export const getUsers = async (_req: Request, res: Response) => {
-  const users = await userRepository.getUsers();
+  const users = await userService.getUsers();
 
   res.status(200).json(users);
 };
