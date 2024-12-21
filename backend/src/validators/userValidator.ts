@@ -8,6 +8,7 @@ export const createUser = [
     .isLength({ min: 3, max: 32 })
     .withMessage('Username must be between 3 and 32 characters long'),
   body('displayName')
+    .optional()
     .isString()
     .withMessage('Display name must be a string')
     .isLength({ max: 32 })

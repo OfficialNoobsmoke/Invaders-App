@@ -1,6 +1,6 @@
 import { body, param } from 'express-validator';
 
-export const createCharacterValidator = [
+export const createCharacter = [
   body('name').notEmpty().withMessage('Name is required'),
   body('faction')
     .isIn(['Alliance', 'Horde'])
@@ -12,7 +12,7 @@ export const createCharacterValidator = [
     .withMessage('Realm Server ID must be a valid UUID'),
 ];
 
-export const updateCharacterValidator = [
+export const updateCharacter = [
   param('id').isUUID().withMessage('Character ID must be a valid UUID'),
 
   body('name').optional().notEmpty().withMessage('Name cannot be empty'),
@@ -26,10 +26,10 @@ export const updateCharacterValidator = [
     .withMessage('Character class cannot be empty'),
 ];
 
-export const deleteCharacterValidator = [
+export const deleteCharacter = [
   param('id').isUUID().withMessage('Character ID must be a valid UUID'),
 ];
 
-export const getCharactersByUserIdValidator = [
+export const getCharactersByUserId = [
   param('ownerId').isUUID().withMessage('Owner ID must be a valid UUID'),
 ];

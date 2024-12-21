@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import characterRepository from '../repositories/characterRepository';
+import characterService from '../services/characterService';
 
 export const createCharacter = async (req: Request, res: Response) => {
   const { name, faction, characterClass, ownerId, realmServerId } = req.body;
 
-  const newCharacter = await characterRepository.createCharacter(
+  const newCharacter = await characterService.createCharacter(
     name,
     faction,
     characterClass,
@@ -12,53 +12,41 @@ export const createCharacter = async (req: Request, res: Response) => {
     realmServerId
   );
 
-  return res.status(201).json(newCharacter);
+  res.status(201).json(newCharacter);
 };
 
-export const getCharactersByUserIdController = async (
-  req: Request,
-  res: Response
-) => {
+export const getCharactersByUserId = async (req: Request, res: Response) => {
   const { ownerId } = req.params;
 
-  const characters = await characterRepository.getCharactersByUserId(ownerId);
+  const characters = await characterService.getCharactersByUserId(ownerId);
 
-  return res.status(200).json(characters);
+  res.status(200).json(characters);
 };
 
-export const getCharacterByIdController = async (
-  req: Request,
-  res: Response
-) => {
+export const getCharacterById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const character = await characterRepository.getCharacterById(id);
+  const character = await characterService.getCharacterById(id);
 
-  return res.status(200).json(character);
+  res.status(200).json(character);
 };
 
-export const updateCharacterController = async (
-  req: Request,
-  res: Response
-) => {
+export const updateCharacter = async (req: Request, res: Response) => {
   const { id } = req.params;
   const updatedData = req.body;
 
-  const updatedCharacter = await characterRepository.updateCharacter(
+  const updatedCharacter = await characterService.updateCharacter(
     id,
     updatedData
   );
 
-  return res.status(200).json(updatedCharacter);
+  res.status(200).json(updatedCharacter);
 };
 
-export const deleteCharacterController = async (
-  req: Request,
-  res: Response
-) => {
+export const deleteCharacter = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  await characterRepository.deleteCharacterById(id);
+  await characterService.deleteCharacterById(id);
 
-  return res.status(204);
+  res.status(204).send();
 };
