@@ -1,24 +1,17 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "name": "Launch Program",
-        "type": "node",
-        "request": "launch",
-        "skipFiles": ["<node_internals>/**"],
-        "program": "${workspaceFolder}/src/app.ts",
-        "outFiles": ["${workspaceFolder}/dist/**/*.js"],
-        "preLaunchTask": "npm: build",
-        "runtimeArgs": [
-          "-r",
-          "ts-node/register",
-          "-r",
-          "tsconfig-paths/register",
-          "--env-file=.env"
-        ],
-        "env": {
-          "NODE_ENV": "development"
-        }
-      }
-    ]
-  }
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend",
+      "type": "node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/dist/app.js",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "preLaunchTask": "npm: build",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "sourceMaps": true,
+      "smartStep": true
+    }
+  ]
+}

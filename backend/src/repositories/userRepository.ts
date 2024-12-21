@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
-import { db } from '../database/database';
+import { getDatabase } from '../database/database';
 import { users } from '../database/schema/user';
-import { characters } from 'database/schema/characters';
+import { characters } from '../database/schema/characters';
 
 export const createUser = async (data: {
   discordId: string;
@@ -9,6 +9,7 @@ export const createUser = async (data: {
   displayName?: string;
   email?: string;
 }) => {
+  const db = await getDatabase();
   const [newUser] = await db
     .insert(users)
     .values({
@@ -22,11 +23,22 @@ export const createUser = async (data: {
 };
 
 export const getUserById = async (id: string) => {
+  const db = await getDatabase();
   const [user] = await db.select().from(users).where(eq(users.id, id));
   return user || null;
 };
 
+export const getUserByDiscordId = async (discordId: string) => {
+  const db = await getDatabase();
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId));
+  return user || null;
+};
+
 export const getUserByUsername = async (username: string) => {
+  const db = await getDatabase();
   const [user] = await db
     .select()
     .from(users)
@@ -35,6 +47,7 @@ export const getUserByUsername = async (username: string) => {
 };
 
 export const getUsersWithCharacters = async () => {
+  const db = await getDatabase();
   const usersWithCharacters = await db
     .select()
     .from(users)
@@ -46,6 +59,7 @@ export const updateUser = async (
   id: string,
   data: Partial<{ displayName: string; email: string }>
 ) => {
+  const db = await getDatabase();
   const [updatedUser] = await db
     .update(users)
     .set({
@@ -58,6 +72,7 @@ export const updateUser = async (
 };
 
 export const deleteUser = async (id: string) => {
+  const db = await getDatabase();
   const [deletedUser] = await db
     .delete(users)
     .where(eq(users.id, id))
@@ -65,6 +80,7 @@ export const deleteUser = async (id: string) => {
   return deletedUser || null;
 };
 
-export const listUsers = async () => {
+export const getUsers = async () => {
+  const db = await getDatabase();
   return await db.select().from(users);
 };

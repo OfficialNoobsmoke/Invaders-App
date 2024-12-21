@@ -1,47 +1,47 @@
-import { UUID } from 'crypto';
-import { db } from '../database/database';
-import { characters } from 'database/schema/characters';
+import { eq } from 'drizzle-orm';
+import { getDatabase } from '../database/database';
+import { characters } from '../database/schema';
 
-// Function to create a new character
 export const createCharacter = async (
   name: string,
   faction: 'Alliance' | 'Horde',
   characterClass: string,
-  ownerId: string
+  ownerId: string,
+  realmServerId: string
 ) => {
-  const newCharacter = await db.insert(characters).values({
-    name,
-    faction,
-    class: characterClass,
-    ownerId,
-  });
+  const db = await getDatabase();
+  const [newCharacter] = await db
+    .insert(characters)
+    .values({
+      name,
+      faction,
+      class: characterClass,
+      ownerId,
+      realmServerId,
+    })
+    .returning();
 
   return newCharacter;
 };
 
-// Function to get all characters for a specific user (ownerId)
 export const getCharactersByUserId = async (ownerId: string) => {
-  const userCharacters = await db
-    .select()
-    .from(characters)
-    .where(characters.ownerId.equals(ownerId))
-    .all();
+  const db = await getDatabase();
+  const userCharacters = await db.query.characters.findMany({
+    where: (characters, { eq }) => eq(characters.ownerId, ownerId),
+  });
 
   return userCharacters;
 };
 
-// Function to get a specific character by its ID
 export const getCharacterById = async (id: string) => {
-  const character = await db
-    .select()
-    .from(characters)
-    .where(characters.id.equals(id))
-    .first(); // Fetch the first (or only) match
+  const db = await getDatabase();
+  const character = await db.query.characters.findFirst({
+    where: (characters, { eq }) => eq(characters.id, id),
+  });
 
   return character;
 };
 
-// Function to update a character's details
 export const updateCharacter = async (
   id: string,
   updatedData: Partial<{
@@ -50,21 +50,27 @@ export const updateCharacter = async (
     class: string;
   }>
 ) => {
+  const db = await getDatabase();
   const updatedCharacter = await db
     .update(characters)
     .set(updatedData)
-    .where(characters.id.equals(id))
+    .where(eq(characters.id, id))
     .returning();
 
   return updatedCharacter;
 };
 
-// Function to delete a character by its ID
 export const deleteCharacterById = async (id: string) => {
-  const result = await db
-    .delete()
-    .from(characters)
-    .where(characters.id.equals(id));
+  const db = await getDatabase();
+  const result = await db.delete(characters).where(eq(characters.id, id));
 
   return result;
+};
+
+export default {
+  createCharacter,
+  getCharactersByUserId,
+  getCharacterById,
+  updateCharacter,
+  deleteCharacterById,
 };

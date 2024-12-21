@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import HandlerFunction from '../types/handlerFunction';
+import HandlerFunction from '../types/handlerFunctiond';
 
 const asyncHandler = (fn: HandlerFunction) => {
   return (req: Request, res: Response, next: NextFunction) => {
