@@ -2,17 +2,16 @@
 import { pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 //import { usersToRealmServers } from './usersToRealmServers';
 
-export const users = pgTable('users', {
+export const realmServers = pgTable('realm_servers', {
   id: uuid().defaultRandom().primaryKey(),
-  discordId: varchar('discord_id', { length: 18 }).notNull(),
-  username: varchar('username', { length: 32 }).notNull(),
-  displayName: varchar('displayname', { length: 32 }),
-  email: varchar('email', { length: 255 }),
+  name: varchar('name', { length: 50 }).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),
 });
 
-// export const usersRelations = relations(users, ({ many }) => ({
+// export const realmServersRelations = relations(realmServers, ({ many }) => ({
 //   usersToRealmServers: many(usersToRealmServers),
 // }));
+
+export default realmServers;

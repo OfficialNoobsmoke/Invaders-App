@@ -1,45 +1,9 @@
-import User from './schema/user';
-import dbConstants from '../constants/db';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
+import * as schema from './schema'; // Import your schemas here
 
-  constructor() {
-    this.connect().then(() =>
-      console.log('Successfully connected to MongoDB using Mongoose!')
-    );
-  }
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL, // Replace with your DB URL
+});
 
-  export function async connect() {
-    try {
-      const { DB_CONNECTION_STRING } = process.env;
-      if (!DB_CONNECTION_STRING) {
-        throw new Error(dbConstants.COULD_NOT_CONNECT_TO_DB);
-      }
-      await mongoose.connect(DB_CONNECTION_STRING, {});
-    } catch (error) {
-      console.error('Error connecting to MongoDB:', error);
-    }
-  }
-
-  async insertUser(obj: typeof User.prototype | null) {
-    try {
-      const user = new User(obj);
-      await user.save();
-      console.log(`A user was inserted with the id: ${user.id}`);
-    } catch (error) {
-      console.error('Error inserting user:', error);
-    }
-  }
-
-  async findUserById(id: string) {
-    try {
-      const user = await User.findOne({ discordId: id });
-      if (!user) {
-        throw new Error('User not found');
-      }
-      return user;
-    } catch (error) {
-      console.error('Error finding user:', error);
-    }
-  }
-}
-
-export default MongoDB;
+export const db = drizzle(pool, { schema });
