@@ -3,41 +3,45 @@ import helmet from 'helmet';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import { config } from 'dotenv';
-import { createDatabaseIfNotExists } from './database/database';
+import { initializeDatabase } from './database/database';
 import errorHandler from './middlewares/errorHandler';
 import { routes } from './routes/routes';
 import rateLimit from 'express-rate-limit';
-import { seedDatabase } from './database/seed';
 import { envChecker } from './utils/envChecker';
+import cors from 'cors';
+import passport from 'passport';
 config();
 envChecker();
 
 const sessionSecret = process.env.SESSION_SECRET!;
-const nodeEnv = process.env.NODE_ENV;
 
 export const app: Application = express();
 
 app.use(helmet());
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(sessionSecret));
 app.use(
   session({
     secret: sessionSecret,
     cookie: {
-      secure: nodeEnv === 'production',
+      secure: process.env.NODE_ENV === 'production',
       maxAge: 1000 * 60 * 60 * 24,
     },
     resave: false,
     saveUninitialized: true,
   })
 );
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL!,
+    credentials: true,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
-async function initApp() {
-  await createDatabaseIfNotExists();
-  await seedDatabase();
-}
-
-initApp();
+initializeDatabase();
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes

@@ -13,6 +13,7 @@
   "author": "Invaders Dev Team",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.38.2",
     "express": "^4.19.2",

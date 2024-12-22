@@ -84,3 +84,14 @@ export const getUsers = async () => {
   const db = await getDatabase();
   return await db.select().from(users);
 };
+
+export default {
+  createUser,
+  getUserById,
+  getUserByDiscordId,
+  getUserByUsername,
+  updateUser,
+  deleteUser,
+  getUsers,
+  getUsersWithCharacters,
+};

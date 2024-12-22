@@ -3,6 +3,7 @@ import userValidator from '../validators/userValidator';
 import { validationHandler } from '../middlewares/validationHandler';
 import userController from '../controllers/userController';
 import asyncHandler from '../middlewares/asyncHandler';
+import { authenticate, callBack } from '../utils/discordPassport';
 
 const router: Router = Router();
 
@@ -66,6 +67,11 @@ router.post('/logout', async (req, res) => {
     });
   }
   res.end();
+});
+
+router.get('/auth/discord', authenticate());
+router.get('/auth/discord/callback', callBack(), (req, res) => {
+  res.redirect('http://localhost:4001/home');
 });
 
 router.post(

@@ -3,6 +3,7 @@ import { drizzle, NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from './schema';
 import { config } from 'dotenv';
 import { exec } from 'child_process';
+import { seedDatabase } from './seed';
 config();
 
 let db: (NodePgDatabase<typeof schema> & { $client: Client }) | null = null;
@@ -50,6 +51,11 @@ export const createDatabaseIfNotExists = async () => {
   } finally {
     dbClient.end();
   }
+};
+
+export const initializeDatabase = async () => {
+  await createDatabaseIfNotExists();
+  await seedDatabase();
 };
 
 const applyMigrations = async () => {

@@ -14,6 +14,10 @@ const app = () => {
   if (!process.env.PORT) {
     throw new Error('PORT is not defined in environment variables.');
   }
+
+  if (!process.env.FRONTEND_URL) {
+    throw new Error('FRONTEND_URL is not defined in environment variables.');
+  }
 };
 
 const database = () => {
