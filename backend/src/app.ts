@@ -8,14 +8,13 @@ import errorHandler from './middlewares/errorHandler';
 import { routes } from './routes/routes';
 import rateLimit from 'express-rate-limit';
 import { seedDatabase } from './database/seed';
+import { envChecker } from './utils/envChecker';
 config();
+envChecker();
 
-const sessionSecret = process.env.SESSION_SECRET;
-const nodeEnv = process.env.NODE_ENV || 'dev';
+const sessionSecret = process.env.SESSION_SECRET!;
+const nodeEnv = process.env.NODE_ENV;
 
-if (!sessionSecret) {
-  throw new Error('Missing required environment variables');
-}
 export const app: Application = express();
 
 app.use(helmet());
@@ -32,9 +31,7 @@ app.use(
     saveUninitialized: true,
   })
 );
-if (!(process.env.DB_Name && process.env.DB_Url)) {
-  throw new Error('Missing required environment variables');
-}
+
 async function initApp() {
   await createDatabaseIfNotExists();
   await seedDatabase();

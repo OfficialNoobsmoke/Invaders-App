@@ -1,4 +1,4 @@
-import { CharacterDto } from './characterDtod';
+import { CharacterDto } from './characterDto';
 
 export type UserDto = {
   discordId: string;

@@ -7,7 +7,7 @@ const config: Config = {
   schema: './src/database/schema/index.ts',
   out: './src/database/migrations',
   dbCredentials: {
-    url: process.env.DB_Url!,
+    url: process.env.DB_URL!,
   },
 };
 
