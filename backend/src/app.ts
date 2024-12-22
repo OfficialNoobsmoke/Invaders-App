@@ -8,7 +8,7 @@ import errorHandler from './middlewares/errorHandler';
 import { routes } from './routes/routes';
 import rateLimit from 'express-rate-limit';
 import { seedDatabase } from './database/seed';
-import { envChecker } from 'utils/envChecker';
+import { envChecker } from './utils/envChecker';
 config();
 envChecker();
 
