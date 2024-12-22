@@ -12,7 +12,7 @@ export const getDatabase = async () => {
     if (db) {
       return db;
     }
-    const dbClient = new Client({ connectionString: process.env.DB_Url });
+    const dbClient = new Client({ connectionString: process.env.DB_URL });
     await dbClient.connect();
 
     db = drizzle(dbClient, { schema });
@@ -25,8 +25,8 @@ export const getDatabase = async () => {
 };
 
 export const createDatabaseIfNotExists = async () => {
-  const dbName = process.env.DB_Name;
-  const dbClient = new Client({ connectionString: process.env.DB_Admin_Url });
+  const dbName = process.env.DB_NAME;
+  const dbClient = new Client({ connectionString: process.env.DB_ADMIN_URL });
   try {
     await dbClient.connect();
 
