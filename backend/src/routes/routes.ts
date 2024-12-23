@@ -4,29 +4,10 @@ import { validationHandler } from '../middlewares/validationHandler';
 import userController from '../controllers/userController';
 import asyncHandler from '../middlewares/asyncHandler';
 import { authenticate, callBack } from '../utils/discordPassport';
+import tokenController from '../controllers/tokenController';
+import authorizationMiddleware from '../middlewares/authMiddleware';
 
 const router: Router = Router();
-
-// router.get(
-//   '/discord/redirect',
-//   DiscordPassport.authenticate('discord', { failureRedirect: '/' }),
-//   (req, res) => {
-//     const { user, accessToken } = req;
-//     if (accessToken) {
-//       const cookie = {
-//         accessToken,
-//         user: { discordId: user.discordId, username: user.username },
-//       };
-//       res
-//         .cookie('user_data', cookie, {
-//           signed: true,
-//           httpOnly: true, // DE PUS IN PRODUCTIE
-//           secure: true,
-//         })
-//         .redirect(`http://localhost:4001/home`);
-//     } else res.status(401).send('Error while authenticating!');
-//   }
-// );
 
 // router.get('/discord/user', async (req, res) => {
 //   const userData = req.signedCookies.user_data;
@@ -70,18 +51,22 @@ router.post('/logout', async (req, res) => {
 });
 
 router.get('/auth/discord', authenticate());
-router.get('/auth/discord/callback', callBack(), (req, res) => {
-  res.redirect('http://localhost:4001/home');
-});
+router.get(
+  '/auth/discord/callback',
+  callBack(),
+  asyncHandler(tokenController.generateToken)
+);
 
 router.post(
   '/user',
+  authorizationMiddleware,
   userValidator.createUser,
   validationHandler,
   asyncHandler(userController.createUser)
 );
 router.delete(
   '/user/:id',
+  authorizationMiddleware,
   userValidator.deleteUser,
   validationHandler,
   asyncHandler(userController.deleteUser)

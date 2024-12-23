@@ -6,8 +6,9 @@ import { characters } from '../database/schema/characters';
 export const createUser = async (data: {
   discordId: string;
   username: string;
-  displayName?: string;
+  displayName?: string | null;
   email?: string;
+  isInDiscord?: boolean;
 }) => {
   const db = await getDatabase();
   const [newUser] = await db
@@ -17,6 +18,7 @@ export const createUser = async (data: {
       username: data.username,
       displayName: data.displayName,
       email: data.email,
+      isInDiscord: data.isInDiscord,
     })
     .returning();
   return newUser;
@@ -57,7 +59,7 @@ export const getUsersWithCharacters = async () => {
 
 export const updateUser = async (
   id: string,
-  data: Partial<{ displayName: string; email: string }>
+  data: Partial<{ displayName: string; email: string; isInDiscord: boolean }>
 ) => {
   const db = await getDatabase();
   const [updatedUser] = await db
@@ -65,6 +67,7 @@ export const updateUser = async (
     .set({
       ...(data.displayName && { displayName: data.displayName }),
       ...(data.email && { email: data.email }),
+      ...(data.isInDiscord && { isInDiscord: data.isInDiscord }),
     })
     .where(eq(users.id, id))
     .returning();

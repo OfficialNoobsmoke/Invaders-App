@@ -12,7 +12,7 @@ export const users = pgTable('users', {
   username: varchar('username', { length: 32 }).notNull().unique(),
   displayName: varchar('displayname', { length: 32 }),
   email: varchar('email', { length: 255 }).unique(),
-  isInDiscord: boolean().default(false).notNull(),
+  isInDiscord: boolean(),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),
