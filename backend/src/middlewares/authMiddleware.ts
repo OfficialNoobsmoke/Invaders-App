@@ -12,7 +12,7 @@ const authorizationMiddleware = (
   next: NextFunction
 ) => {
   try {
-    const cookie = req.signedCookies['bearer_token'];
+    const cookie = req.signedCookies['user_data'];
 
     if (!cookie) {
       return res.status(401).json({ message: 'Unauthorized: No cookie found' });

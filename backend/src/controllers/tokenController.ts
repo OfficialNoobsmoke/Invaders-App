@@ -1,23 +1,27 @@
 import { Request, Response } from 'express';
-import { IUser } from '../interfaces/IUser';
-import authentication from '../utils/authentication';
-import { tokenRepository } from '../repositories/tokenRepository';
+import { IRequestUser } from '../interfaces/IRequestUser';
+import tokenService from '../services/tokenService';
+
 export const generateToken = async (req: Request, res: Response) => {
-  const user = req.user as IUser;
+  const user = req.user as IRequestUser;
   if (!user) return res.redirect('http://localhost:4001/');
-  const tokenData = authentication.generateToken(user.id);
-  await tokenRepository.createToken({
-    userId: user.id,
-    tokenType: 'jwt',
-    bearerToken: tokenData.bearerToken,
-    expiresAt: tokenData.expiresAt,
-  });
+  const { tokenData, refreshTokenData } = await tokenService.generateToken(
+    user.id
+  );
+  console.log(
+    new Date(
+      JSON.parse(
+        Buffer.from(tokenData.accessToken.split('.')[1], 'base64').toString()
+      ).exp * 1000
+    )
+  ); //TODO move this to the middleware
   const cookie = {
-    bearerToken: tokenData.bearerToken,
+    accessToken: tokenData.accessToken,
+    refreshToken: refreshTokenData.accessToken,
     userId: user.id,
   };
   res
-    .cookie('bearer_token', cookie, {
+    .cookie('user_data', cookie, {
       signed: true,
       httpOnly: process.env.NODE_ENV !== 'dev',
       secure: true,

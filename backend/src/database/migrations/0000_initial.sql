@@ -41,9 +41,11 @@ CREATE TABLE "tokens" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
 	"token_type" "token_type" NOT NULL,
-	"bearer_token" varchar(512) NOT NULL,
+	"access_token" varchar(512),
 	"refresh_token" varchar(512),
-	"expires_at" timestamp with time zone NOT NULL,
+	"revoked" boolean DEFAULT false NOT NULL,
+	"access_token_expires_at" timestamp with time zone NOT NULL,
+	"refresh_token_expires_at" timestamp with time zone NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint

@@ -36,17 +36,10 @@ const router: Router = Router();
 // });
 
 router.post('/logout', async (req, res) => {
-  try {
-    const authHeader = req.headers['cookie'];
-    if (!authHeader) return res.sendStatus(204);
-    res.setHeader('Clear-Site-Data', '"cookies"');
-    res.status(200).redirect('http://localhost:4001');
-  } catch (err) {
-    res.status(500).json({
-      status: 'error',
-      message: 'Internal Server Error',
-    });
-  }
+  const authHeader = req.headers['cookie'];
+  if (!authHeader) return res.sendStatus(204);
+  res.setHeader('Clear-Site-Data', '"cookies"');
+  res.status(200).redirect('http://localhost:4001');
   res.end();
 });
 

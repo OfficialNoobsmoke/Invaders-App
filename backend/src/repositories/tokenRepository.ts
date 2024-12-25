@@ -18,24 +18,28 @@ export const tokenRepository = {
   async createToken({
     userId,
     tokenType,
-    bearerToken,
+    accessToken,
     refreshToken,
-    expiresAt,
+    accessTokenExpiresAt,
+    refreshTokenExpiresAt,
   }: {
     userId: string;
     tokenType: TokenType;
-    bearerToken: string;
+    accessToken: string;
     refreshToken?: string;
-    expiresAt: Date;
+    accessTokenExpiresAt: Date;
+    refreshTokenExpiresAt: Date;
   }) {
     const db = await getDatabase();
 
     await db.insert(tokens).values({
       userId,
       tokenType,
-      bearerToken,
+      accessToken,
       refreshToken,
-      expiresAt,
+      revoked: false,
+      accessTokenExpiresAt,
+      refreshTokenExpiresAt,
     });
   },
 

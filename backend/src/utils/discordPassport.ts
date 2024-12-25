@@ -1,8 +1,11 @@
 import passport from 'passport';
-import { Strategy as DiscordStrategy } from 'passport-discord';
+import { Strategy as DiscordStrategy, Profile } from 'passport-discord';
 import userRepository from '../repositories/userRepository';
-import { IUser } from '../interfaces/IUser';
-import { getDataFromProfile } from '../services/discordAuthenticationService';
+import { IRequestUser } from '../interfaces/IRequestUser';
+import {
+  createDiscordTokenForUser,
+  getOrCreateUserFromProfile,
+} from '../services/discordAuthenticationService';
 
 const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_CALLBACK_URL } =
   process.env;
@@ -13,17 +16,23 @@ passport.use(
       clientID: DISCORD_CLIENT_ID as string,
       clientSecret: DISCORD_CLIENT_SECRET as string,
       callbackURL: DISCORD_CALLBACK_URL,
-      scope: ['identify', 'email', 'guilds'],
+      scope: ['identify', 'email', 'guilds', 'guilds.members.read'],
     },
-    async (accessToken, refreshToken, profile, done) => {
-      const user = await getDataFromProfile(profile, accessToken, refreshToken);
+    async (
+      accessToken: string,
+      refreshToken: string,
+      profile: Profile,
+      done
+    ) => {
+      const user = await getOrCreateUserFromProfile(accessToken, profile);
+      await createDiscordTokenForUser(user.id, accessToken, refreshToken);
       return done(null, user);
     }
   )
 );
 
 passport.serializeUser((user, done) => {
-  done(null, (user as IUser).id);
+  done(null, (user as IRequestUser).id);
 });
 
 passport.deserializeUser(async (userId: string, done) => {
