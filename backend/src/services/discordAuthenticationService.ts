@@ -1,13 +1,9 @@
 import { Profile } from 'passport-discord';
 import userRepository from '../repositories/userRepository';
-import { tokenRepository } from '../repositories/tokenRepository';
 import { getGuildMemberDetails } from '../utils/discordApiWrapper';
 import { IUser } from '../interfaces/IUser';
 import passport from 'passport';
-import { Request, Response } from 'express';
 import { discordTokenRepository } from '../repositories/discordTokenRepository';
-import { getRedirectUrlRoute } from '../utils/redirectUrlRouteBuilder';
-import { frontEndRoutes, general } from '../constants/constants';
 import { hmacHashJwt } from '../utils/cryptography';
 
 export const createDiscordTokenForUser = async (
@@ -93,22 +89,4 @@ export const callBack = () => {
   return passport.authenticate('discord', {
     failureRedirect: '/api/auth/failure',
   });
-};
-
-export const logOut = async (req: Request, res: Response) => {
-  const authHeader = req.headers['cookie'];
-  if (!authHeader) {
-    return res.sendStatus(204);
-  }
-
-  const userData = req.signedCookies[general.AUTH_COOKIE];
-  if (!userData) {
-    return res.sendStatus(204);
-  }
-  const userId = userData.userId;
-  const oldRefreshToken = userData.authentication.refreshToken;
-  res.setHeader('Clear-Site-Data', '"cookies"');
-  res.status(200).redirect(getRedirectUrlRoute(frontEndRoutes.HOME_PAGE));
-  res.end();
-  await tokenRepository.deleteTokenByRefreshToken(userId, oldRefreshToken);
 };

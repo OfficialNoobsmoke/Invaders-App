@@ -7,10 +7,9 @@ import authorizationMiddleware from '../middlewares/authMiddleware';
 import {
   authenticate,
   callBack,
-  logOut,
 } from '../services/discordAuthenticationService';
 import { saveAuthenticationData } from '../services/authenticationService';
-import { refreshToken } from '../controllers/tokenController';
+import { logOut, refreshToken } from '../controllers/authenticationController';
 
 const router: Router = Router();
 

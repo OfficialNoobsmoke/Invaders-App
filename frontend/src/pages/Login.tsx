@@ -2,6 +2,9 @@ import React from 'react';
 import ButtonWrapper from '../components/common/ButtonWrapper';
 import { useMutation } from '@tanstack/react-query';
 import { logout } from '../services/authenticationService';
+import { AxiosError } from 'axios';
+import { buildRouteUrl } from '../utils/urlBuildRouter';
+import { apiRoutes } from '../constants/constants';
 
 export default function Login() {
   const useLogout = () => {
@@ -11,7 +14,7 @@ export default function Login() {
         localStorage.removeItem('user');
         window.location.href = '/login';
       },
-      onError: (error: any) => {
+      onError: (error: AxiosError) => {
         console.error('Logout failed:', error.response?.data || error.message);
       },
     });
@@ -23,7 +26,7 @@ export default function Login() {
   };
 
   const handleLoginClick = () => {
-    window.open('http://localhost:4000/api/auth/discord');
+    window.open(buildRouteUrl(apiRoutes.LOGIN));
   };
 
   return (

@@ -62,6 +62,12 @@ const discord = () => {
       'DISCORD_INVADERS_SERVER_ID is not defined in environment variables.'
     );
   }
+
+  if (!process.env.DISCORD_BOT_TOKEN) {
+    throw new Error(
+      'DISCORD_BOT_TOKEN is not defined in environment variables.'
+    );
+  }
 };
 
 const session = () => {
@@ -71,5 +77,17 @@ const session = () => {
 
   if (!process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET is not defined in environment variables.');
+  }
+
+  if (!process.env.JWT_ACCESS_TOKEN_EXPIRY) {
+    throw new Error(
+      'JWT_ACCESS_TOKEN_EXPIRY is not defined in environment variables.'
+    );
+  }
+
+  if (!process.env.JWT_REFRESH_TOKEN_EXPIRY) {
+    throw new Error(
+      'JWT_REFRESH_TOKEN_EXPIRY is not defined in environment variables.'
+    );
   }
 };

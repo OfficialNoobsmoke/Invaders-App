@@ -6,8 +6,14 @@ export const generateNewTokenForUser = async (
   userId: string,
   oldRefreshToken?: string
 ) => {
-  const tokenData = jwtToken.generateToken(userId, 300000); // 5 minutes
-  const refreshTokenData = jwtToken.generateToken(userId, 604800000); // 1 week
+  const tokenData = jwtToken.generateToken(
+    userId,
+    +process.env.JWT_ACCESS_TOKEN_EXPIRY!
+  );
+  const refreshTokenData = jwtToken.generateToken(
+    userId,
+    +process.env.JWT_REFRESH_TOKEN_EXPIRY!
+  );
   let id;
   if (oldRefreshToken) {
     id = await updateTokenForUser(
