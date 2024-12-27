@@ -49,7 +49,7 @@ export const deleteUser = async (req: Request, res: Response) => {
   res.status(204).send();
 };
 
-export const getUsers = async (_req: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response) => {
   const users = await userService.getUsers();
 
   res.status(200).json(users);

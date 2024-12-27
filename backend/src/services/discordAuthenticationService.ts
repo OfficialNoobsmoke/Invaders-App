@@ -1,23 +1,24 @@
 import { Profile } from 'passport-discord';
 import userRepository from '../repositories/userRepository';
-import generalConstants from '../constants/general';
 import { tokenRepository } from '../repositories/tokenRepository';
-import general from '../constants/general';
 import { getGuildMemberDetails } from '../utils/discordApiWrapper';
 import { IUser } from '../interfaces/IUser';
+import passport from 'passport';
+import { Request, Response } from 'express';
+import { discordTokenRepository } from '../repositories/discordTokenRepository';
+import { getRedirectUrlRoute } from '../utils/redirectUrlRouteBuilder';
+import { frontEndRoutes, general } from '../constants/constants';
+import { hmacHashJwt } from '../utils/cryptography';
 
 export const createDiscordTokenForUser = async (
-  userId: string,
-  accessToken: string,
+  parentId: string,
   refreshToken: string
 ) => {
-  await tokenRepository.createToken({
-    userId: userId,
-    tokenType: 'discord',
-    accessToken: accessToken,
-    refreshToken: refreshToken,
+  await discordTokenRepository.createToken({
+    refreshToken: hmacHashJwt(refreshToken),
     accessTokenExpiresAt: new Date(Date.now() + 3600000), //1 hour
     refreshTokenExpiresAt: new Date(Date.now() + 604800000), //1 week
+    parentId,
   });
 };
 
@@ -69,7 +70,7 @@ const updateUser = async (
 const isInInvadersDiscord = (profile: Profile) => {
   return (
     profile.guilds?.some(
-      (guild) => guild.id === generalConstants.DISCORD_INVADERS_SERVER_ID
+      (guild) => guild.id === process.env.DISCORD_INVADERS_SERVER_ID!
     ) ?? false
   );
 };
@@ -79,7 +80,35 @@ const getUserData = async (accessToken: string, profile: Profile) => {
     isInDiscord: isInInvadersDiscord(profile),
     guildMemberDetails: await getGuildMemberDetails(
       accessToken,
-      general.DISCORD_INVADERS_SERVER_ID
+      process.env.DISCORD_INVADERS_SERVER_ID!
     ),
   };
+};
+
+export const authenticate = () => {
+  return passport.authenticate('discord');
+};
+
+export const callBack = () => {
+  return passport.authenticate('discord', {
+    failureRedirect: '/api/auth/failure',
+  });
+};
+
+export const logOut = async (req: Request, res: Response) => {
+  const authHeader = req.headers['cookie'];
+  if (!authHeader) {
+    return res.sendStatus(204);
+  }
+
+  const userData = req.signedCookies[general.AUTH_COOKIE];
+  if (!userData) {
+    return res.sendStatus(204);
+  }
+  const userId = userData.userId;
+  const oldRefreshToken = userData.authentication.refreshToken;
+  res.setHeader('Clear-Site-Data', '"cookies"');
+  res.status(200).redirect(getRedirectUrlRoute(frontEndRoutes.HOME_PAGE));
+  res.end();
+  await tokenRepository.deleteTokenByRefreshToken(userId, oldRefreshToken);
 };

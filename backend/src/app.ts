@@ -10,6 +10,8 @@ import rateLimit from 'express-rate-limit';
 import { envChecker } from './utils/envChecker';
 import cors from 'cors';
 import passport from 'passport';
+import './utils/discordPassport';
+import { general } from './constants/constants';
 config();
 envChecker();
 
@@ -25,11 +27,12 @@ app.use(
   session({
     secret: sessionSecret,
     cookie: {
-      secure: process.env.NODE_ENV !== 'dev',
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== general.DEV_MODE,
       maxAge: 1000 * 60 * 60 * 24,
     },
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
   })
 );
 app.use(
@@ -51,7 +54,7 @@ app.use(limiter);
 app.use('/api', routes);
 
 app.use(express.static(__dirname + '/assets'));
-app.use(errorHandler);
+app.use(errorHandler); //has to be last
 
 const PORT = process.env.PORT || 4000;
 

@@ -1,5 +1,5 @@
 {
-  "id": "b90a3192-6989-451e-aed1-24e398d07a5a",
+  "id": "3d406436-456d-430f-ba4e-1007aa70326a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -222,6 +222,13 @@
           "primaryKey": false,
           "notNull": false
         },
+        "last_login": {
+          "name": "last_login",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -277,35 +284,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "token_type": {
-          "name": "token_type",
-          "type": "token_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "access_token": {
-          "name": "access_token",
-          "type": "varchar(512)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "refresh_token": {
           "name": "refresh_token",
           "type": "varchar(512)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "revoked": {
-          "name": "revoked",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "access_token_expires_at": {
-          "name": "access_token_expires_at",
-          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
         },
@@ -344,6 +325,71 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
+    },
+    "public.discord_tokens": {
+      "name": "discord_tokens",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "varchar(512)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token_expires_at": {
+          "name": "access_token_expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "refresh_token_expires_at": {
+          "name": "refresh_token_expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "discord_tokens_parent_id_tokens_id_fk": {
+          "name": "discord_tokens_parent_id_tokens_id_fk",
+          "tableFrom": "discord_tokens",
+          "tableTo": "tokens",
+          "columnsFrom": [
+            "parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
   "enums": {
@@ -353,14 +399,6 @@
       "values": [
         "Alliance",
         "Horde"
-      ]
-    },
-    "public.token_type": {
-      "name": "token_type",
-      "schema": "public",
-      "values": [
-        "discord",
-        "jwt"
       ]
     }
   },

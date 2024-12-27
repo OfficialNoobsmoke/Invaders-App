@@ -1,5 +1,5 @@
 import { dtoToDemo } from '@/mappers/demoMapper';
-import { fetcher } from '../_fetcher';
+import { fetcher } from '../utils/_fetcher';
 import { PokemonApiDto } from '../dto/pokemonDto';
 import { Pokemon } from '@/domain/pokemon';
 

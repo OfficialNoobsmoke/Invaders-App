@@ -18,6 +18,10 @@ const app = () => {
   if (!process.env.FRONTEND_URL) {
     throw new Error('FRONTEND_URL is not defined in environment variables.');
   }
+
+  if (!process.env.HASH_SECRET) {
+    throw new Error('HASH_SECRET is not defined in environment variables.');
+  }
 };
 
 const database = () => {
@@ -50,6 +54,12 @@ const discord = () => {
   if (!process.env.DISCORD_CALLBACK_URL) {
     throw new Error(
       'DISCORD_CALLBACK_URL is not defined in environment variables.'
+    );
+  }
+
+  if (!process.env.DISCORD_INVADERS_SERVER_ID) {
+    throw new Error(
+      'DISCORD_INVADERS_SERVER_ID is not defined in environment variables.'
     );
   }
 };

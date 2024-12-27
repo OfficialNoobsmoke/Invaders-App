@@ -1,32 +1,55 @@
 import { Request, Response } from 'express';
-import { IRequestUser } from '../interfaces/IRequestUser';
-import tokenService from '../services/tokenService';
+import { general, errorMessages } from '../constants/constants';
+import { IAuthCookie } from '../interfaces/IAuthCookie';
+import { tokenRepository } from '../repositories/tokenRepository';
+import { hmacHashJwt } from '../utils/cryptography';
+import { verify } from '../utils/jwtToken';
+import { generateNewTokenForUser } from '../services/tokenService';
+import { setAuthenticationCookie } from '../services/authenticationService';
 
-export const generateToken = async (req: Request, res: Response) => {
-  const user = req.user as IRequestUser;
-  if (!user) return res.redirect('http://localhost:4001/');
-  const { tokenData, refreshTokenData } = await tokenService.generateToken(
-    user.id
+export const refreshToken = async (req: Request, res: Response) => {
+  const authCookie = req.signedCookies[general.AUTH_COOKIE] as IAuthCookie;
+  if (!authCookie) {
+    return res.status(401).json({ message: errorMessages.NO_COOKIE_FOUND });
+  }
+  const refreshToken = authCookie.authentication.refreshToken;
+  const refreshTokenHash = hmacHashJwt(refreshToken);
+  if (!isRefreshTokenAvailable(authCookie.userId, refreshToken)) {
+    return res.sendStatus(403);
+  }
+
+  const { tokenData, refreshTokenData } = await generateNewTokenForUser(
+    authCookie.userId,
+    refreshTokenHash
   );
-  console.log(
-    new Date(
-      JSON.parse(
-        Buffer.from(tokenData.accessToken.split('.')[1], 'base64').toString()
-      ).exp * 1000
-    )
-  ); //TODO move this to the middleware
-  const cookie = {
-    accessToken: tokenData.accessToken,
-    refreshToken: refreshTokenData.accessToken,
-    userId: user.id,
-  };
-  res
-    .cookie('user_data', cookie, {
-      signed: true,
-      httpOnly: process.env.NODE_ENV !== 'dev',
-      secure: true,
-    })
-    .redirect(`http://localhost:4001/home`);
+
+  const cookieData = {
+    authentication: {
+      accessToken: tokenData.accessToken,
+      refreshToken: refreshTokenData.accessToken,
+    },
+    discordAuthentication: authCookie.discordAuthentication,
+    userId: authCookie.userId,
+  } as IAuthCookie;
+  setAuthenticationCookie(cookieData, res);
+
+  return res.sendStatus(200);
 };
 
-export default { generateToken };
+const isRefreshTokenAvailable = async (
+  userId: string,
+  refreshToken: string
+) => {
+  const isRefreshTokenRevoked = await tokenRepository.refreshTokenExists(
+    userId,
+    hmacHashJwt(refreshToken)
+  );
+  if (isRefreshTokenRevoked) {
+    return false;
+  }
+  if (!verify(refreshToken)) {
+    return false;
+  }
+
+  return true;
+};

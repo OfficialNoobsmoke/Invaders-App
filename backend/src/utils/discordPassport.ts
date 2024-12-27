@@ -2,10 +2,7 @@ import passport from 'passport';
 import { Strategy as DiscordStrategy, Profile } from 'passport-discord';
 import userRepository from '../repositories/userRepository';
 import { IRequestUser } from '../interfaces/IRequestUser';
-import {
-  createDiscordTokenForUser,
-  getOrCreateUserFromProfile,
-} from '../services/discordAuthenticationService';
+import { getOrCreateUserFromProfile } from '../services/discordAuthenticationService';
 
 const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_CALLBACK_URL } =
   process.env;
@@ -25,8 +22,12 @@ passport.use(
       done
     ) => {
       const user = await getOrCreateUserFromProfile(accessToken, profile);
-      await createDiscordTokenForUser(user.id, accessToken, refreshToken);
-      return done(null, user);
+      return done(null, user, {
+        discordAuthentication: {
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+        },
+      });
     }
   )
 );
@@ -39,13 +40,3 @@ passport.deserializeUser(async (userId: string, done) => {
   const user = await userRepository.getUserById(userId);
   done(null, user.id);
 });
-
-export const authenticate = () => {
-  return passport.authenticate('discord');
-};
-
-export const callBack = () => {
-  return passport.authenticate('discord', {
-    failureRedirect: '/api/auth/failure',
-  });
-};

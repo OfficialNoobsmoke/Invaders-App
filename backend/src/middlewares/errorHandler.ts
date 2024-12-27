@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ErrorRequestHandler } from 'express';
+import { errorMessages, general } from '../constants/constants';
 
 const errorHandler: ErrorRequestHandler = (
   err: Error & { statusCode?: number },
@@ -10,10 +11,10 @@ const errorHandler: ErrorRequestHandler = (
 ) => {
   const statusCode = err.statusCode || 500;
 
-  const isDev = process.env.NODE_ENV === 'dev';
+  const isDev = process.env.NODE_ENV === general.DEV_MODE;
 
   const response = {
-    message: err.message || 'Internal Server Error',
+    message: err.message || errorMessages.INTERNAL_SERVER_ERROR,
     ...(isDev && { stack: err.stack }),
   };
 
