@@ -37,7 +37,11 @@ export const logOut = async (req: Request, res: Response) => {
     return res.sendStatus(204);
   }
 
-  clearSessionData(res, userData.userId, userData.authentication.refreshToken);
-  res.status(200).redirect(buildRouteUrl(frontEndRoutes.HOME_PAGE));
+  await clearSessionData(
+    res,
+    userData.userId,
+    userData.authentication.refreshToken
+  );
+  res.status(200).redirect(buildRouteUrl(frontEndRoutes.INDEX_PAGE));
   res.end();
 };

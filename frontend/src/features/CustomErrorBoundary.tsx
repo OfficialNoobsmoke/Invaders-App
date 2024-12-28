@@ -26,7 +26,9 @@ export const CustomErrorBoundary: React.FC<PropsWithChildren> = ({ children }) =
   };
 
   return (
-    <ErrorBoundary fallback={<ErrorIcon />} onError={logError}>
+    <ErrorBoundary
+      fallback={<ErrorIcon />}
+      onError={logError}>
       {children}
     </ErrorBoundary>
   );
