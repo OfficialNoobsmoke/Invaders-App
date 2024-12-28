@@ -36,7 +36,11 @@ export const saveAuthenticationData = async (req: Request, res: Response) => {
     userId: user.id,
   } as IAuthCookie;
   setAuthenticationCookie(cookieData, res);
-  res.redirect(buildRouteUrl(frontEndRoutes.INDEX_PAGE));
+  if (user.isInDiscord) {
+    res.redirect(buildRouteUrl(frontEndRoutes.HOME_PAGE));
+  } else {
+    res.redirect(buildRouteUrl(frontEndRoutes.NOT_IN_DISCORD_PAGE));
+  }
 };
 
 export const setAuthenticationCookie = (
