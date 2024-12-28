@@ -8,7 +8,11 @@ import {
   callBack,
 } from '../services/discordAuthenticationService';
 import { saveAuthenticationData } from '../services/authenticationService';
-import { logOut, refreshToken } from '../controllers/authenticationController';
+import {
+  authenticationFailure,
+  logOut,
+  refreshToken,
+} from '../controllers/authenticationController';
 
 const router: Router = Router();
 
@@ -16,6 +20,7 @@ router.post('/auth/token', refreshToken);
 router.post('/auth/logout', logOut);
 router.get('/auth/discord', authenticate());
 router.get('/auth/discord/callback', callBack(), saveAuthenticationData);
+router.get('/auth/failure', authenticationFailure);
 router.post(
   '/user',
   authorizationMiddleware,

@@ -6,8 +6,10 @@ import { AxiosError } from 'axios';
 import { buildRouteUrl } from '../utils/urlBuildRouter';
 import { apiRoutes } from '../constants/constants';
 import { getUsers } from '../services/userService';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+  const navigator = useNavigate();
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['users'],
     queryFn: getUsers,
@@ -19,7 +21,7 @@ export default function Login() {
     return useMutation({
       mutationFn: logout,
       onSuccess: () => {
-        window.location.href = '/login';
+        navigator('/');
       },
       onError: (error: AxiosError) => {
         console.error('Logout failed:', error.response?.data || error.message);
