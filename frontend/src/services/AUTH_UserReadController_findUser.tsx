@@ -1,5 +1,5 @@
 //TODO: to be refactored during the Discord login story
-import { fetcher } from '../_fetcher';
+import { fetcher } from '../utils/_fetcher';
 
 export type UserDto = {
   id: string;

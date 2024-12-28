@@ -2,12 +2,14 @@ import { eq } from 'drizzle-orm';
 import { getDatabase } from '../database/database';
 import { users } from '../database/schema/user';
 import { characters } from '../database/schema/characters';
+import { IUser } from '../interfaces/IUser';
 
 export const createUser = async (data: {
   discordId: string;
   username: string;
-  displayName?: string;
+  displayName?: string | null;
   email?: string;
+  isInDiscord?: boolean;
 }) => {
   const db = await getDatabase();
   const [newUser] = await db
@@ -17,18 +19,19 @@ export const createUser = async (data: {
       username: data.username,
       displayName: data.displayName,
       email: data.email,
+      isInDiscord: data.isInDiscord,
     })
     .returning();
   return newUser;
 };
 
-export const getUserById = async (id: string) => {
+export const getUserById = async (id: string): Promise<IUser> => {
   const db = await getDatabase();
   const [user] = await db.select().from(users).where(eq(users.id, id));
   return user || null;
 };
 
-export const getUserByDiscordId = async (discordId: string) => {
+export const getUserByDiscordId = async (discordId: string): Promise<IUser> => {
   const db = await getDatabase();
   const [user] = await db
     .select()
@@ -37,7 +40,7 @@ export const getUserByDiscordId = async (discordId: string) => {
   return user || null;
 };
 
-export const getUserByUsername = async (username: string) => {
+export const getUserByUsername = async (username: string): Promise<IUser> => {
   const db = await getDatabase();
   const [user] = await db
     .select()
@@ -57,7 +60,12 @@ export const getUsersWithCharacters = async () => {
 
 export const updateUser = async (
   id: string,
-  data: Partial<{ displayName: string; email: string }>
+  data: Partial<{
+    displayName: string | null;
+    email: string;
+    isInDiscord: boolean;
+    lastLogin: Date;
+  }>
 ) => {
   const db = await getDatabase();
   const [updatedUser] = await db
@@ -65,6 +73,8 @@ export const updateUser = async (
     .set({
       ...(data.displayName && { displayName: data.displayName }),
       ...(data.email && { email: data.email }),
+      ...(data.isInDiscord && { isInDiscord: data.isInDiscord }),
+      ...(data.lastLogin && { lastLogin: data.lastLogin }),
     })
     .where(eq(users.id, id))
     .returning();
@@ -83,4 +93,15 @@ export const deleteUser = async (id: string) => {
 export const getUsers = async () => {
   const db = await getDatabase();
   return await db.select().from(users);
+};
+
+export default {
+  createUser,
+  getUserById,
+  getUserByDiscordId,
+  getUserByUsername,
+  updateUser,
+  deleteUser,
+  getUsers,
+  getUsersWithCharacters,
 };

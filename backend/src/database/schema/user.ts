@@ -1,4 +1,10 @@
-import { pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  pgTable,
+  timestamp,
+  uuid,
+  varchar,
+} from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: uuid().defaultRandom().primaryKey(),
@@ -6,6 +12,10 @@ export const users = pgTable('users', {
   username: varchar('username', { length: 32 }).notNull().unique(),
   displayName: varchar('displayname', { length: 32 }),
   email: varchar('email', { length: 255 }).unique(),
+  isInDiscord: boolean(),
+  lastLogin: timestamp('last_login', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),

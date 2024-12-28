@@ -131,6 +131,3 @@
 
 // const bot = new DiscordBot();
 // bot.start();
-
-// app.use(DiscordPassport.initialize());
-// app.use(DiscordPassport.session());
