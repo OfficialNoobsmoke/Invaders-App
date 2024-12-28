@@ -19,7 +19,7 @@
     "discord-api-types": "^0.37.114",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.38.2",
-    "express": "^4.19.2",
+    "express": "^5.0.1",
     "express-jwt": "^8.4.1",
     "express-validator": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
