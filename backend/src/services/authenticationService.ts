@@ -36,7 +36,7 @@ export const saveAuthenticationData = async (req: Request, res: Response) => {
     userId: user.id,
   } as IAuthCookie;
   setAuthenticationCookie(cookieData, res);
-  res.redirect(buildRouteUrl(frontEndRoutes.HOME_PAGE));
+  res.redirect(buildRouteUrl(frontEndRoutes.INDEX_PAGE));
 };
 
 export const setAuthenticationCookie = (
@@ -97,7 +97,8 @@ export const clearSessionData = async (
   oldRefreshToken: string
 ) => {
   res.clearCookie(general.AUTH_COOKIE);
-  await tokenRepository.deleteTokenByRefreshToken(userId, oldRefreshToken);
+  const refreshTokenHash = hmacHashJwt(oldRefreshToken);
+  await tokenRepository.deleteTokenByRefreshToken(userId, refreshTokenHash);
 };
 
 export const refreshExpiredToken = async (

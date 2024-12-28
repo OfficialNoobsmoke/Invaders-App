@@ -21,9 +21,13 @@ const authorizationMiddleware = async (
     if (!decoded) {
       return res.status(401).json({ message: errorMessages.INVALID_TOKEN });
     }
+    if(decoded.exp)
+    {
+      console.log(new Date(decoded.exp * 1000));
+    }
+    
     if (decoded.exp && Date.now() >= decoded.exp * 1000) {
       await refreshExpiredToken(req, res, authCookie);
-      next();
       return;
     }
     jwt.verify(accessToken, process.env.JWT_SECRET!, (err, payload) => {

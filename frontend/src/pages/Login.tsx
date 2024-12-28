@@ -8,11 +8,17 @@ import { apiRoutes } from '../constants/constants';
 import { getUsers } from '../services/userService';
 
 export default function Login() {
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['users'],
+    queryFn: getUsers,
+    enabled: false,
+    retry: false,
+  });
+
   const useLogout = () => {
     return useMutation({
       mutationFn: logout,
       onSuccess: () => {
-        localStorage.removeItem('user');
         window.location.href = '/login';
       },
       onError: (error: AxiosError) => {
@@ -21,20 +27,13 @@ export default function Login() {
     });
   };
 
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['users'],
-    queryFn: getUsers,
-    enabled: false,
-    retry: false,
-  });
-
   const logoutMutation = useLogout();
   const handleLogout = () => {
     logoutMutation.mutate();
   };
 
   const handleLoginClick = () => {
-    window.open(buildRouteUrl(apiRoutes.LOGIN));
+    window.location.href = buildRouteUrl(apiRoutes.LOGIN);
   };
 
   const handleGetUsers = () => {

@@ -2,7 +2,6 @@ import { Router } from 'express';
 import userValidator from '../validators/userValidator';
 import { validationHandler } from '../middlewares/validationHandler';
 import userController from '../controllers/userController';
-import asyncHandler from '../middlewares/asyncHandler';
 import authorizationMiddleware from '../middlewares/authMiddleware';
 import {
   authenticate,
@@ -13,35 +12,24 @@ import { logOut, refreshToken } from '../controllers/authenticationController';
 
 const router: Router = Router();
 
-router.post('/auth/token', asyncHandler(refreshToken));
-router.post('/auth/logout', asyncHandler(logOut));
-
+router.post('/auth/token', refreshToken);
+router.post('/auth/logout', logOut);
 router.get('/auth/discord', authenticate());
-
-router.get(
-  '/auth/discord/callback',
-  callBack(),
-  asyncHandler(saveAuthenticationData)
-);
-
+router.get('/auth/discord/callback', callBack(), saveAuthenticationData);
 router.post(
   '/user',
   authorizationMiddleware,
   userValidator.createUser,
   validationHandler,
-  asyncHandler(userController.createUser)
+  userController.createUser
 );
-router.get(
-  '/users',
-  authorizationMiddleware,
-  asyncHandler(userController.getUsers)
-);
+router.get('/users', authorizationMiddleware, userController.getUsers);
 router.delete(
   '/user/:id',
   authorizationMiddleware,
   userValidator.deleteUser,
   validationHandler,
-  asyncHandler(userController.deleteUser)
+  userController.deleteUser
 );
 
 export const routes: Router = router;
