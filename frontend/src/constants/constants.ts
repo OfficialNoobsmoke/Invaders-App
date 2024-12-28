@@ -4,6 +4,7 @@ export const errorMessages = Object.freeze({
 
 export const general = Object.freeze({
   DEV_MODE: 'dev',
+  TOKEN_EXPIRED: 'token_expired',
 });
 
 export const apiRoutes = Object.freeze({

@@ -14,10 +14,14 @@ export const refreshToken = async (req: Request, res: Response) => {
     return res.status(401).json({ message: errorMessages.NO_COOKIE_FOUND });
   }
   const refreshToken = authCookie.authentication.refreshToken;
-  if (!isRefreshTokenAvailable(authCookie.userId, refreshToken)) {
+  const isRefreshTokenValid = await isRefreshTokenAvailable(
+    authCookie.userId,
+    refreshToken
+  );
+  if (!isRefreshTokenValid) {
     return res.sendStatus(403);
   }
-  updateCookieWithNewTokens(res, authCookie, refreshToken);
+  await updateCookieWithNewTokens(res, authCookie, refreshToken);
 
   return res.sendStatus(200);
 };

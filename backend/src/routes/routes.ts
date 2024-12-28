@@ -31,6 +31,11 @@ router.post(
   validationHandler,
   asyncHandler(userController.createUser)
 );
+router.get(
+  '/users',
+  authorizationMiddleware,
+  asyncHandler(userController.getUsers)
+);
 router.delete(
   '/user/:id',
   authorizationMiddleware,

@@ -2,13 +2,14 @@ import { IRequestUser } from '../interfaces/IRequestUser';
 import { Request, Response } from 'express';
 import { createDiscordTokenForUser } from './discordAuthenticationService';
 import { generateNewTokenForUser } from './tokenService';
-import { frontEndRoutes, general } from '../constants/constants';
 import { buildRouteUrl } from '../utils/urlRouteBuilder';
 import { AuthInfo } from '../interfaces/IAuthInfo';
 import { IAuthCookie } from '../interfaces/IAuthCookie';
 import { tokenRepository } from '../repositories/tokenRepository';
 import { hmacHashJwt } from '../utils/cryptography';
 import { verify } from '../utils/jwtToken';
+import { errorMessages, frontEndRoutes, general } from '../constants/constants';
+import { AuthenticationError } from '../exceptions/authenticationError';
 
 export const saveAuthenticationData = async (req: Request, res: Response) => {
   const user = req.user as IRequestUser;
@@ -54,14 +55,15 @@ export const isRefreshTokenAvailable = async (
   userId: string,
   refreshToken: string
 ) => {
-  const isRefreshTokenRevoked = await tokenRepository.refreshTokenExists(
-    userId,
-    hmacHashJwt(refreshToken)
-  );
-  if (isRefreshTokenRevoked) {
+  if (!verify(refreshToken)) {
     return false;
   }
-  if (!verify(refreshToken)) {
+  const refreshTokenHash = hmacHashJwt(refreshToken);
+  const isRefreshTokenAvailable = await tokenRepository.refreshTokenExists(
+    userId,
+    refreshTokenHash
+  );
+  if (!isRefreshTokenAvailable) {
     return false;
   }
 
@@ -75,7 +77,7 @@ export const updateCookieWithNewTokens = async (
 ) => {
   const { tokenData, refreshTokenData } = await generateNewTokenForUser(
     authCookie.userId,
-    hmacHashJwt(refreshToken)
+    refreshToken
   );
 
   const cookieData = {
@@ -96,4 +98,20 @@ export const clearSessionData = async (
 ) => {
   res.clearCookie(general.AUTH_COOKIE);
   await tokenRepository.deleteTokenByRefreshToken(userId, oldRefreshToken);
+};
+
+export const refreshExpiredToken = async (
+  req: Request,
+  res: Response,
+  authCookie: IAuthCookie
+) => {
+  const refreshToken = authCookie.authentication.refreshToken;
+  const isRefreshTokenValid = await isRefreshTokenAvailable(
+    authCookie.userId,
+    refreshToken
+  );
+  if (!isRefreshTokenValid) {
+    throw new AuthenticationError(errorMessages.TOKEN_EXPIRED);
+  }
+  await updateCookieWithNewTokens(res, authCookie, refreshToken);
 };

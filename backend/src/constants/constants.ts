@@ -12,6 +12,6 @@ export const general = Object.freeze({
 });
 
 export const frontEndRoutes = Object.freeze({
-  INDEX_PAGE: '',
-  HOME_PAGE: 'home',
+  INDEX_PAGE: '/',
+  HOME_PAGE: '/home',
 });

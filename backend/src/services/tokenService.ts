@@ -55,6 +55,6 @@ const updateTokenForUser = async (
     userId,
     refreshToken: hmacHashJwt(refreshToken),
     refreshTokenExpiresAt,
-    oldRefreshToken,
+    oldRefreshToken: hmacHashJwt(oldRefreshToken),
   });
 };

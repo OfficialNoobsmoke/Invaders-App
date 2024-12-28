@@ -2,6 +2,7 @@ import { and, eq } from 'drizzle-orm';
 import { tokens } from '../database/schema/tokens';
 import { getDatabase } from '../database/database';
 import { discordTokens } from '../database/schema/discordTokens';
+import { AuthenticationError } from '../exceptions/authenticationError';
 
 export const tokenRepository = {
   async createToken({
@@ -62,7 +63,7 @@ export const tokenRepository = {
         ),
     });
     if (!tokenRecord) {
-      throw new Error('Token not found');
+      throw new AuthenticationError('Token not found');
     }
     await db
       .update(tokens)
@@ -82,7 +83,7 @@ export const tokenRepository = {
         and(eq(tokens.userId, userId), eq(tokens.refreshToken, refreshToken)),
     });
     if (!tokenRecord) {
-      throw new Error('Token not found');
+      throw new AuthenticationError('Token not found');
     }
     await db
       .delete(discordTokens)
