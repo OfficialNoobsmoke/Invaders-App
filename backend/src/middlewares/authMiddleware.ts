@@ -21,7 +21,6 @@ const authorizationMiddleware = async (
     if (!decoded) {
       return res.status(401).json({ message: errorMessages.INVALID_TOKEN });
     }
-    console.log(Date.now(), decoded.exp);
     if (decoded.exp && Date.now() >= decoded.exp * 1000) {
       await refreshExpiredToken(req, res, authCookie);
       next();

@@ -23,6 +23,11 @@ const errorHandler: ErrorRequestHandler = (
       });
     }
   }
+
+  res.status(500).json({
+    message: err.message || errorMessages.INTERNAL_SERVER_ERROR,
+    ...(isDev && { stack: err.stack }),
+  });
 };
 
 export default errorHandler;
