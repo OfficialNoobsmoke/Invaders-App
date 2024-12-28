@@ -26,6 +26,10 @@ export const refreshToken = async (req: Request, res: Response) => {
   return res.sendStatus(200);
 };
 
+export const authenticationFailure = async (req: Request, res: Response) => {
+  return res.redirect(buildRouteUrl(frontEndRoutes.INDEX_PAGE));
+};
+
 export const logOut = async (req: Request, res: Response) => {
   const authHeader = req.headers['cookie'];
   if (!authHeader) {
@@ -42,6 +46,5 @@ export const logOut = async (req: Request, res: Response) => {
     userData.userId,
     userData.authentication.refreshToken
   );
-  res.status(200).redirect(buildRouteUrl(frontEndRoutes.INDEX_PAGE));
-  res.end();
+  res.sendStatus(200);
 };
