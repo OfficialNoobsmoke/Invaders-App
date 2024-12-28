@@ -44,7 +44,7 @@ export default function Login() {
 
   return (
     <div>
-      <h3>Welcome to Invaders Web Application</h3>
+      <h3>Welcome to Invaders</h3>
       <ButtonWrapper onClick={handleLoginClick}>Login with Discord</ButtonWrapper>
       <ButtonWrapper onClick={handleLogout}>Logout</ButtonWrapper>
       <ButtonWrapper onClick={handleGetUsers}>Get Users</ButtonWrapper>

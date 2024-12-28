@@ -14,4 +14,5 @@ export const general = Object.freeze({
 export const frontEndRoutes = Object.freeze({
   INDEX_PAGE: '/',
   HOME_PAGE: '/home',
+  NOT_IN_DISCORD_PAGE: '/not-in-discord',
 });

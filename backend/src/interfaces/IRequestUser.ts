@@ -1,3 +1,10 @@
-export interface IRequestUser extends Express.User {
+export interface IRequestUser {
   id: string;
+  discordId: string;
+  username: string;
+  displayName?: string;
+  email?: string;
+  isInDiscord?: boolean;
+  lastLogin: Date;
+  createdAt: Date;
 }

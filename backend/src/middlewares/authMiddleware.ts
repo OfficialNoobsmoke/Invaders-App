@@ -27,16 +27,12 @@ const authorizationMiddleware = async (
       next();
       return;
     }
-    jwt.verify(accessToken, process.env.JWT_SECRET!, (err, payload) => {
+    jwt.verify(accessToken, process.env.JWT_SECRET!, (err) => {
       if (err) {
         return res
           .status(401)
           .json({ message: errorMessages.TOKEN_NOT_VERIFIED });
       }
-      req.user = {
-        userId: authCookie.userId,
-        ...(payload as object),
-      };
 
       next();
     });
