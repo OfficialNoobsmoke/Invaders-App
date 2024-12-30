@@ -2,15 +2,22 @@ import { Request, Response } from 'express';
 import * as userService from '../services/userService';
 
 export const createUser = async (req: Request, res: Response) => {
-  const { discordId, username, displayName, email } = req.body;
+  const { discordId, username, displayName, email, profileImageUrl } = req.body;
 
   const newUser = await userService.createUser(
     discordId,
     username,
     displayName,
-    email
+    email,
+    profileImageUrl
   );
   res.status(201).json(newUser);
+};
+
+export const getUser = async (req: Request, res: Response) => {
+  const user = await userService.getUserById(req.user.id);
+
+  res.status(200).json(user);
 };
 
 export const getUserById = async (req: Request, res: Response) => {
@@ -62,4 +69,5 @@ export default {
   updateUser,
   deleteUser,
   getUsers,
+  getUser,
 };

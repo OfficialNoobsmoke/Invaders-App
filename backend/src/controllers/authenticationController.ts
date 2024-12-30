@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import { general, errorMessages, frontEndRoutes } from '../constants/constants';
 import { IAuthCookie } from '../interfaces/IAuthCookie';
 import {
@@ -7,6 +8,8 @@ import {
   updateCookieWithNewTokens,
 } from '../services/authenticationService';
 import { buildRouteUrl } from '../utils/urlRouteBuilder';
+import { AuthenticationError } from '../exceptions/authenticationError';
+import { HTTPError } from '../exceptions/httpError';
 
 export const refreshToken = async (req: Request, res: Response) => {
   const authCookie = req.signedCookies[general.AUTH_COOKIE] as IAuthCookie;
@@ -19,7 +22,7 @@ export const refreshToken = async (req: Request, res: Response) => {
     refreshToken
   );
   if (!isRefreshTokenValid) {
-    return res.sendStatus(403);
+    throw new HTTPError(errorMessages.TOKEN_EXPIRED, 403);
   }
   await updateCookieWithNewTokens(res, authCookie, refreshToken);
 
@@ -47,4 +50,26 @@ export const logOut = async (req: Request, res: Response) => {
     userData.authentication.refreshToken
   );
   res.sendStatus(200);
+};
+
+export const checkAuthentication = async (req: Request, res: Response) => {
+  const authCookie = req.signedCookies[general.AUTH_COOKIE];
+  if (!authCookie) {
+    throw new AuthenticationError(errorMessages.NO_COOKIE_FOUND);
+  }
+  const {
+    authentication: { accessToken },
+  } = authCookie as IAuthCookie;
+  const decoded = jwt.decode(accessToken) as jwt.JwtPayload | null;
+  if (!decoded || (decoded.exp && Date.now() >= decoded.exp * 1000)) {
+    throw new AuthenticationError(errorMessages.INVALID_TOKEN);
+  }
+
+  jwt.verify(accessToken, process.env.JWT_SECRET!, (err) => {
+    if (err) {
+      throw new AuthenticationError(errorMessages.TOKEN_NOT_VERIFIED);
+    }
+
+    return res.sendStatus(200);
+  });
 };

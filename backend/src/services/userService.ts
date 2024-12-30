@@ -4,9 +4,16 @@ export const createUser = async (
   discordId: string,
   username: string,
   displayName: string,
-  email: string
+  email: string,
+  profileImageUrl: string
 ) => {
-  return userRepository.createUser({ discordId, username, displayName, email });
+  return userRepository.createUser({
+    discordId,
+    username,
+    displayName,
+    email,
+    profileImageUrl,
+  });
 };
 
 export const getUserById = async (id: string) => {

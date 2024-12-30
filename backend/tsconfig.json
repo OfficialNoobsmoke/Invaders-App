@@ -9,14 +9,15 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "typeRoots": ["./src/types"]
   },
   "include": [
-    "index.d.ts",
     "src/*.ts",
     "src/*.tsx",
     "src/**/*.ts",
-    "src/**/*.tsx"
+    "src/**/*.tsx",
+    "src/**/*.d.ts"
   ],
   "exclude": ["node_modules"]
 }

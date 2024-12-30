@@ -1,10 +1,8 @@
+import { apiRoutes } from '../constants/constants';
 import { IUser } from '../interfaces/IUser';
 import apiClient from '../utils/apiClient';
+import { buildRouteUrl } from '../utils/urlBuildRouter';
 
-const getUsersUrlBuilder = () => {
-  return `http://localhost:4000/api/users`;
-};
-
-export const getUsers = async (): Promise<IUser[]> => {
-  return (await apiClient.get(getUsersUrlBuilder())).data;
+export const getUser = async (): Promise<IUser> => {
+  return (await apiClient.get(`${buildRouteUrl(apiRoutes.USER)}`)).data;
 };

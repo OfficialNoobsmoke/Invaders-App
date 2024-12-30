@@ -1,4 +1,4 @@
-import { IRequestUser } from '../interfaces/IRequestUser';
+import { IPassportRequestUser } from '../interfaces/IPassportRequestUser';
 import { Request, Response } from 'express';
 import { createDiscordTokenForUser } from './discordAuthenticationService';
 import { generateNewTokenForUser } from './tokenService';
@@ -12,7 +12,7 @@ import { errorMessages, frontEndRoutes, general } from '../constants/constants';
 import { AuthenticationError } from '../exceptions/authenticationError';
 
 export const saveAuthenticationData = async (req: Request, res: Response) => {
-  const user = req.user as IRequestUser;
+  const user = req.user as IPassportRequestUser;
   const discordAuthentication = (req.authInfo as AuthInfo)
     .discordAuthentication;
   if (!user || !discordAuthentication) {

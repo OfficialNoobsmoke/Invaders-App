@@ -32,7 +32,7 @@ export const getOrCreateUserFromProfile = async (
 };
 
 const createUser = async (accessToken: string, profile: Profile) => {
-  const { isInDiscord, guildMemberDetails } = await getUserData(
+  const { isInDiscord, guildMemberDetails, discordAvatar } = await getUserData(
     accessToken,
     profile
   );
@@ -43,6 +43,7 @@ const createUser = async (accessToken: string, profile: Profile) => {
     email: profile.email,
     displayName: guildMemberDetails.nick ?? profile.global_name,
     isInDiscord,
+    profileImageUrl: discordAvatar,
   });
 };
 
@@ -51,7 +52,7 @@ const updateUser = async (
   profile: Profile,
   user: IUser
 ) => {
-  const { isInDiscord, guildMemberDetails } = await getUserData(
+  const { isInDiscord, guildMemberDetails, discordAvatar } = await getUserData(
     accessToken,
     profile
   );
@@ -60,7 +61,19 @@ const updateUser = async (
     isInDiscord,
     displayName: guildMemberDetails.nick ?? profile.global_name,
     lastLogin: new Date(Date.now()),
+    profileImageUrl: discordAvatar,
   });
+};
+
+const getAvatar = (profile: Profile) => {
+  const avatarHash = profile.avatar;
+  if (avatarHash) {
+    return `https://cdn.discordapp.com/avatars/${profile.id}/${avatarHash}.png`;
+  } else {
+    const discriminator = +profile.discriminator;
+    const defaultAvatarIndex = discriminator % 5;
+    return `https://cdn.discordapp.com/embed/avatars/${defaultAvatarIndex}.png`;
+  }
 };
 
 const isInInvadersDiscord = (profile: Profile) => {
@@ -78,6 +91,7 @@ const getUserData = async (accessToken: string, profile: Profile) => {
       accessToken,
       process.env.DISCORD_INVADERS_SERVER_ID!
     ),
+    discordAvatar: getAvatar(profile),
   };
 };
 

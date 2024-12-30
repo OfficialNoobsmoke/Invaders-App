@@ -6,10 +6,10 @@ import Login from '../pages/Login';
 import Characters from '../pages/Characters';
 import Home from '../pages/Home';
 import NotInDiscord from '../pages/NotInDiscord';
+import Profile from '../pages/Profile';
 
 export const Routes: RouteObject[] = [
   {
-    path: '/',
     element: <AppLayout />,
     children: [
       {
@@ -27,6 +27,10 @@ export const Routes: RouteObject[] = [
       {
         path: '/characters',
         element: <Characters />,
+      },
+      {
+        path: '/profile',
+        element: <Profile />,
       },
       {
         path: '/demo',

@@ -8,6 +8,8 @@ export const general = Object.freeze({
 });
 
 export const apiRoutes = Object.freeze({
-  LOGIN: 'auth/discord',
-  LOGOUT: 'auth/logout',
+  LOGIN: '/auth/discord',
+  LOGOUT: '/auth/logout',
+  CHECK: '/auth/check',
+  USER: '/user/me',
 });

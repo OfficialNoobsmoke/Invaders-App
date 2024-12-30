@@ -30,6 +30,7 @@ CREATE TABLE "users" (
 	"displayname" varchar(32),
 	"email" varchar(255),
 	"isInDiscord" boolean,
+	"profile_image_url" varchar(255) NOT NULL,
 	"last_login" timestamp with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "users_discord_id_unique" UNIQUE("discord_id"),
