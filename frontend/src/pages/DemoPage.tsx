@@ -1,5 +1,5 @@
 import ButtonWrapper from '@/components/common/ButtonWrapper';
-import DataGridWrapper from '@/components/common/DataGridWrapper';
+import { DataGridWrapper } from '@/components/common/DataGridWrapper';
 import { Pokemon } from '@/domain/pokemon';
 import { FetchPokemons } from '@/services/demoService';
 import { GridColDef } from '@mui/x-data-grid';

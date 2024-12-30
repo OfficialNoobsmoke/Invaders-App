@@ -10,6 +10,7 @@ import {
 import { saveAuthenticationData } from '../services/authenticationService';
 import {
   authenticationFailure,
+  checkAuthentication,
   logOut,
   refreshToken,
 } from '../controllers/authenticationController';
@@ -17,6 +18,7 @@ import {
 const router: Router = Router();
 
 router.post('/auth/token', refreshToken);
+router.get('/auth/check', checkAuthentication);
 router.post('/auth/logout', logOut);
 router.get('/auth/discord', authenticate());
 router.get('/auth/discord/callback', callBack(), saveAuthenticationData);
@@ -29,6 +31,7 @@ router.post(
   userController.createUser
 );
 router.get('/users', authorizationMiddleware, userController.getUsers);
+router.get('/user/me', authorizationMiddleware, userController.getUser);
 router.delete(
   '/user/:id',
   authorizationMiddleware,

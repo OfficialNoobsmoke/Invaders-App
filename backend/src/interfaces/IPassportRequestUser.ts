@@ -1,4 +1,4 @@
-export interface IRequestUser {
+export interface IPassportRequestUser {
   id: string;
   discordId: string;
   username: string;

@@ -1,7 +1,11 @@
 export type UserContextType = {
+  id: string;
   discordId: string;
   username: string;
-  factions: string[];
-  highestRole: string;
-  displayName: string | undefined;
+  displayName?: string;
+  email?: string;
+  isInDiscord?: boolean;
+  profileImageUrl: string;
+  lastLogin: Date;
+  createdAt: Date;
 };

@@ -5,6 +5,7 @@ export interface IUser {
   displayName?: string;
   email?: string;
   isInDiscord?: boolean;
+  profileImageUrl: string;
   lastLogin: Date;
   createdAt: Date;
 }

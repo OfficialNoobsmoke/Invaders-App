@@ -1,6 +1,8 @@
 declare namespace Express {
-  export interface Request {
-    userId: string
+  interface Request {
+    user: {
+      id: string
+    }
     authInfo: {
       discordAuthentication: {
         accessToken: string

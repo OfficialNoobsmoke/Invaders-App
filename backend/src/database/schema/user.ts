@@ -13,6 +13,7 @@ export const users = pgTable('users', {
   displayName: varchar('displayname', { length: 32 }),
   email: varchar('email', { length: 255 }).unique(),
   isInDiscord: boolean(),
+  profileImageUrl: varchar('profile_image_url', { length: 255 }).notNull(),
   lastLogin: timestamp('last_login', { withTimezone: true })
     .defaultNow()
     .notNull(),

@@ -1,5 +1,5 @@
 {
-  "id": "3d406436-456d-430f-ba4e-1007aa70326a",
+  "id": "46ff1111-e531-41bd-b346-f76b844370f9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -221,6 +221,12 @@
           "type": "boolean",
           "primaryKey": false,
           "notNull": false
+        },
+        "profile_image_url": {
+          "name": "profile_image_url",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
         },
         "last_login": {
           "name": "last_login",

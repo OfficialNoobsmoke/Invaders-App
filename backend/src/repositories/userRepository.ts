@@ -10,6 +10,7 @@ export const createUser = async (data: {
   displayName?: string | null;
   email?: string;
   isInDiscord?: boolean;
+  profileImageUrl: string;
 }) => {
   const db = await getDatabase();
   const [newUser] = await db
@@ -20,6 +21,7 @@ export const createUser = async (data: {
       displayName: data.displayName,
       email: data.email,
       isInDiscord: data.isInDiscord,
+      profileImageUrl: data.profileImageUrl,
     })
     .returning();
   return newUser;
@@ -65,6 +67,7 @@ export const updateUser = async (
     email: string;
     isInDiscord: boolean;
     lastLogin: Date;
+    profileImageUrl: string | null;
   }>
 ) => {
   const db = await getDatabase();
@@ -75,6 +78,7 @@ export const updateUser = async (
       ...(data.email && { email: data.email }),
       ...(data.isInDiscord && { isInDiscord: data.isInDiscord }),
       ...(data.lastLogin && { lastLogin: data.lastLogin }),
+      ...(data.profileImageUrl && { profileImageUrl: data.profileImageUrl }),
     })
     .where(eq(users.id, id))
     .returning();

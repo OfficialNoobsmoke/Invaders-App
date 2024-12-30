@@ -19,7 +19,7 @@ interface DataGridWrapperProps {
   handlePaginationChange: (page: number, pageSize: number) => void;
 }
 
-export default function DataGridWrapper({
+export const DataGridWrapper = ({
   rows = [],
   columns,
   isLoading = false,
@@ -27,7 +27,7 @@ export default function DataGridWrapper({
   page = 1,
   pageSize = 25,
   handlePaginationChange,
-}: DataGridWrapperProps) {
+}: DataGridWrapperProps) => {
   function handlePaginationModelChange(model: GridPaginationModel, details: GridCallbackDetails<'pagination'>): void {
     if (details.reason !== 'setPaginationModel') return;
     handlePaginationChange(model.page, model.pageSize);
@@ -50,7 +50,7 @@ export default function DataGridWrapper({
       }}
     />
   );
-}
+};
 
 function CustomToolbar() {
   return (
