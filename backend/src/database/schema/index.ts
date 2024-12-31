@@ -4,3 +4,4 @@ export * from './specializations';
 export * from './user';
 export * from './tokens';
 export * from './discordTokens';
+export * from './instances';
