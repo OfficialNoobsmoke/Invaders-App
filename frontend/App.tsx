@@ -9,6 +9,7 @@ import AppLayout from './src/layouts/AppLayout';
 import Characters from './src/pages/Characters';
 import Profile from './src/pages/Profile';
 import { AuthenticationContextProvider } from './src/context/AuthenticationContextProvider';
+import DemoPage from './src/pages/DemoPage';
 
 const App: React.FC = () => {
   return (
@@ -38,6 +39,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <Characters />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/demo"
+              element={
+                <ProtectedRoute>
+                  <DemoPage />
                 </ProtectedRoute>
               }
             />

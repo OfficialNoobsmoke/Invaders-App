@@ -12,4 +12,5 @@ export const apiRoutes = Object.freeze({
   LOGOUT: '/auth/logout',
   CHECK: '/auth/check',
   USER: '/user/me',
+  CHARACTERS: '/characters',
 });

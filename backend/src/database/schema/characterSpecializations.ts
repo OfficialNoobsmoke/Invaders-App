@@ -6,8 +6,9 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { characters } from './characters';
+import { relations } from 'drizzle-orm';
 
-export const specializations = pgTable('specializations', {
+export const characterSpecializations = pgTable('character_specializations', {
   id: uuid().defaultRandom().primaryKey(),
   name: varchar('name', { length: 50 }).notNull(),
   gearScore: numeric({ precision: 4, scale: 0 }).notNull(),
@@ -16,3 +17,13 @@ export const specializations = pgTable('specializations', {
     .defaultNow()
     .notNull(),
 });
+
+export const specializationsRelations = relations(
+  characterSpecializations,
+  ({ one }) => ({
+    character: one(characters, {
+      fields: [characterSpecializations.characterId],
+      references: [characters.id],
+    }),
+  })
+);

@@ -14,6 +14,7 @@ import {
   logOut,
   refreshToken,
 } from '../controllers/authenticationController';
+import characterController from '../controllers/characterController';
 
 const router: Router = Router();
 
@@ -23,6 +24,7 @@ router.post('/auth/logout', logOut);
 router.get('/auth/discord', authenticate());
 router.get('/auth/discord/callback', callBack(), saveAuthenticationData);
 router.get('/auth/failure', authenticationFailure);
+
 router.post(
   '/user',
   authorizationMiddleware,
@@ -38,6 +40,17 @@ router.delete(
   userValidator.deleteUser,
   validationHandler,
   userController.deleteUser
+);
+
+router.get(
+  '/characters{/:userId}',
+  authorizationMiddleware,
+  characterController.getCharactersByUserId
+);
+router.post(
+  '/characters',
+  authorizationMiddleware,
+  characterController.createCharacter
 );
 
 export const routes: Router = router;

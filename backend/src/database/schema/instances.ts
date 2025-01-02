@@ -7,6 +7,8 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { instancesRealmServers } from './instancesRealmServers';
+import { charactersPreferredInstances } from './charactersPreferredInstances';
+import { charactersSavedInstances } from './charactersSavedInstances';
 
 export const instances = pgTable('instances', {
   id: uuid().defaultRandom().primaryKey(),
@@ -20,4 +22,6 @@ export const instances = pgTable('instances', {
 
 export const instancesRelations = relations(instances, ({ many }) => ({
   realmServers: many(instancesRealmServers),
+  charactersPreferredInstances: many(charactersPreferredInstances),
+  charactersSavedInstances: many(charactersSavedInstances),
 }));
