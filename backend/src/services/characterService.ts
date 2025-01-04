@@ -5,19 +5,35 @@ export const createCharacter = async (
   faction: 'Alliance' | 'Horde',
   characterClass: string,
   ownerId: string,
-  realmServerId: string
+  realmServerId: string,
+  specializations: { name: string; gearScore: number }[] = [],
+  preferredInstanceIds: string[] = [],
+  savedInstanceIds: string[] = []
 ) => {
   return characterRepository.createCharacter(
     name,
     faction,
     characterClass,
     ownerId,
-    realmServerId
+    realmServerId,
+    specializations,
+    preferredInstanceIds,
+    savedInstanceIds
   );
 };
 
-export const getCharactersByUserId = async (ownerId: string) => {
-  return characterRepository.getCharactersByUserId(ownerId);
+export const getCharactersByUserId = async (
+  ownerId: string,
+  page: number,
+  pageSize: number,
+  filterModel: { field: string; operator: string; value: string }[]
+) => {
+  return characterRepository.getCharactersByUserId(
+    ownerId,
+    page,
+    pageSize,
+    filterModel
+  );
 };
 
 export const getCharacterById = async (id: string) => {

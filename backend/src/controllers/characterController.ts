@@ -1,26 +1,53 @@
 import { Request, Response } from 'express';
 import characterService from '../services/characterService';
+import { HttpStatusCode } from 'axios';
 
 export const createCharacter = async (req: Request, res: Response) => {
-  const { name, faction, characterClass, ownerId, realmServerId } = req.body;
-
+  const {
+    name,
+    faction,
+    characterClass,
+    realmServerId,
+    specializations,
+    charactersPreferredInstances,
+    charactersSavedInstances,
+  } = req.body;
+  let { ownerId } = req.params;
+  if (!ownerId) {
+    ownerId = req.user.id;
+  }
   const newCharacter = await characterService.createCharacter(
     name,
     faction,
     characterClass,
     ownerId,
-    realmServerId
+    realmServerId,
+    specializations,
+    charactersPreferredInstances,
+    charactersSavedInstances
   );
 
-  res.status(201).json(newCharacter);
+  res.status(HttpStatusCode.Created).json(newCharacter);
 };
 
 export const getCharactersByUserId = async (req: Request, res: Response) => {
-  const { ownerId } = req.params;
+  const { filterModel } = req.body;
+  let { userId } = req.params;
+  const { page = '1', pageSize = '25' } = req.query;
+  if (!userId) {
+    userId = req.user.id;
+  }
+  const pageNum = parseInt(page as string, 10);
+  const pageSizeNum = parseInt(pageSize as string, 10);
 
-  const characters = await characterService.getCharactersByUserId(ownerId);
+  const characters = await characterService.getCharactersByUserId(
+    userId,
+    pageNum,
+    pageSizeNum,
+    filterModel
+  );
 
-  res.status(200).json(characters);
+  res.status(HttpStatusCode.Ok).json(characters);
 };
 
 export const getCharacterById = async (req: Request, res: Response) => {
@@ -28,7 +55,7 @@ export const getCharacterById = async (req: Request, res: Response) => {
 
   const character = await characterService.getCharacterById(id);
 
-  res.status(200).json(character);
+  res.status(HttpStatusCode.Ok).json(character);
 };
 
 export const updateCharacter = async (req: Request, res: Response) => {
@@ -40,7 +67,7 @@ export const updateCharacter = async (req: Request, res: Response) => {
     updatedData
   );
 
-  res.status(200).json(updatedCharacter);
+  res.status(HttpStatusCode.Ok).json(updatedCharacter);
 };
 
 export const deleteCharacter = async (req: Request, res: Response) => {
@@ -48,5 +75,13 @@ export const deleteCharacter = async (req: Request, res: Response) => {
 
   await characterService.deleteCharacterById(id);
 
-  res.status(204).send();
+  res.status(HttpStatusCode.NoContent).send();
+};
+
+export default {
+  createCharacter,
+  getCharactersByUserId,
+  getCharacterById,
+  updateCharacter,
+  deleteCharacter,
 };

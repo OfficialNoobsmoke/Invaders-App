@@ -1,6 +1,10 @@
 import { pgEnum, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { users } from './user';
-import realmServers from './realmServers';
+import { realmServers } from './realmServers';
+import { relations } from 'drizzle-orm';
+import { charactersPreferredInstances } from './charactersPreferredInstances';
+import { charactersSavedInstances } from './charactersSavedInstances';
+import { characterSpecializations } from './characterSpecializations';
 
 export const factionEnum = pgEnum('faction', ['Alliance', 'Horde']);
 
@@ -8,7 +12,7 @@ export const characters = pgTable('characters', {
   id: uuid().defaultRandom().primaryKey(),
   name: varchar('name', { length: 12 }).notNull(),
   faction: factionEnum().notNull(),
-  class: varchar('displayname', { length: 32 }),
+  class: varchar('class', { length: 32 }).notNull(),
   ownerId: uuid('owner_id')
     .references(() => users.id)
     .notNull(),
@@ -19,3 +23,9 @@ export const characters = pgTable('characters', {
     .defaultNow()
     .notNull(),
 });
+
+export const charactersRelations = relations(characters, ({ many }) => ({
+  specializations: many(characterSpecializations),
+  charactersPreferredInstances: many(charactersPreferredInstances),
+  charactersSavedInstances: many(charactersSavedInstances),
+}));

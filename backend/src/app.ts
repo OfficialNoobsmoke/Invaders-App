@@ -12,6 +12,7 @@ import cors from 'cors';
 import passport from 'passport';
 import './utils/discordPassport';
 import { general } from './constants/constants';
+import genFunc from 'connect-pg-simple';
 config();
 envChecker();
 
@@ -23,6 +24,10 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(sessionSecret));
+const PostgresqlStore = genFunc(session);
+const sessionStore = new PostgresqlStore({
+  conString: process.env.DB_URL,
+});
 app.use(
   session({
     secret: sessionSecret,
@@ -33,6 +38,7 @@ app.use(
     },
     resave: false,
     saveUninitialized: false,
+    store: sessionStore,
   })
 );
 app.use(

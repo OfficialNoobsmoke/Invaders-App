@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import ButtonWrapper from '../components/common/ButtonWrapper';
-import { buildRouteUrl } from '../utils/urlBuildRouter';
+import { RouteBuilder } from '../utils/urlBuildRouter';
 import { apiRoutes } from '../constants/constants';
 import { AuthenticationContext } from '../context/authenticationContext';
 import { Navigate } from 'react-router-dom';
@@ -18,7 +18,8 @@ export default function Login() {
   }
 
   const handleLoginClick = () => {
-    window.location.href = buildRouteUrl(apiRoutes.LOGIN);
+    const loginRoute = new RouteBuilder().addRoute(apiRoutes.LOGIN).build();
+    window.location.href = loginRoute;
   };
 
   return (

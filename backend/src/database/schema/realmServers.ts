@@ -1,4 +1,6 @@
+import { relations } from 'drizzle-orm';
 import { pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { instancesRealmServers } from './instancesRealmServers';
 
 export const realmServers = pgTable('realm_servers', {
   id: uuid().defaultRandom().primaryKey(),
@@ -8,4 +10,6 @@ export const realmServers = pgTable('realm_servers', {
     .notNull(),
 });
 
-export default realmServers;
+export const realmServersRelations = relations(realmServers, ({ many }) => ({
+  instances: many(instancesRealmServers), // Relation to the join table
+}));

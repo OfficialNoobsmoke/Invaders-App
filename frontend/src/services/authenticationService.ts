@@ -1,14 +1,16 @@
 import { apiRoutes } from '../constants/constants';
 import apiClient from '../utils/apiClient';
-import { buildRouteUrl } from '../utils/urlBuildRouter';
+import { RouteBuilder } from '../utils/urlBuildRouter';
 
 export const logout = async () => {
-  await apiClient.post(`${buildRouteUrl(apiRoutes.LOGOUT)}`);
+  const logoutRoute = new RouteBuilder().addRoute(apiRoutes.LOGOUT).build();
+  await apiClient.post(logoutRoute);
 };
 
 export const check = async (): Promise<boolean> => {
   try {
-    await apiClient.get(`${buildRouteUrl(apiRoutes.CHECK)}`);
+    const checkRoute = new RouteBuilder().addRoute(apiRoutes.CHECK).build();
+    await apiClient.get(checkRoute);
     return true;
   } catch (error) {
     return false;
