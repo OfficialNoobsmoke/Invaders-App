@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { buildRouteUrl } from './urlBuildRouter';
+import { RouteBuilder } from './urlBuildRouter';
 
 const apiClient = axios.create({
-  baseURL: buildRouteUrl(''),
+  baseURL: RouteBuilder.baseUrl,
   withCredentials: true,
 });
 

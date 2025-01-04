@@ -1,5 +1,5 @@
 import { DataGridWrapper } from '@/components/common/DataGridWrapper';
-import { GridColDef } from '@mui/x-data-grid';
+import { GridColDef, GridFilterModel } from '@mui/x-data-grid';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import { createCharacter, getCharactersByUserId } from '../services/characterService';
@@ -11,7 +11,7 @@ const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID' },
   { field: 'realmServerId', headerName: 'Realm-Server' },
   { field: 'name', headerName: 'Character Name' },
-  { field: 'faction', headerName: 'Faction' },
+  { field: 'faction', headerName: 'Faction', type: 'singleSelect', valueOptions: ['Alliance', 'Horde'] },
   { field: 'class', headerName: 'Class' },
   { field: 'spec1', headerName: 'Specialization 1' },
   { field: 'spec1gs', headerName: 'Specialization 1 gs' },
@@ -26,16 +26,21 @@ export default function Characters() {
   const [data, setData] = useState<IPagination<ICharacter[]>>();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(25);
+  const [queryOptions, setQueryOptions] = useState({});
 
   function setPaginationData(page: number, pageSize: number) {
     setPage(page);
     setPageSize(pageSize);
   }
 
+  const handlePaginationModelChange = (filterModel: GridFilterModel) => {
+    setQueryOptions({ filterModel: { ...filterModel.items } });
+  };
+
   const { data: characters, isFetching } = useQuery({
-    queryKey: ['characters', page, pageSize],
+    queryKey: ['characters', page, pageSize, queryOptions],
     queryFn: () => {
-      return getCharactersByUserId(page, pageSize, undefined);
+      return getCharactersByUserId(undefined, page, pageSize, queryOptions);
     },
     retry: false,
   });
@@ -74,6 +79,7 @@ export default function Characters() {
         isLoading={isFetching}
         handlePaginationChange={setPaginationData}
         handleAddButtonClick={() => createCharacterMutation.mutate()}
+        handleFilterModelChange={handlePaginationModelChange}
         rowCount={data?.count}
         page={page}
         pageSize={pageSize}

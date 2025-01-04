@@ -25,9 +25,15 @@ export const createCharacter = async (
 export const getCharactersByUserId = async (
   ownerId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
+  filterModel: { field: string; operator: string; value: string }[]
 ) => {
-  return characterRepository.getCharactersByUserId(ownerId, page, pageSize);
+  return characterRepository.getCharactersByUserId(
+    ownerId,
+    page,
+    pageSize,
+    filterModel
+  );
 };
 
 export const getCharacterById = async (id: string) => {

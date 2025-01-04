@@ -31,6 +31,7 @@ export const createCharacter = async (req: Request, res: Response) => {
 };
 
 export const getCharactersByUserId = async (req: Request, res: Response) => {
+  const { filterModel } = req.body;
   let { userId } = req.params;
   const { page = '1', pageSize = '25' } = req.query;
   if (!userId) {
@@ -42,7 +43,8 @@ export const getCharactersByUserId = async (req: Request, res: Response) => {
   const characters = await characterService.getCharactersByUserId(
     userId,
     pageNum,
-    pageSizeNum
+    pageSizeNum,
+    filterModel
   );
 
   res.status(HttpStatusCode.Ok).json(characters);

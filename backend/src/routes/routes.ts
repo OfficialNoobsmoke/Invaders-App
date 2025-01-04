@@ -42,7 +42,7 @@ router.delete(
   userController.deleteUser
 );
 
-router.get(
+router.post(
   '/characters{/:userId}',
   authorizationMiddleware,
   characterController.getCharactersByUserId

@@ -22,6 +22,7 @@ interface DataGridWrapperProps {
   handleFilterModelChange?: (filterModel: GridFilterModel) => void;
   handleAddButtonClick?: () => void;
   columnVisibilityModel?: GridColumnVisibilityModel;
+  checkboxSelection?: boolean;
 }
 
 export const DataGridWrapper = ({
@@ -31,6 +32,7 @@ export const DataGridWrapper = ({
   rowCount = 0,
   page = 1,
   pageSize = 25,
+  checkboxSelection = false,
   handlePaginationChange,
   handleAddButtonClick,
   handleFilterModelChange,
@@ -64,7 +66,7 @@ export const DataGridWrapper = ({
       paginationMode="server"
       pagination
       filterMode="server"
-      checkboxSelection
+      checkboxSelection={checkboxSelection}
       onFilterModelChange={handleFilterModelChange}
       onPaginationModelChange={handlePaginationModelChange}
       slots={{
