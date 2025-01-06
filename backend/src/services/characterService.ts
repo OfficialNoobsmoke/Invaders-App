@@ -26,13 +26,15 @@ export const getCharactersByUserId = async (
   ownerId: string,
   page: number,
   pageSize: number,
-  filterModel: { field: string; operator: string; value: string }[]
+  filterModel: { field: string; operator: string; value: string }[],
+  sortModel: { field: string; sort: string }[]
 ) => {
   return characterRepository.getCharactersByUserId(
     ownerId,
     page,
     pageSize,
-    filterModel
+    filterModel,
+    sortModel
   );
 };
 

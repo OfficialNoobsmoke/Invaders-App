@@ -1,4 +1,4 @@
-import { and, Column, eq, gt, like, lt, SQL } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { getDatabase } from '../database/database';
 import {
   characters,
@@ -6,9 +6,10 @@ import {
   charactersSavedInstances,
   characterSpecializations,
 } from '../database/schema';
-import { fromDBManyToCharacters } from '../mappers/characterMapper';
-import { DBCharacter } from '../types/character';
+// import { fromDBManyToCharacters } from '../mappers/characterMapper';
+// import { DBCharacter } from '../types/character';
 import { getTableConfig } from 'drizzle-orm/pg-core';
+import { getEntities } from './genericRepository';
 
 export const createCharacter = async (
   name: string,
@@ -70,69 +71,30 @@ export const createCharacter = async (
 
 export const getCharactersByUserId = async (
   ownerId: string,
-  page: number = 1,
-  pageSize: number = 25,
-  filterModel: { field: string; operator: string; value: string }[]
+  page: number,
+  pageSize: number,
+  filterModel: { field: string; operator: string; value: string }[],
+  sortModel: { field: string; sort: string }[] | null
 ) => {
   const db = await getDatabase();
-  const offset = page * pageSize;
-  let whereConditions = [eq(characters.ownerId, ownerId)];
-  const validColumns = getTableConfig(characters).columns.map(
-    (column) => column.name
-  );
-  let filterWhereConditions: SQL<unknown>[] = [];
-  if (filterModel) {
-    const filtersArray = Object.values(filterModel);
-    filterWhereConditions = filtersArray
-      .map((filter) => {
-        if (!validColumns.includes(filter.field) || !filter.value) {
-          return null;
-        }
 
-        const column = getTableConfig(characters).columns.find(
-          (col) => col.name === filter.field
-        ) as Column;
+  const query = db
+    .select()
+    .from(characters)
+    .where(eq(characters.ownerId, ownerId))
+    .$dynamic();
+  const tableConfig = getTableConfig(characters);
 
-        switch (filter.operator) {
-          case 'contains':
-            return like(column, `%${filter.value}%`);
-          case '>':
-            return gt(column, filter.value);
-          case '<':
-            return lt(column, filter.value);
-          case '=':
-          case 'is':
-            return eq(column, filter.value);
-          default:
-            return null;
-        }
-      })
-      .filter(Boolean) as SQL<unknown>[];
-
-    whereConditions = whereConditions.concat(filterWhereConditions);
-  }
-  const userCharacters = (await db.query.characters.findMany({
-    where: and(...whereConditions),
-    with: {
-      specializations: true,
-      charactersPreferredInstances: true,
-      charactersSavedInstances: true,
-    },
-    limit: pageSize,
-    offset,
-    extras: {
-      totalCount: db
-        .$count(characters, and(...whereConditions))
-        .as('totalCount'),
-    },
-  })) as DBCharacter[];
-
-  return {
+  const result = await getEntities(
+    query,
+    tableConfig,
     page,
     pageSize,
-    count: +userCharacters[0]?.totalCount || 0,
-    data: fromDBManyToCharacters(userCharacters),
-  };
+    filterModel,
+    sortModel
+  );
+
+  return result;
 };
 
 export const getCharacterById = async (id: string) => {

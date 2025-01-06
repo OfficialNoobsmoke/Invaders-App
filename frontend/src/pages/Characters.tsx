@@ -1,5 +1,5 @@
 import { DataGridWrapper } from '@/components/common/DataGridWrapper';
-import { GridColDef, GridFilterModel } from '@mui/x-data-grid';
+import { GridColDef, GridFilterModel, GridSortModel } from '@mui/x-data-grid';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import { createCharacter, getCharactersByUserId } from '../services/characterService';
@@ -19,6 +19,7 @@ const columns: GridColDef[] = [
   { field: 'spec2gs', headerName: 'Specialization 2 gs' },
   { field: 'charactersPreferredInstances', headerName: 'Preference In' },
   { field: 'charactersSavedInstances', headerName: 'Saved Instances' },
+  { field: 'createdAt', headerName: 'Created At', type: 'date', valueGetter: (value) => value && new Date(value) },
   { field: 'actions', headerName: 'Actions' },
 ];
 
@@ -26,7 +27,13 @@ export default function Characters() {
   const [data, setData] = useState<IPagination<ICharacter[]>>();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(25);
-  const [queryOptions, setQueryOptions] = useState({});
+  const [queryOptions, setQueryOptions] = useState<{
+    filterModel?: GridFilterModel;
+    sortModel?: GridSortModel;
+  }>({
+    filterModel: { items: [] },
+    sortModel: [],
+  });
 
   function setPaginationData(page: number, pageSize: number) {
     setPage(page);
@@ -34,7 +41,17 @@ export default function Characters() {
   }
 
   const handlePaginationModelChange = (filterModel: GridFilterModel) => {
-    setQueryOptions({ filterModel: { ...filterModel.items } });
+    setQueryOptions((prev) => ({
+      ...prev,
+      filterModel: filterModel,
+    }));
+  };
+
+  const handleSortModeChange = (sortModel: GridSortModel) => {
+    setQueryOptions((prev) => ({
+      ...prev,
+      sortModel: sortModel,
+    }));
   };
 
   const { data: characters, isFetching } = useQuery({
@@ -80,6 +97,7 @@ export default function Characters() {
         handlePaginationChange={setPaginationData}
         handleAddButtonClick={() => createCharacterMutation.mutate()}
         handleFilterModelChange={handlePaginationModelChange}
+        handleSortModeChange={handleSortModeChange}
         rowCount={data?.count}
         page={page}
         pageSize={pageSize}
