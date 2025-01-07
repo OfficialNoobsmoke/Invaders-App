@@ -4,17 +4,15 @@ import {
   like,
   gt,
   lt,
-  eq,
   asc,
   desc,
   and,
   sql,
   gte,
   lte,
-  ne,
-  isNull,
-  isNotNull,
   inArray,
+  eq,
+  ne,
 } from 'drizzle-orm';
 import { getDatabase } from '../database/database';
 import { getTableConfig, PgSelect } from 'drizzle-orm/pg-core';
@@ -24,17 +22,20 @@ import * as schema from '../database/schema';
 
 const buildFilterConditions = (
   filterModel: { field: string; operator: string; value: string | string[] }[],
-  validColumns: string[],
-  tableConfig: ReturnType<typeof getTableConfig>
+  tableConfig: ReturnType<typeof getTableConfig>,
+  columnMapping: Record<string, string>
 ): SQL<unknown>[] => {
   return filterModel
     .filter(
       (filterConfig) =>
-        validColumns.includes(filterConfig.field) && filterConfig.value
+        columnMapping[filterConfig.field] &&
+        (filterConfig.value ||
+          filterConfig.operator === 'isEmpty' ||
+          filterConfig.operator === 'isNotEmpty')
     )
     .map((filterConfig) => {
       const column = tableConfig.columns.find(
-        (col) => col.name === filterConfig.field
+        (col) => col.name === columnMapping[filterConfig.field]
       ) as Column;
 
       switch (filterConfig.operator) {
@@ -43,7 +44,14 @@ const buildFilterConditions = (
         case 'equals':
         case '=':
         case 'is':
-          return eq(column, filterConfig.value);
+          if (
+            column.columnType === 'PgTime' ||
+            column.columnType === 'PgTimestamp'
+          ) {
+            return eq(sql`date(${column})`, sql`${filterConfig.value}`);
+          } else {
+            return eq(column, filterConfig.value);
+          }
         case 'startsWith':
           return like(column, `${filterConfig.value}%`);
         case 'endsWith':
@@ -56,26 +64,31 @@ const buildFilterConditions = (
           return gte(column, filterConfig.value);
         case '<=':
           return lte(column, filterConfig.value);
-        case 'isNull':
-          return isNull(column);
-        case 'isNotNull':
-          return isNotNull(column);
         case 'not':
         case '!=':
-          return ne(column, filterConfig.value);
+        case 'isNot':
+          if (
+            column.columnType === 'PgTime' ||
+            column.columnType === 'PgTimestamp'
+          ) {
+            return ne(sql`date(${column})`, sql`${filterConfig.value}`);
+          } else {
+            return ne(column, filterConfig.value);
+          }
         case 'isAnyOf':
           return inArray(column, filterConfig.value as string[]);
-        case 'between': {
-          // delete this
-          const [startDate, endDate] = (filterConfig.value as string).split(
-            ','
-          );
-          return and(gte(column, startDate), lte(column, endDate));
-        }
         case 'before':
           return lt(sql`date(${column})`, filterConfig.value);
         case 'after':
           return gt(sql`date(${column})`, filterConfig.value);
+        case 'onOrAfter':
+          return gte(sql`date(${column})`, filterConfig.value);
+        case 'onOrBefore':
+          return lte(sql`date(${column})`, filterConfig.value);
+        case 'isEmpty':
+          return sql`${column} IS NULL`;
+        case 'isNotEmpty':
+          return sql`${column} IS NOT NULL`;
         default:
           return null;
       }
@@ -85,14 +98,14 @@ const buildFilterConditions = (
 
 const buildSortConditions = (
   sortModel: { field: string; sort: string }[],
-  validColumns: string[],
-  tableConfig: ReturnType<typeof getTableConfig>
+  tableConfig: ReturnType<typeof getTableConfig>,
+  columnMapping: Record<string, string>
 ): SQL<unknown>[] => {
   return sortModel
-    .filter((sortConfig) => validColumns.includes(sortConfig.field))
+    .filter((sortConfig) => columnMapping[sortConfig.field])
     .map((sortConfig) => {
       const column = tableConfig.columns.find(
-        (col) => col.name === sortConfig.field
+        (col) => col.name === columnMapping[sortConfig.field]
       ) as Column;
 
       return sortConfig.sort === 'asc' ? asc(column) : desc(column);
@@ -118,20 +131,20 @@ export const getEntities = async <T extends PgSelect>(
   page: number,
   pageSize: number,
   filterModel: { field: string; operator: string; value: string }[] = [],
-  sortModel: { field: string; sort: string }[] | null = null
+  sortModel: { field: string; sort: string }[] | null = null,
+  columnMapping: Record<string, string>
 ) => {
   const db = await getDatabase();
   const offset = page * pageSize;
-  const validColumns = tableConfig.columns.map((column) => column.name);
 
   const whereConditions = buildFilterConditions(
     filterModel,
-    validColumns,
-    tableConfig
+    tableConfig,
+    columnMapping
   );
 
   const orderByClause = sortModel
-    ? buildSortConditions(sortModel, validColumns, tableConfig)
+    ? buildSortConditions(sortModel, tableConfig, columnMapping)
     : [];
 
   const totalCount = await fetchTotalCount(db, query);

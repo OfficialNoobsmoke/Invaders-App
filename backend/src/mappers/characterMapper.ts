@@ -1,4 +1,4 @@
-import { CharacterResponseDto, DBCharacter } from '../types/character';
+import { CharacterResponseDto, DBCharacter } from '../interfaces/character';
 
 export const fromDBToCharacter = (userCharacter: DBCharacter) => {
   return {

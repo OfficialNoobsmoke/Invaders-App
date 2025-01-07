@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
+import { CharacterResponseDto } from '../interfaces/character';
 import characterService from '../services/characterService';
 import { HttpStatusCode } from 'axios';
+import { characters } from '../database/schema';
 
 export const createCharacter = async (req: Request, res: Response) => {
   const {
@@ -40,15 +42,37 @@ export const getCharactersByUserId = async (req: Request, res: Response) => {
   const pageNum = parseInt(page as string, 10);
   const pageSizeNum = parseInt(pageSize as string, 10);
 
-  const characters = await characterService.getCharactersByUserId(
+  type AllowedCharacterFields = Pick<
+    CharacterResponseDto,
+    | 'name'
+    | 'faction'
+    | 'class'
+    | 'realmServerId'
+    | 'id'
+    | 'ownerId'
+    | 'createdAt'
+  >;
+
+  const columnMapping: Record<keyof AllowedCharacterFields, string> = {
+    name: characters.name.name,
+    faction: characters.faction.name,
+    class: characters.class.name,
+    realmServerId: characters.realmServerId.name,
+    createdAt: characters.createdAt.name,
+    id: characters.id.name,
+    ownerId: characters.ownerId.name,
+  };
+
+  const result = await characterService.getCharactersByUserId(
     userId,
     pageNum,
     pageSizeNum,
     filterModel.items,
-    sortModel
+    sortModel,
+    columnMapping
   );
 
-  res.status(HttpStatusCode.Ok).json(characters);
+  res.status(HttpStatusCode.Ok).json(result);
 };
 
 export const getCharacterById = async (req: Request, res: Response) => {

@@ -1,11 +1,12 @@
 import { DataGridWrapper } from '@/components/common/DataGridWrapper';
 import { GridColDef, GridFilterModel, GridSortModel } from '@mui/x-data-grid';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { createCharacter, getCharactersByUserId } from '../services/characterService';
 import { AxiosError } from 'axios';
-import { ICharacter } from '../interfaces/ICharacter';
-import { IPagination } from '../interfaces/IPagination';
+import { Character } from '../interfaces/character';
+import { Pagination } from '../interfaces/pagination';
+import { UserContext } from '../context/userContexts';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID' },
@@ -24,7 +25,8 @@ const columns: GridColDef[] = [
 ];
 
 export default function Characters() {
-  const [data, setData] = useState<IPagination<ICharacter[]>>();
+  const userContext = useContext(UserContext);
+  const [data, setData] = useState<Pagination<Character[]>>();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(25);
   const [queryOptions, setQueryOptions] = useState<{
@@ -57,9 +59,10 @@ export default function Characters() {
   const { data: characters, isFetching } = useQuery({
     queryKey: ['characters', page, pageSize, queryOptions],
     queryFn: () => {
-      return getCharactersByUserId(undefined, page, pageSize, queryOptions);
+      return getCharactersByUserId(userContext?.id || '', page, pageSize, queryOptions);
     },
     retry: false,
+    enabled: !!userContext?.id,
   });
 
   const dummyCharacter = {
@@ -73,7 +76,7 @@ export default function Characters() {
     ],
     charactersPreferredInstances: ['673959db-e736-457c-bc7b-753f9972d977'],
     charactersSavedInstances: ['9e2e8d17-51c8-4ab6-8613-5d60e1dbb977'],
-  } as ICharacter;
+  } as Character;
 
   const createCharacterMutation = useMutation({
     mutationFn: () => createCharacter(dummyCharacter),
@@ -86,7 +89,7 @@ export default function Characters() {
     if (characters) {
       setData(characters);
     }
-  }, [characters, page, pageSize]);
+  }, [characters, page, pageSize, userContext?.id]);
 
   return (
     <div>

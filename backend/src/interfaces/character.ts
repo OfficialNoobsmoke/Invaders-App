@@ -1,4 +1,4 @@
-export type DBCharacter = {
+export interface DBCharacter {
   faction: 'Alliance' | 'Horde';
   name: string;
   id: string;
@@ -16,8 +16,8 @@ export type DBCharacter = {
     gearScore: string;
     characterId: string | null;
   }[];
-};
-export type CharacterResponseDto = {
+}
+export interface CharacterResponseDto {
   faction: 'Alliance' | 'Horde';
   name: string;
   id: string;
@@ -26,9 +26,10 @@ export type CharacterResponseDto = {
   realmServerId: string;
   charactersPreferredInstances: string[];
   charactersSavedInstances: string[];
+  createdAt: Date;
   specializations: {
     name: string;
     id: string;
     gearScore: number;
   }[];
-};
+}

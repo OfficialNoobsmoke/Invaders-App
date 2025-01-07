@@ -48,7 +48,7 @@ router.post(
   characterController.getCharactersByUserId
 );
 router.post(
-  '/characters',
+  '/character',
   authorizationMiddleware,
   characterController.createCharacter
 );

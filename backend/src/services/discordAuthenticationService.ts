@@ -1,17 +1,17 @@
 import { Profile } from 'passport-discord';
 import userRepository from '../repositories/userRepository';
 import { getGuildMemberDetails } from '../utils/discordApiWrapper';
-import { IUser } from '../interfaces/IUser';
+import { User } from '../interfaces/user';
 import passport from 'passport';
 import { discordTokenRepository } from '../repositories/discordTokenRepository';
-import { hmacHashJwt } from '../utils/cryptography';
+import { hmacHashString } from '../utils/cryptography';
 
 export const createDiscordTokenForUser = async (
   parentId: string,
   refreshToken: string
 ) => {
   await discordTokenRepository.createToken({
-    refreshToken: hmacHashJwt(refreshToken),
+    refreshToken: hmacHashString(refreshToken),
     accessTokenExpiresAt: new Date(Date.now() + 3600000), //1 hour
     refreshTokenExpiresAt: new Date(Date.now() + 604800000), //1 week
     parentId,
@@ -50,7 +50,7 @@ const createUser = async (accessToken: string, profile: Profile) => {
 const updateUser = async (
   accessToken: string,
   profile: Profile,
-  user: IUser
+  user: User
 ) => {
   const { isInDiscord, guildMemberDetails, discordAvatar } = await getUserData(
     accessToken,

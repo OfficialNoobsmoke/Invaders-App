@@ -74,7 +74,8 @@ export const getCharactersByUserId = async (
   page: number,
   pageSize: number,
   filterModel: { field: string; operator: string; value: string }[],
-  sortModel: { field: string; sort: string }[] | null
+  sortModel: { field: string; sort: string }[] | null,
+  columnMapping: Record<string, string>
 ) => {
   const db = await getDatabase();
 
@@ -91,7 +92,8 @@ export const getCharactersByUserId = async (
     page,
     pageSize,
     filterModel,
-    sortModel
+    sortModel,
+    columnMapping
   );
 
   return result;

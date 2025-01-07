@@ -1,4 +1,4 @@
-export interface ICharacter {
+export interface Character {
   faction: 'Alliance' | 'Horde';
   name: string;
   id: string | undefined;

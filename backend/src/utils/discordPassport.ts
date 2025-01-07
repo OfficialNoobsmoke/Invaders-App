@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy as DiscordStrategy, Profile } from 'passport-discord';
-import { IPassportRequestUser } from '../interfaces/IPassportRequestUser';
+import { PassportRequestUser } from '../interfaces/passportRequestUser';
 import { getOrCreateUserFromProfile } from '../services/discordAuthenticationService';
 
 const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_CALLBACK_URL } =
@@ -32,7 +32,7 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  done(null, (user as IPassportRequestUser).id);
+  done(null, (user as PassportRequestUser).id);
 });
 
 passport.deserializeUser(async (userId: string, done) => {

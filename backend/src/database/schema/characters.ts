@@ -1,7 +1,7 @@
 import { pgEnum, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { users } from './user';
 import { realmServers } from './realmServers';
-import { relations, sql } from 'drizzle-orm';
+import { relations } from 'drizzle-orm';
 import { charactersPreferredInstances } from './charactersPreferredInstances';
 import { charactersSavedInstances } from './charactersSavedInstances';
 import { characterSpecializations } from './characterSpecializations';
@@ -19,8 +19,8 @@ export const characters = pgTable('characters', {
   realmServerId: uuid('realm_server_id')
     .references(() => realmServers.id)
     .notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true })
+    .defaultNow()
     .notNull(),
 });
 
