@@ -4,8 +4,6 @@ import {
   like,
   gt,
   lt,
-  asc,
-  desc,
   and,
   sql,
   gte,
@@ -15,15 +13,19 @@ import {
   ne,
 } from 'drizzle-orm';
 import { getDatabase } from '../database/database';
-import { getTableConfig, PgSelect } from 'drizzle-orm/pg-core';
+import {
+  getTableConfig,
+  PgColumn,
+  PgSelect,
+  PgTable,
+} from 'drizzle-orm/pg-core';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { Client } from 'pg';
 import * as schema from '../database/schema';
 
 const buildFilterConditions = (
   filterModel: { field: string; operator: string; value: string | string[] }[],
-  tableConfig: ReturnType<typeof getTableConfig>,
-  columnMapping: Record<string, string>
+  columnMapping: Record<string, { table: PgTable; column: PgColumn }>
 ): SQL<unknown>[] => {
   return filterModel
     .filter(
@@ -34,13 +36,16 @@ const buildFilterConditions = (
           filterConfig.operator === 'isNotEmpty')
     )
     .map((filterConfig) => {
+      const configField = columnMapping[filterConfig.field];
+      const tableConfig = getTableConfig(configField.table);
       const column = tableConfig.columns.find(
-        (col) => col.name === columnMapping[filterConfig.field]
+        (col) => col.name === configField.column.name
       ) as Column;
-
       switch (filterConfig.operator) {
         case 'contains':
-          return like(column, `%${filterConfig.value}%`);
+          return sql.raw(
+            `${tableConfig.name}.${configField.column.name} LIKE '%' || '${filterConfig.value}' || '%'`
+          );
         case 'equals':
         case '=':
         case 'is':
@@ -98,17 +103,13 @@ const buildFilterConditions = (
 
 const buildSortConditions = (
   sortModel: { field: string; sort: string }[],
-  tableConfig: ReturnType<typeof getTableConfig>,
-  columnMapping: Record<string, string>
+  columnMapping: Record<string, { table: PgTable; column: PgColumn }>
 ): SQL<unknown>[] => {
   return sortModel
     .filter((sortConfig) => columnMapping[sortConfig.field])
     .map((sortConfig) => {
-      const column = tableConfig.columns.find(
-        (col) => col.name === columnMapping[sortConfig.field]
-      ) as Column;
-
-      return sortConfig.sort === 'asc' ? asc(column) : desc(column);
+      const configField = columnMapping[sortConfig.field];
+      return sql`${configField} ${sortConfig.sort === 'asc' ? 'ASC' : 'DESC'}`;
     });
 };
 
@@ -127,24 +128,19 @@ const fetchTotalCount = async (
 
 export const getEntities = async <T extends PgSelect>(
   query: T,
-  tableConfig: ReturnType<typeof getTableConfig>,
   page: number,
   pageSize: number,
   filterModel: { field: string; operator: string; value: string }[] = [],
   sortModel: { field: string; sort: string }[] | null = null,
-  columnMapping: Record<string, string>
+  columnMapping: Record<string, { table: PgTable; column: PgColumn }>
 ) => {
   const db = await getDatabase();
   const offset = page * pageSize;
 
-  const whereConditions = buildFilterConditions(
-    filterModel,
-    tableConfig,
-    columnMapping
-  );
+  const whereConditions = buildFilterConditions(filterModel, columnMapping);
 
   const orderByClause = sortModel
-    ? buildSortConditions(sortModel, tableConfig, columnMapping)
+    ? buildSortConditions(sortModel, columnMapping)
     : [];
 
   const totalCount = await fetchTotalCount(db, query);
@@ -153,12 +149,13 @@ export const getEntities = async <T extends PgSelect>(
     .where(and(...whereConditions))
     .limit(pageSize)
     .offset(offset);
+  console.log(query.toSQL());
 
   if (orderByClause.length > 0) {
     query.orderBy(...orderByClause);
   }
 
-  const entities = (await query.execute()) as T[];
+  const entities = await query.execute();
 
   return {
     page: page,

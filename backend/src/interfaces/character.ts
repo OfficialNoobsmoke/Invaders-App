@@ -1,35 +1,19 @@
-export interface DBCharacter {
-  faction: 'Alliance' | 'Horde';
-  name: string;
-  id: string;
-  class: string;
-  createdAt: Date;
-  ownerId: string;
-  totalCount: number;
-  realmServerId: string;
-  charactersPreferredInstances: { characterId: string; instanceId: string }[];
-  charactersSavedInstances: { characterId: string; instanceId: string }[];
-  specializations: {
-    name: string;
-    id: string;
-    createdAt: Date;
-    gearScore: string;
-    characterId: string | null;
-  }[];
-}
 export interface CharacterResponseDto {
-  faction: 'Alliance' | 'Horde';
-  name: string;
   id: string;
+  name: string;
+  faction: string;
   class: string;
   ownerId: string;
   realmServerId: string;
+  createdAt: string;
+  specializations: {
+    id: string;
+    name: string;
+  }[];
+  gearScore: {
+    id: string;
+    value: number;
+  }[];
   charactersPreferredInstances: string[];
   charactersSavedInstances: string[];
-  createdAt: Date;
-  specializations: {
-    name: string;
-    id: string;
-    gearScore: number;
-  }[];
 }

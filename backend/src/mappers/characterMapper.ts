@@ -1,28 +1,95 @@
-import { CharacterResponseDto, DBCharacter } from '../interfaces/character';
+import { CharacterResponseDto } from '../interfaces/character';
+import { Pagination } from '../interfaces/pagination';
 
-export const fromDBToCharacter = (userCharacter: DBCharacter) => {
+export const fromDBManyToCharacters = (dbResult: {
+  page: number;
+  pageSize: number;
+  count: number;
+  data: (
+    | {
+        [x: string]: string;
+      }
+    | {
+        [x: string]: string;
+      }
+    | {
+        [x: string]: string;
+      }
+  )[];
+}) => {
+  const mergedArray: CharacterResponseDto[] = [];
+  dbResult.data.forEach((record) => {
+    const {
+      id,
+      name,
+      faction,
+      class: charClass,
+      ownerId,
+      realmServerId,
+      createdAt,
+      specializationId,
+      specializationName,
+      specializationGearScore,
+      charactersPreferredInstances,
+      charactersSavedInstances,
+    } = record;
+
+    let existingEntry = mergedArray.find((item) => item.id === id);
+
+    if (!existingEntry) {
+      existingEntry = {
+        id,
+        name,
+        faction,
+        class: charClass,
+        ownerId,
+        realmServerId,
+        createdAt,
+        specializations: [],
+        gearScore: [],
+        charactersPreferredInstances: [],
+        charactersSavedInstances: [],
+      };
+      mergedArray.push(existingEntry);
+    }
+
+    if (specializationId && specializationName && specializationGearScore) {
+      if (
+        !existingEntry.specializations.some((x) => x.id === specializationId)
+      ) {
+        existingEntry.specializations.push({
+          id: specializationId,
+          name: specializationName,
+        });
+      }
+    }
+
+    if (charactersPreferredInstances) {
+      if (
+        !existingEntry.charactersPreferredInstances.includes(
+          charactersPreferredInstances
+        )
+      ) {
+        existingEntry.charactersPreferredInstances.push(
+          charactersPreferredInstances
+        );
+      }
+    }
+
+    if (charactersSavedInstances) {
+      if (
+        !existingEntry.charactersSavedInstances.includes(
+          charactersSavedInstances
+        )
+      ) {
+        existingEntry.charactersSavedInstances.push(charactersSavedInstances);
+      }
+    }
+  });
   return {
-    faction: userCharacter.faction,
-    name: userCharacter.name,
-    id: userCharacter.id,
-    class: userCharacter.class,
-    ownerId: userCharacter.ownerId,
-    realmServerId: userCharacter.realmServerId,
-    specializations: userCharacter.specializations.map((specialization) => ({
-      name: specialization.name,
-      id: specialization.id,
-      gearScore: Number(specialization.gearScore),
-    })),
-    charactersPreferredInstances:
-      userCharacter.charactersPreferredInstances.map(
-        (instance) => instance.instanceId
-      ),
-    charactersSavedInstances: userCharacter.charactersSavedInstances.map(
-      (instance) => instance.instanceId
-    ),
-  } as CharacterResponseDto;
-};
-
-export const fromDBManyToCharacters = (userCharacters: DBCharacter[]) => {
-  return userCharacters.map(fromDBToCharacter);
+    page: dbResult.page,
+    pageSize: dbResult.pageSize,
+    count: dbResult.count,
+    data: mergedArray,
+  } satisfies Pagination<CharacterResponseDto>;
 };

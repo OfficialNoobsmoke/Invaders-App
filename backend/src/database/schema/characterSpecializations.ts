@@ -11,7 +11,7 @@ import { relations } from 'drizzle-orm';
 export const characterSpecializations = pgTable('character_specializations', {
   id: uuid().defaultRandom().primaryKey(),
   name: varchar('name', { length: 50 }).notNull(),
-  gearScore: numeric({ precision: 4, scale: 0 }).notNull(),
+  gearScore: numeric('gear_score', { precision: 4, scale: 0 }).notNull(),
   characterId: uuid('character_id').references(() => characters.id),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()

@@ -7,5 +7,5 @@ export interface Character {
   realmServerId: string;
   charactersPreferredInstances: string[];
   charactersSavedInstances: string[];
-  specializations: { name: string; gearScore: number }[];
+  specializations: { id: string; name: string }[];
 }
