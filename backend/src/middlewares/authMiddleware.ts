@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { errorMessages, general } from '../constants/constants';
-import { IAuthCookie } from '../interfaces/IAuthCookie';
+import { AuthCookie } from '../interfaces/authCookie';
 import { refreshExpiredToken } from '../services/authenticationService';
 
 const authorizationMiddleware = async (
@@ -16,7 +16,7 @@ const authorizationMiddleware = async (
     }
     const {
       authentication: { accessToken },
-    } = authCookie as IAuthCookie;
+    } = authCookie as AuthCookie;
     const decoded = jwt.decode(accessToken) as jwt.JwtPayload | null;
     if (!decoded) {
       return res.status(401).json({ message: errorMessages.INVALID_TOKEN });

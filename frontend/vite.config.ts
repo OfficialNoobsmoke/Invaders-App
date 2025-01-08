@@ -30,7 +30,7 @@ export default defineConfig({
     },
   },
   server: {
-    open: 'http://localhost:4001',
+    open: false,
     port: 4001,
   },
   preview: {

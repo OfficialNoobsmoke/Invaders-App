@@ -1,4 +1,4 @@
-export interface ICharacter {
+export interface Character {
   faction: 'Alliance' | 'Horde';
   name: string;
   id: string | undefined;
@@ -7,5 +7,5 @@ export interface ICharacter {
   realmServerId: string;
   charactersPreferredInstances: string[];
   charactersSavedInstances: string[];
-  specializations: { name: string; gearScore: number }[];
+  specializations: { id: string; name: string }[];
 }

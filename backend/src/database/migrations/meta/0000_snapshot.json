@@ -1,5 +1,5 @@
 {
-  "id": "57382626-7ca8-425f-af12-85fd2e6a9ea3",
+  "id": "569ec9fb-1ff2-48c8-b9ae-eac933bd6d43",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -139,8 +139,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "gearScore": {
-          "name": "gearScore",
+        "gear_score": {
+          "name": "gear_score",
           "type": "numeric(4, 0)",
           "primaryKey": false,
           "notNull": true

@@ -1,18 +1,18 @@
-import { IPassportRequestUser } from '../interfaces/IPassportRequestUser';
+import { PassportRequestUser } from '../interfaces/passportRequestUser';
 import { Request, Response } from 'express';
 import { createDiscordTokenForUser } from './discordAuthenticationService';
 import { generateNewTokenForUser } from './tokenService';
 import { buildRouteUrl } from '../utils/urlRouteBuilder';
-import { AuthInfo } from '../interfaces/IAuthInfo';
-import { IAuthCookie } from '../interfaces/IAuthCookie';
+import { AuthInfo } from '../interfaces/authInfo';
+import { AuthCookie } from '../interfaces/authCookie';
 import { tokenRepository } from '../repositories/tokenRepository';
-import { hmacHashJwt } from '../utils/cryptography';
+import { hmacHashString } from '../utils/cryptography';
 import { verify } from '../utils/jwtToken';
 import { errorMessages, frontEndRoutes, general } from '../constants/constants';
 import { AuthenticationError } from '../exceptions/authenticationError';
 
 export const saveAuthenticationData = async (req: Request, res: Response) => {
-  const user = req.user as IPassportRequestUser;
+  const user = req.user as PassportRequestUser;
   const discordAuthentication = (req.authInfo as AuthInfo)
     .discordAuthentication;
   if (!user || !discordAuthentication) {
@@ -34,7 +34,7 @@ export const saveAuthenticationData = async (req: Request, res: Response) => {
       refreshToken: discordAuthentication.refreshToken,
     },
     userId: user.id,
-  } as IAuthCookie;
+  } as AuthCookie;
   setAuthenticationCookie(cookieData, res);
   if (user.isInDiscord) {
     res.redirect(buildRouteUrl(frontEndRoutes.HOME_PAGE));
@@ -44,7 +44,7 @@ export const saveAuthenticationData = async (req: Request, res: Response) => {
 };
 
 export const setAuthenticationCookie = (
-  authCookieData: IAuthCookie,
+  authCookieData: AuthCookie,
   res: Response
 ) => {
   const isDev = process.env.NODE_ENV! === general.DEV_MODE;
@@ -62,7 +62,7 @@ export const isRefreshTokenAvailable = async (
   if (!verify(refreshToken)) {
     return false;
   }
-  const refreshTokenHash = hmacHashJwt(refreshToken);
+  const refreshTokenHash = hmacHashString(refreshToken);
   const isRefreshTokenAvailable = await tokenRepository.refreshTokenExists(
     userId,
     refreshTokenHash
@@ -76,7 +76,7 @@ export const isRefreshTokenAvailable = async (
 
 export const updateCookieWithNewTokens = async (
   res: Response,
-  authCookie: IAuthCookie,
+  authCookie: AuthCookie,
   refreshToken: string
 ) => {
   const { tokenData, refreshTokenData } = await generateNewTokenForUser(
@@ -91,7 +91,7 @@ export const updateCookieWithNewTokens = async (
     },
     discordAuthentication: authCookie.discordAuthentication,
     userId: authCookie.userId,
-  } as IAuthCookie;
+  } as AuthCookie;
   setAuthenticationCookie(cookieData, res);
 };
 
@@ -101,14 +101,14 @@ export const clearSessionData = async (
   oldRefreshToken: string
 ) => {
   res.clearCookie(general.AUTH_COOKIE);
-  const refreshTokenHash = hmacHashJwt(oldRefreshToken);
+  const refreshTokenHash = hmacHashString(oldRefreshToken);
   await tokenRepository.deleteTokenByRefreshToken(userId, refreshTokenHash);
 };
 
 export const refreshExpiredToken = async (
   req: Request,
   res: Response,
-  authCookie: IAuthCookie
+  authCookie: AuthCookie
 ) => {
   const refreshToken = authCookie.authentication.refreshToken;
   const isRefreshTokenValid = await isRefreshTokenAvailable(

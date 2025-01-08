@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm';
 import { getDatabase } from '../database/database';
 import { users } from '../database/schema/user';
 import { characters } from '../database/schema/characters';
-import { IUser } from '../interfaces/IUser';
+import { User } from '../interfaces/user';
 
 export const createUser = async (data: {
   discordId: string;
@@ -27,13 +27,13 @@ export const createUser = async (data: {
   return newUser;
 };
 
-export const getUserById = async (id: string): Promise<IUser> => {
+export const getUserById = async (id: string): Promise<User> => {
   const db = await getDatabase();
   const [user] = await db.select().from(users).where(eq(users.id, id));
   return user || null;
 };
 
-export const getUserByDiscordId = async (discordId: string): Promise<IUser> => {
+export const getUserByDiscordId = async (discordId: string): Promise<User> => {
   const db = await getDatabase();
   const [user] = await db
     .select()
@@ -42,7 +42,7 @@ export const getUserByDiscordId = async (discordId: string): Promise<IUser> => {
   return user || null;
 };
 
-export const getUserByUsername = async (username: string): Promise<IUser> => {
+export const getUserByUsername = async (username: string): Promise<User> => {
   const db = await getDatabase();
   const [user] = await db
     .select()

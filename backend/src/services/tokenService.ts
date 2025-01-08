@@ -1,5 +1,5 @@
 import { tokenRepository } from '../repositories/tokenRepository';
-import { hmacHashJwt } from '../utils/cryptography';
+import { hmacHashString } from '../utils/cryptography';
 import jwtToken from '../utils/jwtToken';
 
 export const generateNewTokenForUser = async (
@@ -40,7 +40,7 @@ const createTokenForUser = async (
 ) => {
   return await tokenRepository.createToken({
     userId: userId,
-    refreshToken: hmacHashJwt(refreshToken),
+    refreshToken: hmacHashString(refreshToken),
     refreshTokenExpiresAt: refreshTokenExpiresAt,
   });
 };
@@ -53,8 +53,8 @@ const updateTokenForUser = async (
 ) => {
   return await tokenRepository.updateToken({
     userId,
-    refreshToken: hmacHashJwt(refreshToken),
+    refreshToken: hmacHashString(refreshToken),
     refreshTokenExpiresAt,
-    oldRefreshToken: hmacHashJwt(oldRefreshToken),
+    oldRefreshToken: hmacHashString(oldRefreshToken),
   });
 };

@@ -4,6 +4,7 @@ import * as schema from './schema';
 import { config } from 'dotenv';
 import { exec } from 'child_process';
 import { seedDatabase } from './seed';
+import { createCharacterDetailsView } from './views/characterDetails';
 config();
 
 let db: (NodePgDatabase<typeof schema> & { $client: Client }) | null = null;
@@ -56,6 +57,9 @@ export const createDatabaseIfNotExists = async () => {
 export const initializeDatabase = async () => {
   await createDatabaseIfNotExists();
   await seedDatabase();
+
+  //create views
+  createCharacterDetailsView();
 };
 
 const applyMigrations = async () => {

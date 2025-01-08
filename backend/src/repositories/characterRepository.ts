@@ -1,14 +1,16 @@
-import { and, Column, eq, gt, like, lt, SQL } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { getDatabase } from '../database/database';
 import {
   characters,
   charactersPreferredInstances,
   charactersSavedInstances,
   characterSpecializations,
+  //characterDetails,
 } from '../database/schema';
 import { fromDBManyToCharacters } from '../mappers/characterMapper';
-import { DBCharacter } from '../types/character';
-import { getTableConfig } from 'drizzle-orm/pg-core';
+import { getEntities } from './genericRepository';
+import { CharacterResponseDto } from '../interfaces/character';
+import { PgColumn, PgTable } from 'drizzle-orm/pg-core';
 
 export const createCharacter = async (
   name: string,
@@ -70,69 +72,104 @@ export const createCharacter = async (
 
 export const getCharactersByUserId = async (
   ownerId: string,
-  page: number = 1,
-  pageSize: number = 25,
-  filterModel: { field: string; operator: string; value: string }[]
+  page: number,
+  pageSize: number,
+  filterModel: { field: string; operator: string; value: string }[],
+  sortModel: { field: string; sort: string }[] | null
 ) => {
   const db = await getDatabase();
-  const offset = page * pageSize;
-  let whereConditions = [eq(characters.ownerId, ownerId)];
-  const validColumns = getTableConfig(characters).columns.map(
-    (column) => column.name
-  );
-  let filterWhereConditions: SQL<unknown>[] = [];
-  if (filterModel) {
-    const filtersArray = Object.values(filterModel);
-    filterWhereConditions = filtersArray
-      .map((filter) => {
-        if (!validColumns.includes(filter.field) || !filter.value) {
-          return null;
-        }
 
-        const column = getTableConfig(characters).columns.find(
-          (col) => col.name === filter.field
-        ) as Column;
+  type AllowedCharacterFields = Pick<
+    CharacterResponseDto,
+    | 'name'
+    | 'faction'
+    | 'class'
+    | 'realmServerId'
+    | 'ownerId'
+    | 'createdAt'
+    | 'specializations'
+    | 'gearScore'
+    | 'charactersPreferredInstances'
+    | 'charactersSavedInstances'
+  >;
 
-        switch (filter.operator) {
-          case 'contains':
-            return like(column, `%${filter.value}%`);
-          case '>':
-            return gt(column, filter.value);
-          case '<':
-            return lt(column, filter.value);
-          case '=':
-          case 'is':
-            return eq(column, filter.value);
-          default:
-            return null;
-        }
-      })
-      .filter(Boolean) as SQL<unknown>[];
-
-    whereConditions = whereConditions.concat(filterWhereConditions);
-  }
-  const userCharacters = (await db.query.characters.findMany({
-    where: and(...whereConditions),
-    with: {
-      specializations: true,
-      charactersPreferredInstances: true,
-      charactersSavedInstances: true,
+  const columnMapping: Record<
+    keyof AllowedCharacterFields,
+    { table: PgTable; column: PgColumn }
+  > = {
+    name: { table: characters, column: characters.name },
+    faction: { table: characters, column: characters.faction },
+    class: { table: characters, column: characters.class },
+    realmServerId: {
+      table: characters,
+      column: characters.realmServerId,
     },
-    limit: pageSize,
-    offset,
-    extras: {
-      totalCount: db
-        .$count(characters, and(...whereConditions))
-        .as('totalCount'),
+    createdAt: {
+      table: characters,
+      column: characters.createdAt,
     },
-  })) as DBCharacter[];
+    ownerId: { table: characters, column: characters.ownerId },
+    specializations: {
+      table: characterSpecializations,
+      column: characterSpecializations.name,
+    },
+    gearScore: {
+      table: characterSpecializations,
+      column: characterSpecializations.gearScore,
+    },
+    charactersPreferredInstances: {
+      table: charactersPreferredInstances,
+      column: charactersPreferredInstances.instanceId,
+    },
+    charactersSavedInstances: {
+      table: charactersSavedInstances,
+      column: charactersSavedInstances.instanceId,
+    },
+  };
 
-  return {
+  const query = db
+    .select({
+      id: characters.id,
+      name: characters.name,
+      faction: characters.faction,
+      class: characters.class,
+      ownerId: characters.ownerId,
+      realmServerId: characters.realmServerId,
+      createdAt: characters.createdAt,
+      specializationId: characterSpecializations.id,
+      specializationName: characterSpecializations.name,
+      specializationGearScore: characterSpecializations.gearScore,
+      charactersPreferredInstances: charactersPreferredInstances.instanceId,
+      charactersSavedInstances: charactersSavedInstances.instanceId,
+    })
+    .from(characters)
+    .leftJoin(
+      charactersPreferredInstances,
+      eq(charactersPreferredInstances.characterId, characters.id)
+    )
+    .leftJoin(
+      characterSpecializations,
+      eq(characterSpecializations.characterId, characters.id)
+    )
+    .leftJoin(
+      charactersSavedInstances,
+      eq(charactersSavedInstances.characterId, characters.id)
+    )
+    .where(eq(characters.ownerId, ownerId))
+    .$dynamic();
+
+  const queryResult = await getEntities(
+    query,
     page,
     pageSize,
-    count: +userCharacters[0]?.totalCount || 0,
-    data: fromDBManyToCharacters(userCharacters),
-  };
+    filterModel,
+    sortModel,
+    columnMapping
+  );
+
+  const result = fromDBManyToCharacters(queryResult);
+
+  return result;
 };
 
 export const getCharacterById = async (id: string) => {

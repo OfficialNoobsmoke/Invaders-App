@@ -7,6 +7,7 @@ import {
   GridFilterModel,
   GridPaginationModel,
   GridRowsProp,
+  GridSortModel,
   GridToolbarContainer,
 } from '@mui/x-data-grid';
 import ButtonWrapper from './ButtonWrapper';
@@ -23,6 +24,7 @@ interface DataGridWrapperProps {
   handleAddButtonClick?: () => void;
   columnVisibilityModel?: GridColumnVisibilityModel;
   checkboxSelection?: boolean;
+  handleSortModeChange?: (sortModel: GridSortModel) => void;
 }
 
 export const DataGridWrapper = ({
@@ -36,6 +38,7 @@ export const DataGridWrapper = ({
   handlePaginationChange,
   handleAddButtonClick,
   handleFilterModelChange,
+  handleSortModeChange,
   columnVisibilityModel = { id: false },
 }: DataGridWrapperProps) => {
   function handlePaginationModelChange(model: GridPaginationModel, details: GridCallbackDetails<'pagination'>): void {
@@ -66,6 +69,7 @@ export const DataGridWrapper = ({
       paginationMode="server"
       pagination
       filterMode="server"
+      onSortModelChange={handleSortModeChange}
       checkboxSelection={checkboxSelection}
       onFilterModelChange={handleFilterModelChange}
       onPaginationModelChange={handlePaginationModelChange}

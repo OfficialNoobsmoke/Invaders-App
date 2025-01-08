@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { general, errorMessages, frontEndRoutes } from '../constants/constants';
-import { IAuthCookie } from '../interfaces/IAuthCookie';
+import { AuthCookie } from '../interfaces/authCookie';
 import {
   clearSessionData,
   isRefreshTokenAvailable,
@@ -12,7 +12,7 @@ import { AuthenticationError } from '../exceptions/authenticationError';
 import { HTTPError } from '../exceptions/httpError';
 
 export const refreshToken = async (req: Request, res: Response) => {
-  const authCookie = req.signedCookies[general.AUTH_COOKIE] as IAuthCookie;
+  const authCookie = req.signedCookies[general.AUTH_COOKIE] as AuthCookie;
   if (!authCookie) {
     return res.status(401).json({ message: errorMessages.NO_COOKIE_FOUND });
   }
@@ -59,7 +59,7 @@ export const checkAuthentication = async (req: Request, res: Response) => {
   }
   const {
     authentication: { accessToken },
-  } = authCookie as IAuthCookie;
+  } = authCookie as AuthCookie;
   const decoded = jwt.decode(accessToken) as jwt.JwtPayload | null;
   if (!decoded || (decoded.exp && Date.now() >= decoded.exp * 1000)) {
     throw new AuthenticationError(errorMessages.INVALID_TOKEN);

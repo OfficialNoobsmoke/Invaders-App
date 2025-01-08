@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 
-export const hmacHashJwt = (jwtToken: string) => {
+export const hmacHashString = (value: string) => {
   const hmac = crypto.createHmac('sha256', process.env.HASH_SECRET!);
-  hmac.update(jwtToken);
+  hmac.update(value);
   return hmac.digest('base64');
 };

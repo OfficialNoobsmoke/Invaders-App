@@ -13,4 +13,5 @@ export const apiRoutes = Object.freeze({
   CHECK: '/auth/check',
   USER: '/user/me',
   CHARACTERS: '/characters',
+  CHARACTER: '/character',
 });

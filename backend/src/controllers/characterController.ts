@@ -31,7 +31,7 @@ export const createCharacter = async (req: Request, res: Response) => {
 };
 
 export const getCharactersByUserId = async (req: Request, res: Response) => {
-  const { filterModel } = req.body;
+  const { filterModel, sortModel } = req.body;
   let { userId } = req.params;
   const { page = '1', pageSize = '25' } = req.query;
   if (!userId) {
@@ -40,14 +40,15 @@ export const getCharactersByUserId = async (req: Request, res: Response) => {
   const pageNum = parseInt(page as string, 10);
   const pageSizeNum = parseInt(pageSize as string, 10);
 
-  const characters = await characterService.getCharactersByUserId(
+  const result = await characterService.getCharactersByUserId(
     userId,
     pageNum,
     pageSizeNum,
-    filterModel
+    filterModel.items,
+    sortModel
   );
 
-  res.status(HttpStatusCode.Ok).json(characters);
+  res.status(HttpStatusCode.Ok).json(result);
 };
 
 export const getCharacterById = async (req: Request, res: Response) => {

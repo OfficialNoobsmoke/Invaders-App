@@ -18,7 +18,7 @@ CREATE TABLE "realm_servers" (
 CREATE TABLE "character_specializations" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar(50) NOT NULL,
-	"gearScore" numeric(4, 0) NOT NULL,
+	"gear_score" numeric(4, 0) NOT NULL,
 	"character_id" uuid,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
