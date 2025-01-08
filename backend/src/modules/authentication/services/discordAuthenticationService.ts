@@ -1,10 +1,10 @@
 import { Profile } from 'passport-discord';
-import userRepository from '../user/userRepository';
-import { getGuildMemberDetails } from './utils/discordApiWrapper';
-import { User } from '../user/interfaces/user';
+import userRepository from '../../user/userRepository';
+import { getGuildMemberDetails } from '../utils/discordApiWrapper';
+import { User } from '../../user/interfaces/user';
 import passport from 'passport';
-import { discordTokenRepository } from './discordTokenRepository';
-import { hmacHashString } from '../../libs/utils/cryptography';
+import { discordTokenRepository } from '../discordTokenRepository';
+import { hmacHashString } from '../../../shared/utils/cryptography';
 
 export const createDiscordTokenForUser = async (
   parentId: string,

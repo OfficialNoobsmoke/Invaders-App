@@ -1,6 +1,6 @@
-import { tokenRepository } from './tokenRepository';
-import { hmacHashString } from '../../libs/utils/cryptography';
-import jwtToken from './utils/jwtToken';
+import { tokenRepository } from '../tokenRepository';
+import { hmacHashString } from '../../../shared/utils/cryptography';
+import jwtToken from '../utils/jwtToken';
 
 export const generateNewTokenForUser = async (
   userId: string,

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as userService from '../services/userService';
+import * as userService from './userService';
 
 export const createUser = async (req: Request, res: Response) => {
   const { discordId, username, displayName, email, profileImageUrl } = req.body;

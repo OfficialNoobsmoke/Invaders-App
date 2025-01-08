@@ -1,4 +1,4 @@
-import { getDatabase } from '../../libs/database/database';
+import { getDatabase } from '../../app/database/database';
 import { discordTokens } from './database/discordTokens';
 import { eq } from 'drizzle-orm';
 

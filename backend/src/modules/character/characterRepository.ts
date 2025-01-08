@@ -1,14 +1,13 @@
 import { eq } from 'drizzle-orm';
-import { getDatabase } from '../../libs/database/database';
+import { getDatabase } from '../../app/database/database';
 import {
   characters,
   charactersPreferredInstances,
   charactersSavedInstances,
   characterSpecializations,
-  //characterDetails,
-} from '../../libs/database/schema';
+} from '../../app/database/schema';
 import { fromDBManyToCharacters } from './characterMapper';
-import { getEntities } from '../../libs/repositories/genericRepository';
+import { getEntities } from '../../shared/repositories/genericRepository';
 import { CharacterResponseDto } from './interfaces/character';
 import { PgColumn, PgTable } from 'drizzle-orm/pg-core';
 
@@ -126,6 +125,52 @@ export const getCharactersByUserId = async (
       column: charactersSavedInstances.instanceId,
     },
   };
+
+  // const tableConfiguration = [
+  //   {
+  //     table: characters,
+  //     columns: {
+  //       name: characters.name,
+  //       faction: characters.faction,
+  //       class: characters.class,
+  //       realmServerId: characters.realmServerId,
+  //       createdAt: characters.createdAt,
+  //       ownerId: characters.ownerId,
+  //     },
+  //     join: null,
+  //   },
+  //   {
+  //     table: characterSpecializations,
+  //     columns: {
+  //       specializations: characterSpecializations.name,
+  //       gearScore: characterSpecializations.gearScore,
+  //     },
+  //     join: {
+  //       table: characters,
+  //       on: eq(characters.id, characterSpecializations.characterId),
+  //     },
+  //   },
+  //   {
+  //     table: charactersPreferredInstances,
+  //     columns: {
+  //       charactersPreferredInstances: charactersPreferredInstances.instanceId,
+  //     },
+  //     join: {
+  //       table: characters,
+  //       on: eq(characters.id, charactersPreferredInstances.characterId),
+  //     },
+  //   },
+  //   {
+  //     table: charactersSavedInstances,
+  //     columns: {
+  //       charactersSavedInstances: charactersSavedInstances.instanceId,
+  //     },
+  //     join: {
+  //       table: characters,
+  //       on: eq(characters.id, charactersSavedInstances.characterId),
+  //     },
+  //   },
+  // ];
 
   const query = db
     .select({

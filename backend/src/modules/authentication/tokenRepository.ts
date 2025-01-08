@@ -1,8 +1,8 @@
 import { and, eq } from 'drizzle-orm';
 import { tokens } from './database/tokens';
-import { getDatabase } from '../../libs/database/database';
+import { getDatabase } from '../../app/database/database';
 import { discordTokens } from './database/discordTokens';
-import { AuthenticationError } from '../../libs/exceptions/authenticationError';
+import { AuthenticationError } from '../../shared/exceptions/authenticationError';
 
 export const tokenRepository = {
   async createToken({

@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Strategy as DiscordStrategy, Profile } from 'passport-discord';
 import { PassportRequestUser } from '../interfaces/passportRequestUser';
-import { getOrCreateUserFromProfile } from '../discordAuthenticationService';
+import { getOrCreateUserFromProfile } from '../services/discordAuthenticationService';
 
 const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_CALLBACK_URL } =
   process.env;

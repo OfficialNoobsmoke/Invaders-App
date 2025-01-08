@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import userValidator from '../../modules/user/userValidator';
 import { validationHandler } from '../middlewares/validationHandler';
-import userController from '../controllers/userController';
+import userController from '../../modules/user/userController';
 import authorizationMiddleware from '../../modules/authentication/authMiddleware';
 import {
   authenticate,
   callBack,
-} from '../../modules/authentication/discordAuthenticationService';
-import { saveAuthenticationData } from '../../modules/authentication/authenticationService';
+} from '../../modules/authentication/services/discordAuthenticationService';
+import { saveAuthenticationData } from '../../modules/authentication/services/authenticationService';
 import {
   authenticationFailure,
   checkAuthentication,

@@ -1,19 +1,19 @@
-import { PassportRequestUser } from './interfaces/passportRequestUser';
+import { PassportRequestUser } from '../interfaces/passportRequestUser';
 import { Request, Response } from 'express';
 import { createDiscordTokenForUser } from './discordAuthenticationService';
 import { generateNewTokenForUser } from './tokenService';
-import { buildRouteUrl } from '../../libs/utils/urlRouteBuilder';
-import { AuthInfo } from './interfaces/authInfo';
-import { AuthCookie } from './interfaces/authCookie';
-import { tokenRepository } from './tokenRepository';
-import { hmacHashString } from '../../libs/utils/cryptography';
-import { verify } from './utils/jwtToken';
+import { buildRouteUrl } from '../../../shared/utils/urlRouteBuilder';
+import { AuthInfo } from '../interfaces/authInfo';
+import { AuthCookie } from '../interfaces/authCookie';
+import { tokenRepository } from '../tokenRepository';
+import { hmacHashString } from '../../../shared/utils/cryptography';
+import { verify } from '../utils/jwtToken';
 import {
   errorMessages,
   frontEndRoutes,
   general,
-} from '../../libs/constants/constants';
-import { AuthenticationError } from '../../libs/exceptions/authenticationError';
+} from '../../../shared/constants/constants';
+import { AuthenticationError } from '../../../shared/exceptions/authenticationError';
 
 export const saveAuthenticationData = async (req: Request, res: Response) => {
   const user = req.user as PassportRequestUser;

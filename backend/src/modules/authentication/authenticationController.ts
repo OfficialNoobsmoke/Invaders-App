@@ -4,16 +4,16 @@ import {
   general,
   errorMessages,
   frontEndRoutes,
-} from '../../libs/constants/constants';
+} from '../../shared/constants/constants';
 import { AuthCookie } from './interfaces/authCookie';
 import {
   clearSessionData,
   isRefreshTokenAvailable,
   updateCookieWithNewTokens,
-} from './authenticationService';
-import { buildRouteUrl } from '../../libs/utils/urlRouteBuilder';
-import { AuthenticationError } from '../../libs/exceptions/authenticationError';
-import { HTTPError } from '../../libs/exceptions/httpError';
+} from './services/authenticationService';
+import { buildRouteUrl } from '../../shared/utils/urlRouteBuilder';
+import { AuthenticationError } from '../../shared/exceptions/authenticationError';
+import { HTTPError } from '../../shared/exceptions/httpError';
 
 export const refreshToken = async (req: Request, res: Response) => {
   const authCookie = req.signedCookies[general.AUTH_COOKIE] as AuthCookie;

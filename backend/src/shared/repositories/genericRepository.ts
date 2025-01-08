@@ -12,7 +12,7 @@ import {
   eq,
   ne,
 } from 'drizzle-orm';
-import { getDatabase } from '../database/database';
+import { getDatabase } from '../../app/database/database';
 import {
   getTableConfig,
   PgColumn,
@@ -21,7 +21,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { Client } from 'pg';
-import * as schema from '../database/schema';
+import * as schema from '../../app/database/schema';
 
 const buildFilterConditions = (
   filterModel: { field: string; operator: string; value: string | string[] }[],

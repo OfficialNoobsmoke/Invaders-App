@@ -1,6 +1,6 @@
 import { pgTable, uuid, primaryKey } from 'drizzle-orm/pg-core';
 import { characters } from './characters';
-import { instances } from '../../../libs/database/schema/instances';
+import { instances } from '../../../app/database/schema/instances';
 import { relations } from 'drizzle-orm';
 
 export const charactersSavedInstances = pgTable(

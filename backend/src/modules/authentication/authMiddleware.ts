@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { errorMessages, general } from '../../libs/constants/constants';
+import { errorMessages, general } from '../../shared/constants/constants';
 import { AuthCookie } from './interfaces/authCookie';
-import { refreshExpiredToken } from './authenticationService';
+import { refreshExpiredToken } from './services/authenticationService';
 
 const authorizationMiddleware = async (
   req: Request,

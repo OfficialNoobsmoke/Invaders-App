@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { getDatabase } from '../../libs/database/database';
+import { getDatabase } from '../../app/database/database';
 import { users } from './database/user';
 import { characters } from '../character/database/characters';
 import { User } from './interfaces/user';

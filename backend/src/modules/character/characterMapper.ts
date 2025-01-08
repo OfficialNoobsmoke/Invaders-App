@@ -1,5 +1,5 @@
 import { CharacterResponseDto } from './interfaces/character';
-import { Pagination } from '../../libs/interfaces/pagination';
+import { Pagination } from '../../shared/interfaces/pagination';
 
 export const fromDBManyToCharacters = (dbResult: {
   page: number;

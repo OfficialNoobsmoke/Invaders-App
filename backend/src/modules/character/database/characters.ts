@@ -8,7 +8,7 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { users } from '../../user/database/user';
-import { realmServers } from '../../../libs/database/schema/realmServers';
+import { realmServers } from '../../../app/database/schema/realmServers';
 import { relations } from 'drizzle-orm';
 import { charactersPreferredInstances } from './charactersPreferredInstances';
 import { charactersSavedInstances } from './charactersSavedInstances';

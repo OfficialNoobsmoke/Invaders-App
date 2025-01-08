@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ErrorRequestHandler } from 'express';
-import { errorMessages, general } from '../constants/constants';
-import { BaseError } from '../exceptions/baseError';
+import { errorMessages, general } from '../../shared/constants/constants';
+import { BaseError } from '../../shared/exceptions/baseError';
 
 const errorHandler: ErrorRequestHandler = (
   err: Error & { statusCode?: number },
