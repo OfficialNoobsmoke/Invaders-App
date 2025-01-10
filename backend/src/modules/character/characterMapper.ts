@@ -5,17 +5,8 @@ export const fromDBManyToCharacters = (dbResult: {
   page: number;
   pageSize: number;
   count: number;
-  data: (
-    | {
-        [x: string]: string;
-      }
-    | {
-        [x: string]: string;
-      }
-    | {
-        [x: string]: string;
-      }
-  )[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: Record<string, any>[];
 }) => {
   const mergedArray: CharacterResponseDto[] = [];
   dbResult.data.forEach((record) => {
@@ -25,7 +16,7 @@ export const fromDBManyToCharacters = (dbResult: {
       faction,
       class: charClass,
       ownerId,
-      realmServerId,
+      realmServerName,
       createdAt,
       specializationId,
       specializationName,
@@ -43,7 +34,7 @@ export const fromDBManyToCharacters = (dbResult: {
         faction,
         class: charClass,
         ownerId,
-        realmServerId,
+        realmServerName,
         createdAt,
         specializations: [],
         gearScore: [],
@@ -60,6 +51,10 @@ export const fromDBManyToCharacters = (dbResult: {
         existingEntry.specializations.push({
           id: specializationId,
           name: specializationName,
+        });
+        existingEntry.gearScore.push({
+          id: specializationId,
+          value: specializationGearScore,
         });
       }
     }

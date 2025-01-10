@@ -14,6 +14,7 @@ import {
 import { buildRouteUrl } from '../../shared/utils/urlRouteBuilder';
 import { AuthenticationError } from '../../shared/exceptions/authenticationError';
 import { HTTPError } from '../../shared/exceptions/httpError';
+import { HttpStatusCode } from 'axios';
 
 export const refreshToken = async (req: Request, res: Response) => {
   const authCookie = req.signedCookies[general.AUTH_COOKIE] as AuthCookie;
@@ -26,7 +27,7 @@ export const refreshToken = async (req: Request, res: Response) => {
     refreshToken
   );
   if (!isRefreshTokenValid) {
-    throw new HTTPError(errorMessages.TOKEN_EXPIRED, 403);
+    throw new HTTPError(errorMessages.TOKEN_EXPIRED, HttpStatusCode.Forbidden);
   }
   await updateCookieWithNewTokens(res, authCookie, refreshToken);
 
