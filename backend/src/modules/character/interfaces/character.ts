@@ -4,7 +4,7 @@ export interface CharacterResponseDto {
   faction: string;
   class: string;
   ownerId: string;
-  realmServerId: string;
+  realmServerName: string;
   createdAt: string;
   specializations: {
     id: string;

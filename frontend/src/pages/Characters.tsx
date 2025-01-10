@@ -10,16 +10,21 @@ import { UserContext } from '../context/userContexts';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID' },
-  { field: 'realmServerId', headerName: 'Realm-Server' },
+  { field: 'realmServerName', headerName: 'Realm-Server' },
   { field: 'name', headerName: 'Character Name' },
   { field: 'faction', headerName: 'Faction', type: 'singleSelect', valueOptions: ['Alliance', 'Horde'] },
   { field: 'class', headerName: 'Class' },
   {
-    field: 'specializations',
+    field: 'specializationName',
     headerName: 'Specialization',
     renderCell: (params) => params.row.specializations.map((s: { name: any }) => s.name).join(', '),
   },
-  { field: 'gearScore', headerName: 'Gearscore', type: 'number' },
+  {
+    field: 'specializationGearScore',
+    headerName: 'Gearscore',
+    type: 'number',
+    renderCell: (params) => params.row.gearScore.map((s: { value: any }) => s.value).join(', '),
+  },
   { field: 'charactersPreferredInstances', headerName: 'Preference In' },
   { field: 'charactersSavedInstances', headerName: 'Saved Instances' },
   { field: 'createdAt', headerName: 'Created At', type: 'date', valueGetter: (value) => value && new Date(value) },
@@ -70,14 +75,10 @@ export default function Characters() {
   const dummyCharacter = {
     name: 'Test',
     faction: 'Alliance',
-    characterClass: Math.random().toString(36).slice(2),
+    characterClass: 'Warrior',
     realmServerId: 'a1e0b3b5-1b86-4eb6-92b3-5bed64b35619',
     specializations: [{ name: 'Fury' }, { name: 'Protection' }],
-    charactersPreferredInstances: [
-      '673959db-e736-457c-bc7b-753f9972d977',
-      '9e2e8d17-51c8-4ab6-8613-5d60e1dbb977',
-      'bf71ff7b-fb9a-40bd-9273-154369c674bd',
-    ],
+    charactersPreferredInstances: ['673959db-e736-457c-bc7b-753f9972d977', '9e2e8d17-51c8-4ab6-8613-5d60e1dbb977'],
     charactersSavedInstances: ['9e2e8d17-51c8-4ab6-8613-5d60e1dbb977', '6328a2a7-85cb-4658-a8dc-de517cc63efa'],
   } as Character;
 

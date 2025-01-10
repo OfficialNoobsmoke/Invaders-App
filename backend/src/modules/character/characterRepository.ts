@@ -1,15 +1,16 @@
-import { eq } from 'drizzle-orm';
+import { aliasedTable, eq } from 'drizzle-orm';
 import { getDatabase } from '../../app/database/database';
 import {
   characters,
   charactersPreferredInstances,
   charactersSavedInstances,
   characterSpecializations,
+  realmServers,
+  instances,
 } from '../../app/database/schema';
 import { fromDBManyToCharacters } from './characterMapper';
 import { getEntities } from '../../shared/repositories/genericRepository';
-import { CharacterResponseDto } from './interfaces/character';
-import { PgColumn, PgTable } from 'drizzle-orm/pg-core';
+import { QueryConfiguration } from '../../shared/interfaces/queryConfiguration';
 
 export const createCharacter = async (
   name: string,
@@ -74,142 +75,80 @@ export const getCharactersByUserId = async (
   page: number,
   pageSize: number,
   filterModel: { field: string; operator: string; value: string }[],
-  sortModel: { field: string; sort: string }[] | null
+  sortModel: { field: string; sort: string }[]
 ) => {
-  const db = await getDatabase();
-
-  type AllowedCharacterFields = Pick<
-    CharacterResponseDto,
-    | 'name'
-    | 'faction'
-    | 'class'
-    | 'realmServerId'
-    | 'ownerId'
-    | 'createdAt'
-    | 'specializations'
-    | 'gearScore'
-    | 'charactersPreferredInstances'
-    | 'charactersSavedInstances'
-  >;
-
-  const columnMapping: Record<
-    keyof AllowedCharacterFields,
-    { table: PgTable; column: PgColumn }
-  > = {
-    name: { table: characters, column: characters.name },
-    faction: { table: characters, column: characters.faction },
-    class: { table: characters, column: characters.class },
-    realmServerId: {
-      table: characters,
-      column: characters.realmServerId,
-    },
-    createdAt: {
-      table: characters,
-      column: characters.createdAt,
-    },
-    ownerId: { table: characters, column: characters.ownerId },
-    specializations: {
-      table: characterSpecializations,
-      column: characterSpecializations.name,
-    },
-    gearScore: {
-      table: characterSpecializations,
-      column: characterSpecializations.gearScore,
-    },
-    charactersPreferredInstances: {
-      table: charactersPreferredInstances,
-      column: charactersPreferredInstances.instanceId,
-    },
-    charactersSavedInstances: {
-      table: charactersSavedInstances,
-      column: charactersSavedInstances.instanceId,
-    },
-  };
-
-  // const tableConfiguration = [
-  //   {
-  //     table: characters,
-  //     columns: {
-  //       name: characters.name,
-  //       faction: characters.faction,
-  //       class: characters.class,
-  //       realmServerId: characters.realmServerId,
-  //       createdAt: characters.createdAt,
-  //       ownerId: characters.ownerId,
-  //     },
-  //     join: null,
-  //   },
-  //   {
-  //     table: characterSpecializations,
-  //     columns: {
-  //       specializations: characterSpecializations.name,
-  //       gearScore: characterSpecializations.gearScore,
-  //     },
-  //     join: {
-  //       table: characters,
-  //       on: eq(characters.id, characterSpecializations.characterId),
-  //     },
-  //   },
-  //   {
-  //     table: charactersPreferredInstances,
-  //     columns: {
-  //       charactersPreferredInstances: charactersPreferredInstances.instanceId,
-  //     },
-  //     join: {
-  //       table: characters,
-  //       on: eq(characters.id, charactersPreferredInstances.characterId),
-  //     },
-  //   },
-  //   {
-  //     table: charactersSavedInstances,
-  //     columns: {
-  //       charactersSavedInstances: charactersSavedInstances.instanceId,
-  //     },
-  //     join: {
-  //       table: characters,
-  //       on: eq(characters.id, charactersSavedInstances.characterId),
-  //     },
-  //   },
-  // ];
-
-  const query = db
-    .select({
+  const charactersPreferredInstancesInstance = aliasedTable(
+    instances,
+    'charactersPreferredInstancesInstance'
+  );
+  const charactersSavedInstancesInstance = aliasedTable(
+    instances,
+    'charactersSavedInstancesInstance'
+  );
+  const queryConfiguration: QueryConfiguration = {
+    table: characters,
+    columns: {
       id: characters.id,
       name: characters.name,
       faction: characters.faction,
       class: characters.class,
-      ownerId: characters.ownerId,
-      realmServerId: characters.realmServerId,
       createdAt: characters.createdAt,
+      ownerId: characters.ownerId,
       specializationId: characterSpecializations.id,
       specializationName: characterSpecializations.name,
       specializationGearScore: characterSpecializations.gearScore,
-      charactersPreferredInstances: charactersPreferredInstances.instanceId,
-      charactersSavedInstances: charactersSavedInstances.instanceId,
-    })
-    .from(characters)
-    .leftJoin(
-      charactersPreferredInstances,
-      eq(charactersPreferredInstances.characterId, characters.id)
-    )
-    .leftJoin(
-      characterSpecializations,
-      eq(characterSpecializations.characterId, characters.id)
-    )
-    .leftJoin(
-      charactersSavedInstances,
-      eq(charactersSavedInstances.characterId, characters.id)
-    )
-    .where(eq(characters.ownerId, ownerId))
-    .$dynamic();
+      charactersPreferredInstances: charactersPreferredInstancesInstance.name,
+      charactersSavedInstances: charactersSavedInstancesInstance.name,
+      realmServerName: realmServers.name,
+    },
+    where: eq(characters.ownerId, ownerId),
+    totalCountAggregate: characters.id,
+    joins: [
+      {
+        table: characterSpecializations,
+        type: 'left',
+        condition: eq(characters.id, characterSpecializations.characterId),
+      },
+      {
+        table: charactersPreferredInstances,
+        type: 'left',
+        condition: eq(characters.id, charactersPreferredInstances.characterId),
+      },
+      {
+        table: charactersSavedInstances,
+        type: 'left',
+        condition: eq(characters.id, charactersSavedInstances.characterId),
+      },
+      {
+        table: realmServers,
+        type: 'left',
+        condition: eq(characters.realmServerId, realmServers.id),
+      },
+      {
+        table: charactersPreferredInstancesInstance,
+        type: 'left',
+        condition: eq(
+          charactersPreferredInstances.instanceId,
+          charactersPreferredInstancesInstance.id
+        ),
+      },
+      {
+        table: charactersSavedInstancesInstance,
+        type: 'left',
+        condition: eq(
+          charactersSavedInstances.instanceId,
+          charactersSavedInstancesInstance.id
+        ),
+      },
+    ],
+  };
 
   const queryResult = await getEntities(
-    query,
+    queryConfiguration,
     page,
     pageSize,
     filterModel,
-    sortModel,
-    columnMapping
+    sortModel
   );
 
   const result = fromDBManyToCharacters(queryResult);
