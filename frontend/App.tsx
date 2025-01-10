@@ -10,6 +10,7 @@ import Characters from './src/pages/Characters';
 import Profile from './src/pages/Profile';
 import { AuthenticationContextProvider } from './src/context/AuthenticationContextProvider';
 import DemoPage from './src/pages/DemoPage';
+import CharacterDetails from './src/pages/CharacterDetails';
 
 const App: React.FC = () => {
   return (
@@ -39,6 +40,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <Characters />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/character-details"
+              element={
+                <ProtectedRoute>
+                  <CharacterDetails />
                 </ProtectedRoute>
               }
             />

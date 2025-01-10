@@ -73,7 +73,7 @@ export const createCharacter = async (
 export const getCharactersByUserId = async (
   ownerId: string,
   page: number,
-  pageSize: number,
+  limit: number,
   filterModel: { field: string; operator: string; value: string }[],
   sortModel: { field: string; sort: string }[]
 ) => {
@@ -146,7 +146,7 @@ export const getCharactersByUserId = async (
   const queryResult = await getEntities(
     queryConfiguration,
     page,
-    pageSize,
+    limit,
     filterModel,
     sortModel
   );

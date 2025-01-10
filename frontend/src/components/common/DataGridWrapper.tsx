@@ -6,11 +6,11 @@ import {
   GridColumnVisibilityModel,
   GridFilterModel,
   GridPaginationModel,
+  GridRowSelectionModel,
   GridRowsProp,
   GridSortModel,
   GridToolbarContainer,
 } from '@mui/x-data-grid';
-import ButtonWrapper from './ButtonWrapper';
 
 interface DataGridWrapperProps {
   rows?: GridRowsProp;
@@ -21,10 +21,11 @@ interface DataGridWrapperProps {
   page?: number;
   handlePaginationChange: (page: number, pageSize: number) => void;
   handleFilterModelChange?: (filterModel: GridFilterModel) => void;
-  handleAddButtonClick?: () => void;
   columnVisibilityModel?: GridColumnVisibilityModel;
   checkboxSelection?: boolean;
   handleSortModeChange?: (sortModel: GridSortModel) => void;
+  handleRowSelectionChange?: (rowSelectionModel: GridRowSelectionModel) => void;
+  toolbar?: React.ReactNode;
 }
 
 export const DataGridWrapper = ({
@@ -36,10 +37,11 @@ export const DataGridWrapper = ({
   pageSize = 25,
   checkboxSelection = false,
   handlePaginationChange,
-  handleAddButtonClick,
   handleFilterModelChange,
   handleSortModeChange,
+  handleRowSelectionChange,
   columnVisibilityModel = { id: false },
+  toolbar,
 }: DataGridWrapperProps) => {
   function handlePaginationModelChange(model: GridPaginationModel, details: GridCallbackDetails<'pagination'>): void {
     if (details.reason !== 'setPaginationModel') return;
@@ -47,16 +49,8 @@ export const DataGridWrapper = ({
   }
 
   // Define the custom toolbar inside the component
-  const CustomToolbar = () => (
-    <GridToolbarContainer>
-      <ButtonWrapper
-        variant="outlined"
-        color="primary"
-        onClick={handleAddButtonClick}>
-        Add
-      </ButtonWrapper>
-    </GridToolbarContainer>
-  );
+  const customToolbar = (Children: React.ReactNode) => <GridToolbarContainer>{Children}</GridToolbarContainer>;
+  const customToolbarCaller = () => customToolbar(toolbar);
 
   return (
     <DataGrid
@@ -71,10 +65,11 @@ export const DataGridWrapper = ({
       filterMode="server"
       onSortModelChange={handleSortModeChange}
       checkboxSelection={checkboxSelection}
+      onRowSelectionModelChange={handleRowSelectionChange}
       onFilterModelChange={handleFilterModelChange}
       onPaginationModelChange={handlePaginationModelChange}
       slots={{
-        toolbar: CustomToolbar,
+        toolbar: customToolbarCaller,
       }}
     />
   );
