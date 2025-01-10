@@ -123,7 +123,7 @@ const fetchTotalCount = async (
 export const getEntities = async (
   queryConfiguration: QueryConfiguration,
   page: number,
-  pageSize: number,
+  limit: number,
   filterModel: { field: string; operator: string; value: string }[] = [],
   sortModel: { field: string; sort: string }[] = []
 ) => {
@@ -136,7 +136,7 @@ export const getEntities = async (
 
   addJoinsToQuery(query, queryConfiguration);
 
-  const offset = page * pageSize;
+  const offset = page * limit;
 
   if (filterModel.length > 0) {
     const filterColumn = getColumnByName(
@@ -152,7 +152,7 @@ export const getEntities = async (
     queryConfiguration.totalCountAggregate.name
   );
 
-  query.limit(pageSize).offset(offset);
+  query.limit(limit).offset(offset);
   if (sortModel.length > 0) {
     const sortColumn = getColumnByName(sortModel[0]?.field, queryConfiguration);
     query.orderBy(...buildSortConditions(sortModel, sortColumn));
@@ -162,7 +162,7 @@ export const getEntities = async (
 
   return {
     page: page,
-    pageSize,
+    limit,
     count: totalCount,
     data: entities,
   };

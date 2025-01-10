@@ -1,5 +1,5 @@
 import { apiRoutes } from '../constants/constants';
-import { Character } from '../interfaces/character';
+import { CreateCharacter, ReadCharacter } from '../dto/characterDto';
 import { Pagination } from '../interfaces/pagination';
 import apiClient from '../utils/apiClient';
 import { RouteBuilder } from '../utils/urlBuildRouter';
@@ -18,12 +18,12 @@ export const getCharactersByUserId = async (
   page: number,
   pageSize: number,
   queryOptions: object
-): Promise<Pagination<Character[]>> => {
+): Promise<Pagination<ReadCharacter[]>> => {
   const result = await apiClient.post(getCharactersByUserIdRoute(userId, page, pageSize), queryOptions);
   return result.data;
 };
 
-export const createCharacter = async (character: Character) => {
+export const createCharacter = async (character: CreateCharacter) => {
   const result = await apiClient.post(apiRoutes.CHARACTER, character);
   return result.data;
 };

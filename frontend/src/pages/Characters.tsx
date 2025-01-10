@@ -1,39 +1,63 @@
 import { DataGridWrapper } from '@/components/common/DataGridWrapper';
-import { GridColDef, GridFilterModel, GridSortModel } from '@mui/x-data-grid';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  GridActionsCellItem,
+  GridColDef,
+  GridFilterModel,
+  GridRowId,
+  GridRowSelectionModel,
+  GridSortModel,
+} from '@mui/x-data-grid';
+import { useQuery } from '@tanstack/react-query';
 import React, { useContext, useEffect, useState } from 'react';
-import { createCharacter, getCharactersByUserId } from '../services/characterService';
-import { AxiosError } from 'axios';
-import { Character } from '../interfaces/character';
+import { getCharactersByUserId } from '../services/characterService';
 import { Pagination } from '../interfaces/pagination';
 import { UserContext } from '../context/userContexts';
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID' },
-  { field: 'realmServerName', headerName: 'Realm-Server' },
-  { field: 'name', headerName: 'Character Name' },
-  { field: 'faction', headerName: 'Faction', type: 'singleSelect', valueOptions: ['Alliance', 'Horde'] },
-  { field: 'class', headerName: 'Class' },
-  {
-    field: 'specializationName',
-    headerName: 'Specialization',
-    renderCell: (params) => params.row.specializations.map((s: { name: any }) => s.name).join(', '),
-  },
-  {
-    field: 'specializationGearScore',
-    headerName: 'Gearscore',
-    type: 'number',
-    renderCell: (params) => params.row.gearScore.map((s: { value: any }) => s.value).join(', '),
-  },
-  { field: 'charactersPreferredInstances', headerName: 'Preference In' },
-  { field: 'charactersSavedInstances', headerName: 'Saved Instances' },
-  { field: 'createdAt', headerName: 'Created At', type: 'date', valueGetter: (value) => value && new Date(value) },
-  { field: 'actions', headerName: 'Actions' },
-];
+import { MdEditSquare } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
+import { ReadCharacter } from '../dto/characterDto';
+import { MdPersonAdd } from 'react-icons/md';
+import ButtonWrapper from '../components/common/ButtonWrapper';
 
 export default function Characters() {
+  const columns: GridColDef[] = [
+    { field: 'id', headerName: 'ID' },
+    { field: 'realmServerName', headerName: 'Realm-Server', width: 150 },
+    { field: 'name', headerName: 'Character Name', width: 150 },
+    { field: 'faction', headerName: 'Faction', type: 'singleSelect', valueOptions: ['Alliance', 'Horde'], width: 100 },
+    { field: 'class', headerName: 'Class', width: 100 },
+    {
+      field: 'specializationName',
+      headerName: 'Specialization',
+      renderCell: (params) => params.row.specializations.map((s: { name: string }) => s.name).join(', '),
+      width: 200,
+    },
+    {
+      field: 'specializationGearScore',
+      headerName: 'Gear score',
+      type: 'number',
+      renderCell: (params) => params.row.gearScore.map((s: { value: number }) => s.value).join(', '),
+      width: 150,
+    },
+    { field: 'charactersPreferredInstances', headerName: 'Preference In', width: 200 },
+    { field: 'charactersSavedInstances', headerName: 'Saved Instances', width: 200 },
+    { field: 'createdAt', headerName: 'Created At', type: 'date', valueGetter: (value) => value && new Date(value) },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      type: 'actions',
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<MdEditSquare />}
+          label="Edit"
+          onClick={redirectToEditCharacter(params.id)}
+        />,
+      ],
+    },
+  ];
+
+  const navigate = useNavigate();
   const userContext = useContext(UserContext);
-  const [data, setData] = useState<Pagination<Character[]>>();
+  const [data, setData] = useState<Pagination<ReadCharacter[]>>();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(25);
   const [queryOptions, setQueryOptions] = useState<{
@@ -44,10 +68,32 @@ export default function Characters() {
     sortModel: [],
   });
 
-  function setPaginationData(page: number, pageSize: number) {
+  const redirectToEditCharacter = React.useCallback(
+    (id: GridRowId) => () => {
+      navigate('/character-details', {
+        state: {
+          message: 'Hello from Home!',
+          characterId: id,
+          mode: 'edit',
+        },
+      });
+    },
+    []
+  );
+
+  const redirectToAddCharacter = () => {
+    navigate('/character-details', {
+      state: {
+        message: 'Hello from Home!',
+        mode: 'add',
+      },
+    });
+  };
+
+  const setPaginationData = (page: number, pageSize: number) => {
     setPage(page);
     setPageSize(pageSize);
-  }
+  };
 
   const handlePaginationModelChange = (filterModel: GridFilterModel) => {
     setQueryOptions((prev) => ({
@@ -63,6 +109,10 @@ export default function Characters() {
     }));
   };
 
+  const handleRowSelectionChange = (rowSelectionModel: GridRowSelectionModel) => {
+    rowSelectionModel.map((row) => console.log(row));
+  };
+
   const { data: characters, isFetching } = useQuery({
     queryKey: ['characters', page, pageSize, queryOptions],
     queryFn: () => {
@@ -70,23 +120,6 @@ export default function Characters() {
     },
     retry: false,
     enabled: !!userContext?.id,
-  });
-
-  const dummyCharacter = {
-    name: 'Test',
-    faction: 'Alliance',
-    characterClass: 'Warrior',
-    realmServerId: 'a1e0b3b5-1b86-4eb6-92b3-5bed64b35619',
-    specializations: [{ name: 'Fury' }, { name: 'Protection' }],
-    charactersPreferredInstances: ['673959db-e736-457c-bc7b-753f9972d977', '9e2e8d17-51c8-4ab6-8613-5d60e1dbb977'],
-    charactersSavedInstances: ['9e2e8d17-51c8-4ab6-8613-5d60e1dbb977', '6328a2a7-85cb-4658-a8dc-de517cc63efa'],
-  } as Character;
-
-  const createCharacterMutation = useMutation({
-    mutationFn: () => createCharacter(dummyCharacter),
-    onError: (error: AxiosError) => {
-      console.error('Logout failed:', error.response?.data || error.message);
-    },
   });
 
   useEffect(() => {
@@ -102,12 +135,20 @@ export default function Characters() {
         rows={data?.data}
         isLoading={isFetching}
         handlePaginationChange={setPaginationData}
-        handleAddButtonClick={() => createCharacterMutation.mutate()}
         handleFilterModelChange={handlePaginationModelChange}
         handleSortModeChange={handleSortModeChange}
+        handleRowSelectionChange={handleRowSelectionChange}
         rowCount={data?.count}
         page={page}
         pageSize={pageSize}
+        toolbar={
+          <ButtonWrapper
+            startIcon={<MdPersonAdd />}
+            variant="outlined"
+            onClick={redirectToAddCharacter}>
+            Add
+          </ButtonWrapper>
+        }
       />
     </div>
   );

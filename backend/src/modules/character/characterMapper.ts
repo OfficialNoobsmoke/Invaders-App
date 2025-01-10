@@ -3,7 +3,7 @@ import { Pagination } from '../../shared/interfaces/pagination';
 
 export const fromDBManyToCharacters = (dbResult: {
   page: number;
-  pageSize: number;
+  limit: number;
   count: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: Record<string, any>[];
@@ -83,7 +83,7 @@ export const fromDBManyToCharacters = (dbResult: {
   });
   return {
     page: dbResult.page,
-    pageSize: dbResult.pageSize,
+    limit: dbResult.limit,
     count: dbResult.count,
     data: mergedArray,
   } satisfies Pagination<CharacterResponseDto>;

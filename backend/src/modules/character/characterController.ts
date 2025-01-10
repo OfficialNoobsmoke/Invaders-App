@@ -33,17 +33,17 @@ export const createCharacter = async (req: Request, res: Response) => {
 export const getCharactersByUserId = async (req: Request, res: Response) => {
   const { filterModel, sortModel } = req.body;
   let { userId } = req.params;
-  const { page = '1', pageSize = '25' } = req.query;
+  const { page = '1', limit = '25' } = req.query;
   if (!userId) {
     userId = req.user.id;
   }
   const pageNum = parseInt(page as string, 10);
-  const pageSizeNum = parseInt(pageSize as string, 10);
+  const limitNum = parseInt(limit as string, 10);
 
   const result = await characterService.getCharactersByUserId(
     userId,
     pageNum,
-    pageSizeNum,
+    limitNum,
     filterModel.items,
     sortModel
   );
