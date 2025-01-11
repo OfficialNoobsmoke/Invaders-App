@@ -1,25 +1,18 @@
-import { DataGridWrapper } from '@/components/common/DataGridWrapper';
-import {
-  GridActionsCellItem,
-  GridColDef,
-  GridFilterModel,
-  GridRowId,
-  GridRowSelectionModel,
-  GridSortModel,
-} from '@mui/x-data-grid';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { GridColDef, GridActionsCellItem, GridFilterModel, GridSortModel, GridRowId } from '@mui/x-data-grid';
+import { MdEditSquare, MdPersonAdd } from 'react-icons/md';
+
+import { DataGridWrapper } from '@/components/common/DataGridWrapper';
+import ButtonWrapper from '../components/common/ButtonWrapper';
 import { getCharactersByUserId } from '../services/characterService';
 import { Pagination } from '../interfaces/pagination';
 import { UserContext } from '../context/userContexts';
-import { MdEditSquare } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
 import { ReadCharacter } from '../dto/characterDto';
-import { MdPersonAdd } from 'react-icons/md';
-import ButtonWrapper from '../components/common/ButtonWrapper';
 
-export default function Characters() {
-  const columns: GridColDef[] = [
+const useColumns = (redirectToEditCharacter: (id: GridRowId) => void): GridColDef[] => {
+  return [
     { field: 'id', headerName: 'ID' },
     { field: 'realmServerName', headerName: 'Realm-Server', width: 150 },
     { field: 'name', headerName: 'Character Name', width: 150 },
@@ -33,7 +26,7 @@ export default function Characters() {
     },
     {
       field: 'specializationGearScore',
-      headerName: 'Gear score',
+      headerName: 'Gear Score',
       type: 'number',
       renderCell: (params) => params.row.gearScore.map((s: { value: number }) => s.value).join(', '),
       width: 150,
@@ -49,75 +42,46 @@ export default function Characters() {
         <GridActionsCellItem
           icon={<MdEditSquare />}
           label="Edit"
-          onClick={redirectToEditCharacter(params.id)}
+          onClick={() => redirectToEditCharacter(params.id)}
         />,
       ],
     },
   ];
+};
 
+const Characters = () => {
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
+
   const [data, setData] = useState<Pagination<ReadCharacter[]>>();
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(25);
-  const [queryOptions, setQueryOptions] = useState<{
-    filterModel?: GridFilterModel;
-    sortModel?: GridSortModel;
-  }>({
+  const [limit, setLimit] = useState(25);
+  const [queryOptions, setQueryOptions] = useState<{ filterModel?: GridFilterModel; sortModel?: GridSortModel }>({
     filterModel: { items: [] },
     sortModel: [],
   });
 
-  const redirectToEditCharacter = React.useCallback(
-    (id: GridRowId) => () => {
+  const redirectToEditCharacter = useCallback(
+    (id: GridRowId) => {
       navigate('/character-details', {
         state: {
-          message: 'Hello from Home!',
           characterId: id,
           mode: 'edit',
         },
       });
     },
-    []
+    [navigate]
   );
 
   const redirectToAddCharacter = () => {
     navigate('/character-details', {
-      state: {
-        message: 'Hello from Home!',
-        mode: 'add',
-      },
+      state: { mode: 'add' },
     });
   };
 
-  const setPaginationData = (page: number, pageSize: number) => {
-    setPage(page);
-    setPageSize(pageSize);
-  };
-
-  const handlePaginationModelChange = (filterModel: GridFilterModel) => {
-    setQueryOptions((prev) => ({
-      ...prev,
-      filterModel: filterModel,
-    }));
-  };
-
-  const handleSortModeChange = (sortModel: GridSortModel) => {
-    setQueryOptions((prev) => ({
-      ...prev,
-      sortModel: sortModel,
-    }));
-  };
-
-  const handleRowSelectionChange = (rowSelectionModel: GridRowSelectionModel) => {
-    rowSelectionModel.map((row) => console.log(row));
-  };
-
   const { data: characters, isFetching } = useQuery({
-    queryKey: ['characters', page, pageSize, queryOptions],
-    queryFn: () => {
-      return getCharactersByUserId(userContext?.id || '', page, pageSize, queryOptions);
-    },
+    queryKey: ['characters', page, limit, queryOptions],
+    queryFn: () => getCharactersByUserId(userContext?.id || '', page, limit, queryOptions),
     retry: false,
     enabled: !!userContext?.id,
   });
@@ -126,21 +90,35 @@ export default function Characters() {
     if (characters) {
       setData(characters);
     }
-  }, [characters, page, pageSize, userContext?.id]);
+  }, [characters]);
+
+  const handlePaginationData = (page: number, limit: number) => {
+    setPage(page);
+    setLimit(limit);
+  };
+
+  const handleFilterModelChange = (filterModel: GridFilterModel) => {
+    setQueryOptions((prev) => ({ ...prev, filterModel }));
+  };
+
+  const handleSortModelChange = (sortModel: GridSortModel) => {
+    setQueryOptions((prev) => ({ ...prev, sortModel }));
+  };
+
+  const columns = useColumns(redirectToEditCharacter);
 
   return (
     <div>
       <DataGridWrapper
         columns={columns}
-        rows={data?.data}
+        rows={data?.data || []}
         isLoading={isFetching}
-        handlePaginationChange={setPaginationData}
-        handleFilterModelChange={handlePaginationModelChange}
-        handleSortModeChange={handleSortModeChange}
-        handleRowSelectionChange={handleRowSelectionChange}
-        rowCount={data?.count}
+        handlePaginationChange={handlePaginationData}
+        handleFilterModelChange={handleFilterModelChange}
+        handleSortModeChange={handleSortModelChange}
+        rowCount={data?.count || 0}
         page={page}
-        pageSize={pageSize}
+        limit={limit}
         toolbar={
           <ButtonWrapper
             startIcon={<MdPersonAdd />}
@@ -152,4 +130,6 @@ export default function Characters() {
       />
     </div>
   );
-}
+};
+
+export default Characters;

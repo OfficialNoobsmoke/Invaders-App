@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { UserContext } from '../context/userContexts';
 
-export default function Home() {
+const Home = () => {
   const user = useContext(UserContext);
   if (!user) return null;
   return (
@@ -9,4 +9,6 @@ export default function Home() {
       <h1>Welcome, {user.displayName}</h1>
     </div>
   );
-}
+};
+
+export default Home;

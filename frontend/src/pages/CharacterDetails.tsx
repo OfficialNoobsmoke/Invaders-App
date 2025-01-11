@@ -6,7 +6,7 @@ import { createCharacter } from '../services/characterService';
 import ButtonWrapper from '../components/common/ButtonWrapper';
 import { CreateCharacter } from '../dto/characterDto';
 
-export default function CharacterDetails() {
+const CharacterDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { message, characterId, mode } = location.state || {};
@@ -49,4 +49,6 @@ export default function CharacterDetails() {
       </ButtonWrapper>
     </div>
   );
-}
+};
+
+export default CharacterDetails;

@@ -17,9 +17,9 @@ interface DataGridWrapperProps {
   columns: GridColDef[];
   isLoading?: boolean;
   rowCount?: number;
-  pageSize?: number;
+  limit?: number;
   page?: number;
-  handlePaginationChange: (page: number, pageSize: number) => void;
+  handlePaginationChange: (page: number, limit: number) => void;
   handleFilterModelChange?: (filterModel: GridFilterModel) => void;
   columnVisibilityModel?: GridColumnVisibilityModel;
   checkboxSelection?: boolean;
@@ -34,7 +34,7 @@ export const DataGridWrapper = ({
   isLoading = false,
   rowCount = 0,
   page = 1,
-  pageSize = 25,
+  limit = 25,
   checkboxSelection = false,
   handlePaginationChange,
   handleFilterModelChange,
@@ -59,7 +59,7 @@ export const DataGridWrapper = ({
       loading={isLoading}
       columnVisibilityModel={columnVisibilityModel}
       rowCount={rowCount}
-      paginationModel={{ page, pageSize }}
+      paginationModel={{ page, pageSize: limit }}
       paginationMode="server"
       pagination
       filterMode="server"

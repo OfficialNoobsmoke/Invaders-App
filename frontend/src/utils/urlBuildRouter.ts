@@ -11,8 +11,8 @@ export class RouteBuilder {
     return this;
   };
 
-  public addPaginationQueryParameters = (page: number, pageSize: number) => {
-    this.routeUrl = `${this.routeUrl}?page=${page}&pageSize=${pageSize}`;
+  public addPaginationQueryParameters = (page: number, limit: number) => {
+    this.routeUrl = `${this.routeUrl}?page=${page}&limit=${limit}`;
     return this;
   };
 

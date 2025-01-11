@@ -109,7 +109,6 @@ const fetchTotalCount = async (
   columnName: string
 ) => {
   const subQuery = query.as('sub');
-  console.log(query.toSQL());
   const result = await db
     .select({
       total: sql<number>`COUNT(DISTINCT sub.${sql.raw(columnName)})`,
