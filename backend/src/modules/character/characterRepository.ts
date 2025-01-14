@@ -11,14 +11,17 @@ import {
 import { fromDBManyToCharacters } from './characterMapper';
 import { getEntities } from '../../shared/repositories/genericRepository';
 import { QueryConfiguration } from '../../shared/interfaces/queryConfiguration';
+import { Class } from './interfaces/class';
+import { Specialization } from './interfaces/specialization';
+import { Faction } from './interfaces/faction';
 
 export const createCharacter = async (
   name: string,
-  faction: 'Alliance' | 'Horde',
-  characterClass: string,
+  faction: Faction,
+  characterClass: Class,
   ownerId: string,
   realmServerId: string,
-  specializations: { name: string; gearScore: number }[] = [],
+  specializations: { name: Specialization; gearScore: number }[] = [],
   preferredInstanceIds: string[] = [],
   savedInstanceIds: string[] = []
 ) => {
@@ -100,6 +103,7 @@ export const getCharactersByUserId = async (
       charactersPreferredInstances: charactersPreferredInstancesInstance.name,
       charactersSavedInstances: charactersSavedInstancesInstance.name,
       realmServerName: realmServers.name,
+      realmServerId: realmServers.id,
     },
     where: eq(characters.ownerId, ownerId),
     totalCountAggregate: characters.id,
@@ -169,8 +173,8 @@ export const updateCharacter = async (
   id: string,
   updatedData: Partial<{
     name: string;
-    faction: 'Alliance' | 'Horde';
-    class: string;
+    faction: Faction;
+    class: Class;
   }>
 ) => {
   const db = await getDatabase();

@@ -5,6 +5,7 @@ export interface CharacterResponseDto {
   class: string;
   ownerId: string;
   realmServerName: string;
+  realmServerId: string;
   createdAt: string;
   specializations: {
     id: string;
@@ -16,4 +17,9 @@ export interface CharacterResponseDto {
   }[];
   charactersPreferredInstances: string[];
   charactersSavedInstances: string[];
+}
+
+export interface CharacterExternalData {
+  class: string;
+  faction: string;
 }

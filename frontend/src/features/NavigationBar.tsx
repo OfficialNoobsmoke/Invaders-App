@@ -14,7 +14,7 @@ export const NavigationBar = () => {
 
   const queryClient = useQueryClient();
 
-  const navBarPaths = ['/home', '/characters', '/profile'];
+  const navBarPaths = ['/home', '/characters', '/profile', '/character-details'];
   const shouldShowNavBar = navBarPaths.includes(location.pathname);
 
   const logoutMutation = useMutation({

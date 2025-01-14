@@ -1,8 +1,7 @@
-CREATE TYPE "public"."faction" AS ENUM('Alliance', 'Horde');--> statement-breakpoint
 CREATE TABLE "characters" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar(12) NOT NULL,
-	"faction" "faction" NOT NULL,
+	"faction" varchar(32) NOT NULL,
 	"class" varchar(32) NOT NULL,
 	"owner_id" uuid NOT NULL,
 	"realm_server_id" uuid NOT NULL,
@@ -17,7 +16,7 @@ CREATE TABLE "realm_servers" (
 --> statement-breakpoint
 CREATE TABLE "character_specializations" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"name" varchar(50) NOT NULL,
+	"name" varchar(32) NOT NULL,
 	"gear_score" numeric(4, 0) NOT NULL,
 	"character_id" uuid,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL

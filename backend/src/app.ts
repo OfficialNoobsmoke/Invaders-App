@@ -52,11 +52,13 @@ app.use(passport.session());
 
 initializeDatabase();
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 100,
-});
-app.use(limiter);
+if (process.env.NODE_ENV !== general.DEV_MODE) {
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 100,
+  });
+  app.use(limiter);
+}
 app.use('/api', routes);
 
 app.use(express.static(__dirname + '/assets'));

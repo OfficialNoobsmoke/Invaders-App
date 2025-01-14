@@ -1,12 +1,21 @@
+import { externalRoutes } from '../../shared/constants/constants';
+import httpClient from '../../shared/utils/httpClient';
+import interpolate from '../../shared/utils/interpolate';
 import characterRepository from './characterRepository';
+import { Class } from './interfaces/class';
+import { Faction } from './interfaces/faction';
+import { Specialization } from './interfaces/specialization';
+import { getRealmServerById } from '../../shared/repositories/realmServerRepository';
+import { HTTPError } from '../../shared/exceptions/httpError';
+import { HttpStatusCode } from 'axios';
 
 export const createCharacter = async (
   name: string,
-  faction: 'Alliance' | 'Horde',
-  characterClass: string,
+  faction: Faction,
+  characterClass: Class,
   ownerId: string,
   realmServerId: string,
-  specializations: { name: string; gearScore: number }[] = [],
+  specializations: { name: Specialization; gearScore: number }[] = [],
   preferredInstanceIds: string[] = [],
   savedInstanceIds: string[] = []
 ) => {
@@ -46,8 +55,8 @@ export const updateCharacter = async (
   id: string,
   updatedData: Partial<{
     name: string;
-    faction: 'Alliance' | 'Horde';
-    characterClass: string;
+    faction: Faction;
+    characterClass: Class;
   }>
 ) => {
   return characterRepository.updateCharacter(id, updatedData);
@@ -57,10 +66,50 @@ export const deleteCharacterById = async (id: string) => {
   return characterRepository.deleteCharacterById(id);
 };
 
+export const getCharacterFromExternalSource = async (
+  characterName: string,
+  realmServerId: string
+) => {
+  const { name } = await getRealmServerById(realmServerId);
+  const maxRetries = 3;
+  let attempts = 0;
+  while (attempts < maxRetries) {
+    attempts++;
+
+    try {
+      const response = await httpClient.get(
+        interpolate(
+          externalRoutes.WARMANE_ARMORY_API_CHARACTER_PROFILE,
+          characterName,
+          extractRealmNameFromRealmServerName(name)
+        )
+      );
+
+      if (response.data.error === 'Too many requests.') {
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        continue;
+      }
+      return response.data;
+    } catch (error) {
+      console.error(`Attempt ${attempts} failed:`, error);
+    }
+  }
+
+  throw new HTTPError(
+    'Failed to fetch character data from external source',
+    HttpStatusCode.InternalServerError
+  );
+};
+
+const extractRealmNameFromRealmServerName = (realmServerName: string) => {
+  return realmServerName.split('-')[1];
+};
+
 export default {
   createCharacter,
   getCharactersByUserId,
   getCharacterById,
   updateCharacter,
   deleteCharacterById,
+  getCharacterFromExternalSource,
 };

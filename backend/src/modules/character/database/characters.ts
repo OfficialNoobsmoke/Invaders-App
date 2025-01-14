@@ -1,6 +1,5 @@
 import {
   numeric,
-  pgEnum,
   pgTable,
   pgView,
   timestamp,
@@ -14,12 +13,10 @@ import { charactersPreferredInstances } from './charactersPreferredInstances';
 import { charactersSavedInstances } from './charactersSavedInstances';
 import { characterSpecializations } from './characterSpecializations';
 
-export const factionEnum = pgEnum('faction', ['Alliance', 'Horde']);
-
 export const characters = pgTable('characters', {
   id: uuid().defaultRandom().primaryKey(),
   name: varchar('name', { length: 12 }).notNull(),
-  faction: factionEnum().notNull(),
+  faction: varchar('faction', { length: 32 }).notNull(),
   class: varchar('class', { length: 32 }).notNull(),
   ownerId: uuid('owner_id')
     .references(() => users.id)
