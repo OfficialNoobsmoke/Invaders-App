@@ -1,7 +1,7 @@
-import { BaseError } from './baseError';
-
-export class HTTPError extends BaseError {
+export class HTTPError extends Error {
+  statusCode: number;
   constructor(message: string, statusCode: number) {
-    super(message, statusCode, true);
+    super(message);
+    this.statusCode = statusCode;
   }
 }

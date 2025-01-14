@@ -6,8 +6,7 @@ import { Class } from './interfaces/class';
 import { Faction } from './interfaces/faction';
 import { Specialization } from './interfaces/specialization';
 import { getRealmServerById } from '../../shared/repositories/realmServerRepository';
-import { HTTPError } from '../../shared/exceptions/httpError';
-import { HttpStatusCode } from 'axios';
+import { ExternalRequestError } from '../../shared/exceptions/externalRequestError';
 
 export const createCharacter = async (
   name: string,
@@ -95,9 +94,8 @@ export const getCharacterFromExternalSource = async (
     }
   }
 
-  throw new HTTPError(
-    'Failed to fetch character data from external source',
-    HttpStatusCode.InternalServerError
+  throw new ExternalRequestError(
+    'Failed to fetch character data from external source'
   );
 };
 

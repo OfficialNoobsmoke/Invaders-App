@@ -4,6 +4,7 @@ import { getRealmServers } from '../repositories/realmServerRepository';
 export const getApplicationData = async () => {
   const realmServers = await getRealmServers();
   const instances = await getInstances();
+
   return {
     dropdowns: {
       realmServers: realmServers.map((realmServer) => ({

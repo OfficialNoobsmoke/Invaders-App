@@ -1,6 +1,5 @@
-import { HttpStatusCode } from 'axios';
 import { getDatabase } from '../../app/database/database';
-import { HTTPError } from '../exceptions/httpError';
+import { NotFoundError } from '../exceptions/notFoundError';
 
 export const getRealmServerById = async (realmServerId: string) => {
   const db = await getDatabase();
@@ -8,8 +7,7 @@ export const getRealmServerById = async (realmServerId: string) => {
     where: (realmServers, { eq }) => eq(realmServers.id, realmServerId),
   });
 
-  if (!realmServer)
-    throw new HTTPError('Realm server not found', HttpStatusCode.NotFound);
+  if (!realmServer) throw new NotFoundError('Realm server not found');
   return realmServer;
 };
 

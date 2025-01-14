@@ -18,8 +18,7 @@ import { Client } from 'pg';
 import * as schema from '../../app/database/schema';
 import { QueryConfiguration } from '../interfaces/queryConfiguration';
 import { aliasedColumn } from '../utils/drizzle';
-import { HTTPError } from '../exceptions/httpError';
-import { HttpStatusCode } from 'axios';
+import { BadDataError } from '../exceptions/badDataError';
 
 const buildFilterConditions = (
   filterModel: { field: string; operator: string; value: string | string[] }[],
@@ -219,8 +218,5 @@ const getColumnByName = (
     }
   }
 
-  throw new HTTPError(
-    `${columnName} does not exist or is not accessible`,
-    HttpStatusCode.BadRequest
-  );
+  throw new BadDataError(`${columnName} does not exist or is not accessible`);
 };

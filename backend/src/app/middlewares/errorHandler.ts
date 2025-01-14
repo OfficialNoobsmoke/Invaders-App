@@ -13,8 +13,9 @@ const errorHandler: ErrorRequestHandler = (
   const isDev = process.env.NODE_ENV === general.DEV_MODE;
   if (err instanceof BaseError) {
     if (err.isOperational) {
+      const httpError = err.toHTTPError();
       return res
-        .status(err.statusCode)
+        .status(httpError.statusCode)
         .json({ message: err.message, ...(isDev && { stack: err.stack }) });
     } else {
       return res.status(500).json({
