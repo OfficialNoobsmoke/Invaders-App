@@ -1,13 +1,11 @@
+import { HTTPError } from './httpError';
+
 export abstract class BaseError extends Error {
-  statusCode: number;
   isOperational: boolean;
-  constructor(
-    message: string | undefined,
-    statusCode: number,
-    isOperational = true
-  ) {
+  constructor(message: string | undefined, isOperational = true) {
     super(message);
-    this.statusCode = statusCode;
     this.isOperational = isOperational;
   }
+
+  abstract toHTTPError(): HTTPError;
 }
