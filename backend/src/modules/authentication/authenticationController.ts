@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
 import {
   general,
   errorMessages,
@@ -56,23 +55,5 @@ export const logOut = async (req: Request, res: Response) => {
 };
 
 export const checkAuthentication = async (req: Request, res: Response) => {
-  const authCookie = req.signedCookies[general.AUTH_COOKIE];
-  if (!authCookie) {
-    throw new AuthenticationError(errorMessages.NO_COOKIE_FOUND);
-  }
-  const {
-    authentication: { accessToken },
-  } = authCookie as AuthCookie;
-  const decoded = jwt.decode(accessToken) as jwt.JwtPayload | null;
-  if (!decoded || (decoded.exp && Date.now() >= decoded.exp * 1000)) {
-    throw new AuthenticationError(errorMessages.INVALID_TOKEN);
-  }
-
-  jwt.verify(accessToken, process.env.JWT_SECRET!, (err) => {
-    if (err) {
-      throw new AuthenticationError(errorMessages.TOKEN_NOT_VERIFIED);
-    }
-
-    return res.sendStatus(200);
-  });
+  return res.sendStatus(200);
 };

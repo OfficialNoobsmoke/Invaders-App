@@ -20,7 +20,7 @@ import { getApplicationData } from '../../shared/controllers/applicationDataCont
 const router: Router = Router();
 
 router.post('/auth/token', refreshToken);
-router.get('/auth/check', checkAuthentication);
+router.get('/auth/check', authorizationMiddleware, checkAuthentication);
 router.post('/auth/logout', logOut);
 router.get('/auth/discord', authenticate());
 router.get('/auth/discord/callback', callBack(), saveAuthenticationData);
