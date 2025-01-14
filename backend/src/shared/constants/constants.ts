@@ -16,3 +16,8 @@ export const frontEndRoutes = Object.freeze({
   HOME_PAGE: '/home',
   NOT_IN_DISCORD_PAGE: '/not-in-discord',
 });
+
+export const externalRoutes = Object.freeze({
+  WARMANE_ARMORY_API_CHARACTER_PROFILE:
+    'https://armory.warmane.com/api/character/{0}/{1}/profile',
+});

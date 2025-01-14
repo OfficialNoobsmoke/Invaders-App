@@ -6,21 +6,18 @@ export const createCharacter = async (req: Request, res: Response) => {
   const {
     name,
     faction,
-    characterClass,
+    class: characterClass,
     realmServerId,
     specializations,
     charactersPreferredInstances,
     charactersSavedInstances,
   } = req.body;
-  let { ownerId } = req.params;
-  if (!ownerId) {
-    ownerId = req.user.id;
-  }
+
   const newCharacter = await characterService.createCharacter(
     name,
     faction,
     characterClass,
-    ownerId,
+    req.user.id,
     realmServerId,
     specializations,
     charactersPreferredInstances,
@@ -79,10 +76,25 @@ export const deleteCharacter = async (req: Request, res: Response) => {
   res.status(HttpStatusCode.NoContent).send();
 };
 
+export const getCharacterFromExternalSource = async (
+  req: Request,
+  res: Response
+) => {
+  const { characterName, realmServerId } = req.params;
+
+  const character = await characterService.getCharacterFromExternalSource(
+    characterName,
+    realmServerId
+  );
+
+  res.status(HttpStatusCode.Ok).json(character);
+};
+
 export default {
   createCharacter,
   getCharactersByUserId,
   getCharacterById,
   updateCharacter,
   deleteCharacter,
+  getCharacterFromExternalSource,
 };

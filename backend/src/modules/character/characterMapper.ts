@@ -23,6 +23,7 @@ export const fromDBManyToCharacters = (dbResult: {
       specializationGearScore,
       charactersPreferredInstances,
       charactersSavedInstances,
+      realmServerId,
     } = record;
 
     let existingEntry = mergedArray.find((item) => item.id === id);
@@ -40,6 +41,7 @@ export const fromDBManyToCharacters = (dbResult: {
         gearScore: [],
         charactersPreferredInstances: [],
         charactersSavedInstances: [],
+        realmServerId,
       };
       mergedArray.push(existingEntry);
     }

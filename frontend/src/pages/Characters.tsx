@@ -65,12 +65,12 @@ const Characters = () => {
     (id: GridRowId) => {
       navigate('/character-details', {
         state: {
-          characterId: id,
+          characterData: data?.data.find((c) => c.id === id),
           mode: 'edit',
         },
       });
     },
-    [navigate]
+    [navigate, data]
   );
 
   const redirectToAddCharacter = () => {

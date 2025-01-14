@@ -3,14 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { getUser } from '../services/userService';
 import { UserContext } from './userContexts';
 
-const fetchUser = () => getUser();
-
 export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   const { data: user } = useQuery({
     queryKey: ['user'],
-    queryFn: fetchUser,
+    queryFn: () => getUser(),
     retry: false,
   });
-
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 };

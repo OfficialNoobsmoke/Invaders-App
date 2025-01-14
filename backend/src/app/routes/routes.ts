@@ -15,6 +15,7 @@ import {
   refreshToken,
 } from '../../modules/authentication/authenticationController';
 import characterController from '../../modules/character/characterController';
+import { getApplicationData } from '../../shared/controllers/applicationDataController';
 
 const router: Router = Router();
 
@@ -52,5 +53,12 @@ router.post(
   authorizationMiddleware,
   characterController.createCharacter
 );
+router.get(
+  '/character/{:characterName}/{:realmServerId}/external',
+  authorizationMiddleware,
+  characterController.getCharacterFromExternalSource
+);
+
+router.get('/applicationData', getApplicationData);
 
 export const routes: Router = router;

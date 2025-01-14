@@ -10,6 +10,7 @@ import Characters from './src/pages/Characters';
 import Profile from './src/pages/Profile';
 import { AuthenticationContextProvider } from './src/context/AuthenticationContextProvider';
 import CharacterDetails from './src/pages/CharacterDetails';
+import { ApplicationDataContextProvider } from './src/context/ApplicationDataContextProvider';
 
 const App: React.FC = () => {
   return (
@@ -23,7 +24,9 @@ const App: React.FC = () => {
           <Route
             element={
               <UserContextProvider>
-                <AppLayout />
+                <ApplicationDataContextProvider>
+                  <AppLayout />
+                </ApplicationDataContextProvider>
               </UserContextProvider>
             }>
             <Route

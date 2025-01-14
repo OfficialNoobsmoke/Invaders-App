@@ -4,7 +4,7 @@ dotenv.config();
 
 const config: Config = {
   dialect: 'postgresql',
-  schema: './src/database/schema/index.ts',
+  schema: './src/app/database/schema/index.ts',
   out: './src/database/migrations',
   dbCredentials: {
     url: process.env.DB_URL!,
