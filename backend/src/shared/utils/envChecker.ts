@@ -25,7 +25,9 @@ const app = () => {
   if (!process.env.HASH_SECRET) {
     errors.push('HASH_SECRET is not defined in environment variables.');
   }
-  throw new ApplicationError(errors);
+  if (errors.length > 0) {
+    throw new ApplicationError(errors);
+  }
 };
 
 const database = () => {
@@ -41,7 +43,9 @@ const database = () => {
   if (!process.env.DB_ADMIN_URL) {
     errors.push('DB_ADMIN_URL is not defined in environment variables.');
   }
-  throw new ApplicationError(errors);
+  if (errors.length > 0) {
+    throw new ApplicationError(errors);
+  }
 };
 
 const discord = () => {
@@ -71,7 +75,9 @@ const discord = () => {
   if (!process.env.DISCORD_BOT_TOKEN) {
     errors.push('DISCORD_BOT_TOKEN is not defined in environment variables.');
   }
-  throw new ApplicationError(errors);
+  if (errors.length > 0) {
+    throw new ApplicationError(errors);
+  }
 };
 
 const session = () => {
@@ -95,5 +101,7 @@ const session = () => {
       'JWT_REFRESH_TOKEN_EXPIRY is not defined in environment variables.'
     );
   }
-  throw new ApplicationError(errors);
+  if (errors.length > 0) {
+    throw new ApplicationError(errors);
+  }
 };
