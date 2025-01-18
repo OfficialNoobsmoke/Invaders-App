@@ -12,7 +12,7 @@ export const getApplicationData = async () => {
         value: realmServer.id,
       })),
       instances: instances.map((instance) => ({
-        label: `${instance.label} (${instance.size})`,
+        label: `${instance.label} ${instance.size}`,
         value: instance.id,
       })),
     },

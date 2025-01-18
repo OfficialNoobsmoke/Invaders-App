@@ -1,7 +1,8 @@
-export class HTTPError extends Error {
+export class HTTPError {
   statusCode: number;
-  constructor(message: string, statusCode: number) {
-    super(message);
+  errors: string[] = [];
+  constructor(errors: string[], statusCode: number) {
     this.statusCode = statusCode;
+    this.errors = errors;
   }
 }

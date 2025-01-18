@@ -9,103 +9,91 @@ export const envChecker = () => {
 };
 
 const app = () => {
+  const errors = [];
   if (!process.env.NODE_ENV) {
-    throw new ApplicationError(
-      'NODE_ENV is not defined in environment variables.'
-    );
+    errors.push('NODE_ENV is not defined in environment variables.');
   }
 
   if (!process.env.PORT) {
-    throw new ApplicationError('PORT is not defined in environment variables.');
+    errors.push('PORT is not defined in environment variables.');
   }
 
   if (!process.env.FRONTEND_URL) {
-    throw new ApplicationError(
-      'FRONTEND_URL is not defined in environment variables.'
-    );
+    errors.push('FRONTEND_URL is not defined in environment variables.');
   }
 
   if (!process.env.HASH_SECRET) {
-    throw new ApplicationError(
-      'HASH_SECRET is not defined in environment variables.'
-    );
+    errors.push('HASH_SECRET is not defined in environment variables.');
   }
+  throw new ApplicationError(errors);
 };
 
 const database = () => {
+  const errors = [];
   if (!process.env.DB_NAME) {
-    throw new ApplicationError(
-      'DB_NAME is not defined in environment variables.'
-    );
+    errors.push('DB_NAME is not defined in environment variables.');
   }
 
   if (!process.env.DB_URL) {
-    throw new ApplicationError(
-      'DB_URL is not defined in environment variables.'
-    );
+    errors.push('DB_URL is not defined in environment variables.');
   }
 
   if (!process.env.DB_ADMIN_URL) {
-    throw new ApplicationError(
-      'DB_ADMIN_URL is not defined in environment variables.'
-    );
+    errors.push('DB_ADMIN_URL is not defined in environment variables.');
   }
+  throw new ApplicationError(errors);
 };
 
 const discord = () => {
+  const errors = [];
   if (!process.env.DISCORD_CLIENT_ID) {
-    throw new ApplicationError(
-      'DISCORD_CLIENT_ID is not defined in environment variables.'
-    );
+    errors.push('DISCORD_CLIENT_ID is not defined in environment variables.');
   }
 
   if (!process.env.DISCORD_CLIENT_SECRET) {
-    throw new ApplicationError(
+    errors.push(
       'DISCORD_CLIENT_SECRET is not defined in environment variables.'
     );
   }
 
   if (!process.env.DISCORD_CALLBACK_URL) {
-    throw new ApplicationError(
+    errors.push(
       'DISCORD_CALLBACK_URL is not defined in environment variables.'
     );
   }
 
   if (!process.env.DISCORD_INVADERS_SERVER_ID) {
-    throw new ApplicationError(
+    errors.push(
       'DISCORD_INVADERS_SERVER_ID is not defined in environment variables.'
     );
   }
 
   if (!process.env.DISCORD_BOT_TOKEN) {
-    throw new ApplicationError(
-      'DISCORD_BOT_TOKEN is not defined in environment variables.'
-    );
+    errors.push('DISCORD_BOT_TOKEN is not defined in environment variables.');
   }
+  throw new ApplicationError(errors);
 };
 
 const session = () => {
+  const errors = [];
   if (!process.env.SESSION_SECRET) {
-    throw new ApplicationError(
-      'SESSION_SECRET is not defined in environment variables.'
-    );
+    errors.push('SESSION_SECRET is not defined in environment variables.');
   }
 
   if (!process.env.JWT_SECRET) {
-    throw new ApplicationError(
-      'JWT_SECRET is not defined in environment variables.'
-    );
+    errors.push('JWT_SECRET is not defined in environment variables.');
   }
 
   if (!process.env.JWT_ACCESS_TOKEN_EXPIRY) {
-    throw new ApplicationError(
+    errors.push(
       'JWT_ACCESS_TOKEN_EXPIRY is not defined in environment variables.'
     );
   }
 
   if (!process.env.JWT_REFRESH_TOKEN_EXPIRY) {
-    throw new ApplicationError(
+    errors.push(
       'JWT_REFRESH_TOKEN_EXPIRY is not defined in environment variables.'
     );
   }
+  throw new ApplicationError(errors);
 };

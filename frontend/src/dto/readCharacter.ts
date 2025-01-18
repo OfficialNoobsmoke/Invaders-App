@@ -1,4 +1,4 @@
-export interface CharacterResponseDto {
+export interface ReadCharacter {
   id: string;
   name: string;
   faction: string;
@@ -15,11 +15,12 @@ export interface CharacterResponseDto {
     id: string;
     value: number;
   }[];
-  charactersPreferredInstances: string[];
-  charactersSavedInstances: string[];
+  charactersPreferredInstances: Instance[];
+  charactersSavedInstances: Instance[];
 }
 
-export interface CharacterExternalData {
-  class: string;
-  faction: string;
+export interface Instance {
+  id: string;
+  name: string;
+  size: number;
 }

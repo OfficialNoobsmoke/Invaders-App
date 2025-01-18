@@ -100,8 +100,13 @@ export const getCharactersByUserId = async (
       specializationId: characterSpecializations.id,
       specializationName: characterSpecializations.name,
       specializationGearScore: characterSpecializations.gearScore,
+      charactersPreferredInstancesId: charactersPreferredInstancesInstance.id,
       charactersPreferredInstances: charactersPreferredInstancesInstance.name,
+      charactersPreferredInstancesSize:
+        charactersPreferredInstancesInstance.size,
+      charactersSavedInstancesId: charactersSavedInstancesInstance.id,
       charactersSavedInstances: charactersSavedInstancesInstance.name,
+      charactersSavedInstancesSize: charactersSavedInstancesInstance.size,
       realmServerName: realmServers.name,
       realmServerId: realmServers.id,
     },
@@ -169,6 +174,22 @@ export const getCharacterById = async (id: string) => {
   return character;
 };
 
+export const getCharacterByNameAndRealm = async (
+  characterName: string,
+  realmServerId: string
+) => {
+  const db = await getDatabase();
+  const character = await db.query.characters.findFirst({
+    where: (characters, { eq, and }) =>
+      and(
+        eq(characters.name, characterName),
+        eq(characters.realmServerId, realmServerId)
+      ),
+  });
+
+  return character;
+};
+
 export const updateCharacter = async (
   id: string,
   updatedData: Partial<{
@@ -198,6 +219,7 @@ export default {
   createCharacter,
   getCharactersByUserId,
   getCharacterById,
+  getCharacterByNameAndRealm,
   updateCharacter,
   deleteCharacterById,
 };

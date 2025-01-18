@@ -4,11 +4,11 @@ import { BaseError } from './baseError';
 import { HTTPError } from './httpError';
 
 export class ApplicationError extends BaseError implements IHTTPError {
-  constructor(message: string, isOperational = true) {
-    super(message, isOperational);
+  constructor(errors: string[], isOperational = true) {
+    super(errors, isOperational);
   }
 
   toHTTPError(): HTTPError {
-    return new HTTPError(this.message, HttpStatusCode.InternalServerError);
+    return new HTTPError(this.errors, HttpStatusCode.InternalServerError);
   }
 }

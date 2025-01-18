@@ -1,5 +1,9 @@
-import { CharacterResponseDto } from './interfaces/character';
+import { ReadCharacter } from './interfaces/readCharacter';
 import { Pagination } from '../../shared/interfaces/pagination';
+import {
+  CharacterExternalData,
+  WarmaneArmoryCharacterData,
+} from './interfaces/characterExternalData';
 
 export const fromDBManyToCharacters = (dbResult: {
   page: number;
@@ -8,7 +12,7 @@ export const fromDBManyToCharacters = (dbResult: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: Record<string, any>[];
 }) => {
-  const mergedArray: CharacterResponseDto[] = [];
+  const mergedArray: ReadCharacter[] = [];
   dbResult.data.forEach((record) => {
     const {
       id,
@@ -21,8 +25,12 @@ export const fromDBManyToCharacters = (dbResult: {
       specializationId,
       specializationName,
       specializationGearScore,
+      charactersPreferredInstancesId,
       charactersPreferredInstances,
+      charactersPreferredInstancesSize,
+      charactersSavedInstancesId,
       charactersSavedInstances,
+      charactersSavedInstancesSize,
       realmServerId,
     } = record;
 
@@ -63,23 +71,29 @@ export const fromDBManyToCharacters = (dbResult: {
 
     if (charactersPreferredInstances) {
       if (
-        !existingEntry.charactersPreferredInstances.includes(
-          charactersPreferredInstances
+        !existingEntry.charactersPreferredInstances.some(
+          (x) => x.id === charactersPreferredInstancesId
         )
       ) {
-        existingEntry.charactersPreferredInstances.push(
-          charactersPreferredInstances
-        );
+        existingEntry.charactersPreferredInstances.push({
+          id: charactersPreferredInstancesId,
+          name: charactersPreferredInstances,
+          size: charactersPreferredInstancesSize,
+        });
       }
     }
 
     if (charactersSavedInstances) {
       if (
-        !existingEntry.charactersSavedInstances.includes(
-          charactersSavedInstances
+        !existingEntry.charactersSavedInstances.some(
+          (x) => x.id === charactersSavedInstancesId
         )
       ) {
-        existingEntry.charactersSavedInstances.push(charactersSavedInstances);
+        existingEntry.charactersSavedInstances.push({
+          id: charactersSavedInstancesId,
+          name: charactersSavedInstances,
+          size: charactersSavedInstancesSize,
+        });
       }
     }
   });
@@ -88,5 +102,14 @@ export const fromDBManyToCharacters = (dbResult: {
     limit: dbResult.limit,
     count: dbResult.count,
     data: mergedArray,
-  } satisfies Pagination<CharacterResponseDto>;
+  } satisfies Pagination<ReadCharacter>;
+};
+
+export const fromWarmaneArmoryCharacterDataToCharacterExternalData = (
+  characterData: WarmaneArmoryCharacterData
+) => {
+  return {
+    class: characterData.class,
+    faction: characterData.faction,
+  } as CharacterExternalData;
 };
