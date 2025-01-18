@@ -218,5 +218,5 @@ const getColumnByName = (
     }
   }
 
-  throw new BadDataError(`${columnName} does not exist or is not accessible`);
+  throw new BadDataError([`${columnName} does not exist or is not accessible`]);
 };

@@ -1,7 +1,7 @@
 import { body, param } from 'express-validator';
 import * as userRepository from './userRepository';
 import { NotFoundError } from '../../shared/exceptions/notFoundError';
-import { BadDataError } from '../../shared/exceptions/badDataError';
+import { ValidationError } from '../../shared/exceptions/validationError';
 
 export const createUser = [
   body('username')
@@ -24,7 +24,7 @@ export const createUser = [
     .custom(async (discordId: string) => {
       const user = await userRepository.getUserByDiscordId(discordId);
       if (user) {
-        throw new BadDataError('Discord ID already in use');
+        return 'Discord ID already in use';
       }
     }),
 ];
@@ -59,7 +59,7 @@ export const deleteUser = [
     .custom(async (id: string) => {
       const user = await userRepository.getUserById(id);
       if (!user) {
-        throw new NotFoundError('User not found');
+        return 'User not found';
       }
     }),
 ];

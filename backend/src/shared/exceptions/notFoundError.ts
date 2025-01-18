@@ -3,11 +3,11 @@ import { HTTPError } from './httpError';
 import { BaseError } from './baseError';
 
 export class NotFoundError extends BaseError {
-  constructor(message: string | undefined) {
-    super(message);
+  constructor(errors: string[]) {
+    super(errors);
   }
 
   toHTTPError(): HTTPError {
-    return new HTTPError(this.message, HttpStatusCode.NotFound);
+    return new HTTPError(this.errors, HttpStatusCode.NotFound);
   }
 }

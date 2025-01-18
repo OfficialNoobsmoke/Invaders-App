@@ -18,16 +18,17 @@ export const refreshToken = async (req: Request, res: Response) => {
   if (!authCookie) {
     return res.status(401).json({ message: errorMessages.NO_COOKIE_FOUND });
   }
+
   const refreshToken = authCookie.authentication.refreshToken;
   const isRefreshTokenValid = await isRefreshTokenAvailable(
     authCookie.userId,
     refreshToken
   );
   if (!isRefreshTokenValid) {
-    throw new AuthenticationError(errorMessages.TOKEN_EXPIRED);
+    throw new AuthenticationError([errorMessages.TOKEN_EXPIRED]);
   }
-  await updateCookieWithNewTokens(res, authCookie, refreshToken);
 
+  await updateCookieWithNewTokens(res, authCookie, refreshToken);
   return res.sendStatus(200);
 };
 

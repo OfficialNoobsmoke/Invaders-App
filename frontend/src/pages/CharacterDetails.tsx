@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { createCharacter } from '../services/characterService';
 import ButtonWrapper from '../components/common/ButtonWrapper';
-import { CreateCharacter, ReadCharacter } from '../dto/characterDto';
+import { ReadCharacter } from '../dto/readCharacter';
 import TextFieldWrapper from '../components/common/TextFieldWrapper';
 import SelectWrapper from '../components/common/SelectWrapper';
 import { CircularProgress, Container, InputAdornment, List, ListItem, SelectChangeEvent, Stack } from '@mui/material';
@@ -14,6 +14,7 @@ import { ApplicationDataContext } from '../context/applicationDataContexts';
 import { DropdownOptions } from '../interfaces/dropDownOptions';
 import { useDebounce } from '@uidotdev/usehooks';
 import { general } from '../constants/constants';
+import { CreateCharacter } from '../dto/createCharacter';
 
 const CharacterDetails = () => {
   const navigate = useNavigate();
@@ -28,8 +29,8 @@ const CharacterDetails = () => {
     class: characterData?.class || '',
     realmServerId: characterData?.realmServerId || '',
     specializations: characterData?.specializations.map((s) => ({ id: s.id, name: s.name, gearScore: 0 })) || [],
-    charactersPreferredInstances: characterData?.charactersPreferredInstances || [],
-    charactersSavedInstances: characterData?.charactersSavedInstances || [],
+    charactersPreferredInstances: characterData?.charactersPreferredInstances.map((s) => s.id) || [],
+    charactersSavedInstances: characterData?.charactersSavedInstances.map((s) => s.id) || [],
   });
   const [realmServerOptions, setRealmServerOptions] = React.useState<DropdownOptions[]>([]);
   const [specializationOptions, setSpecializationOptions] = useState<DropdownOptions[]>([]);

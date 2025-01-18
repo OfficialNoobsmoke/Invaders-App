@@ -3,11 +3,11 @@ import { HTTPError } from './httpError';
 import { BaseError } from './baseError';
 
 export class BadDataError extends BaseError {
-  constructor(message: string | undefined) {
-    super(message);
+  constructor(errors: string[]) {
+    super(errors);
   }
 
   toHTTPError(): HTTPError {
-    return new HTTPError(this.message, HttpStatusCode.BadRequest);
+    return new HTTPError(this.errors, HttpStatusCode.BadRequest);
   }
 }

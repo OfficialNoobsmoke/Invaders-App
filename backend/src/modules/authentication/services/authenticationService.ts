@@ -120,7 +120,7 @@ export const refreshExpiredToken = async (
     refreshToken
   );
   if (!isRefreshTokenValid) {
-    throw new AuthenticationError(errorMessages.TOKEN_EXPIRED);
+    throw new AuthenticationError([errorMessages.TOKEN_EXPIRED]);
   }
   await updateCookieWithNewTokens(res, authCookie, refreshToken);
 };

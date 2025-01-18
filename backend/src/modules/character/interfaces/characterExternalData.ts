@@ -12,24 +12,24 @@ export interface WarmaneArmoryCharacterData {
   honorablekills: string;
   guild: string;
   achievementpoints: string;
-  equipment: EquipmentItem[];
-  talents: Talent[];
-  professions: Profession[];
+  equipment: WarmaneArmoryEquipmentItem[];
+  talents: WarmaneArmoryTalent[];
+  professions: WarmaneArmoryProfession[];
   pvpteams: PvPTeam[];
 }
 
-interface EquipmentItem {
+interface WarmaneArmoryEquipmentItem {
   name: string;
   item: string;
   transmog: string;
 }
 
-interface Talent {
+export interface WarmaneArmoryTalent {
   tree: string;
   points: [number, number, number];
 }
 
-interface Profession {
+interface WarmaneArmoryProfession {
   name: string;
   skill: string;
 }
@@ -39,4 +39,9 @@ interface PvPTeam {
   name: string;
   rating: string;
   rank: string;
+}
+
+export interface CharacterExternalData {
+  class: string;
+  faction: string;
 }

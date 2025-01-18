@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import userValidator from '../../modules/user/userValidator';
+import characterValidator from '../../modules/character/characterValidator';
 import { validationHandler } from '../middlewares/validationHandler';
 import userController from '../../modules/user/userController';
 import authorizationMiddleware from '../../modules/authentication/authMiddleware';
@@ -51,6 +52,7 @@ router.post(
 router.post(
   '/character',
   authorizationMiddleware,
+  characterValidator.createCharacter,
   characterController.createCharacter
 );
 router.get(

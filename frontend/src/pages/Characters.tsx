@@ -9,7 +9,7 @@ import ButtonWrapper from '../components/common/ButtonWrapper';
 import { getCharactersByUserId } from '../services/characterService';
 import { Pagination } from '../interfaces/pagination';
 import { UserContext } from '../context/userContexts';
-import { ReadCharacter } from '../dto/characterDto';
+import { ReadCharacter } from '../dto/readCharacter';
 
 const useColumns = (redirectToEditCharacter: (id: GridRowId) => void): GridColDef[] => {
   return [
@@ -31,8 +31,24 @@ const useColumns = (redirectToEditCharacter: (id: GridRowId) => void): GridColDe
       renderCell: (params) => params.row.gearScore.map((s: { value: number }) => s.value).join(', '),
       width: 150,
     },
-    { field: 'charactersPreferredInstances', headerName: 'Preference In', width: 200 },
-    { field: 'charactersSavedInstances', headerName: 'Saved Instances', width: 200 },
+    {
+      field: 'charactersPreferredInstances',
+      headerName: 'Preference In',
+      renderCell: (params) =>
+        params.row.charactersPreferredInstances
+          .map((s: { name: string; size: number }) => `${s.name} ${s.size}`)
+          .join(', '),
+      width: 200,
+    },
+    {
+      field: 'charactersSavedInstances',
+      headerName: 'Saved Instances',
+      renderCell: (params) =>
+        params.row.charactersSavedInstances
+          .map((s: { name: string; size: number }) => `${s.name} ${s.size}`)
+          .join(', '),
+      width: 200,
+    },
     { field: 'createdAt', headerName: 'Created At', type: 'date', valueGetter: (value) => value && new Date(value) },
     {
       field: 'actions',
