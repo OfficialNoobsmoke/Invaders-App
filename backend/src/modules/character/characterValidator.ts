@@ -1,6 +1,5 @@
 import { body, param } from 'express-validator';
 import { getRealmServerById } from '../../shared/repositories/realmServerRepository';
-import { NotFoundError } from '../../shared/exceptions/notFoundError';
 import { Class } from './interfaces/class';
 import { Specialization } from './interfaces/createCharacter';
 import { Specialization as AvailableSpecialization } from './interfaces/specialization';

@@ -1,7 +1,5 @@
 import { body, param } from 'express-validator';
 import * as userRepository from './userRepository';
-import { NotFoundError } from '../../shared/exceptions/notFoundError';
-import { ValidationError } from '../../shared/exceptions/validationError';
 
 export const createUser = [
   body('username')
