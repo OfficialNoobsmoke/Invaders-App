@@ -1,5 +1,6 @@
 import { apiRoutes } from '../constants/constants';
-import { CreateCharacter, ReadCharacter } from '../dto/characterDto';
+import { CreateCharacter } from '../dto/createCharacter';
+import { ReadCharacter } from '../dto/readCharacter';
 import { Pagination } from '../interfaces/pagination';
 import apiClient from '../utils/apiClient';
 import { RouteBuilder } from '../utils/urlBuildRouter';

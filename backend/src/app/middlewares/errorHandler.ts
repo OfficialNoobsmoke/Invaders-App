@@ -16,7 +16,7 @@ const errorHandler: ErrorRequestHandler = (
       const httpError = err.toHTTPError();
       return res
         .status(httpError.statusCode)
-        .json({ message: err.message, ...(isDev && { stack: err.stack }) });
+        .json({ errors: httpError.errors, ...(isDev && { stack: err.stack }) });
     } else {
       return res.status(500).json({
         message: errorMessages.INTERNAL_SERVER_ERROR,

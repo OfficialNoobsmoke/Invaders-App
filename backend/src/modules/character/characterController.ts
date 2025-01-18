@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import characterService from './characterService';
 import { HttpStatusCode } from 'axios';
+import { validationResult } from 'express-validator';
+import { ValidationError } from '../../shared/exceptions/validationError';
 
 export const createCharacter = async (req: Request, res: Response) => {
   const {
@@ -12,6 +14,11 @@ export const createCharacter = async (req: Request, res: Response) => {
     charactersPreferredInstances,
     charactersSavedInstances,
   } = req.body;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ValidationError(errors.array().map((error) => error.msg));
+  }
 
   const newCharacter = await characterService.createCharacter(
     name,

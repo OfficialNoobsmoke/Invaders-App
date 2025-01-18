@@ -1,9 +1,10 @@
 import { HTTPError } from './httpError';
 
-export abstract class BaseError extends Error {
+export abstract class BaseError {
   isOperational: boolean;
-  constructor(message: string | undefined, isOperational = true) {
-    super(message);
+  errors: string[] = [];
+  constructor(errors: string[], isOperational = true) {
+    this.errors = errors;
     this.isOperational = isOperational;
   }
 

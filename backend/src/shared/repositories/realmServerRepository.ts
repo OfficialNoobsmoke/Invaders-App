@@ -7,7 +7,7 @@ export const getRealmServerById = async (realmServerId: string) => {
     where: (realmServers, { eq }) => eq(realmServers.id, realmServerId),
   });
 
-  if (!realmServer) throw new NotFoundError('Realm server not found');
+  if (!realmServer) throw new NotFoundError(['Realm server not found']);
   return realmServer;
 };
 

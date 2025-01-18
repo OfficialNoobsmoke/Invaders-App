@@ -63,7 +63,7 @@ export const tokenRepository = {
         ),
     });
     if (!tokenRecord) {
-      throw new AuthenticationError('Token not found');
+      throw new AuthenticationError(['Token not found']);
     }
     await db
       .update(tokens)
@@ -83,7 +83,7 @@ export const tokenRepository = {
         and(eq(tokens.userId, userId), eq(tokens.refreshToken, refreshToken)),
     });
     if (!tokenRecord) {
-      throw new AuthenticationError('Token not found');
+      throw new AuthenticationError(['Token not found']);
     }
     await db
       .delete(discordTokens)

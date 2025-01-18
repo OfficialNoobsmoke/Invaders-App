@@ -7,6 +7,7 @@ import { Faction } from './interfaces/faction';
 import { Specialization } from './interfaces/specialization';
 import { getRealmServerById } from '../../shared/repositories/realmServerRepository';
 import { ExternalRequestError } from '../../shared/exceptions/externalRequestError';
+import { fromWarmaneArmoryCharacterDataToCharacterExternalData } from './characterMapper';
 
 export const createCharacter = async (
   name: string,
@@ -50,6 +51,15 @@ export const getCharacterById = async (id: string) => {
   return characterRepository.getCharacterById(id);
 };
 
+export const getCharacterByNameAndRealm = async (
+  characterName: string,
+  realmServerId: string
+) =>
+  await characterRepository.getCharacterByNameAndRealm(
+    characterName,
+    realmServerId
+  );
+
 export const updateCharacter = async (
   id: string,
   updatedData: Partial<{
@@ -88,15 +98,17 @@ export const getCharacterFromExternalSource = async (
         await new Promise((resolve) => setTimeout(resolve, 3000));
         continue;
       }
-      return response.data;
+      return fromWarmaneArmoryCharacterDataToCharacterExternalData(
+        response.data
+      );
     } catch (error) {
       console.error(`Attempt ${attempts} failed:`, error);
     }
   }
 
-  throw new ExternalRequestError(
-    'Failed to fetch character data from external source'
-  );
+  throw new ExternalRequestError([
+    'Failed to fetch character data from external source',
+  ]);
 };
 
 const extractRealmNameFromRealmServerName = (realmServerName: string) => {
@@ -107,6 +119,7 @@ export default {
   createCharacter,
   getCharactersByUserId,
   getCharacterById,
+  getCharacterByNameAndRealm,
   updateCharacter,
   deleteCharacterById,
   getCharacterFromExternalSource,
