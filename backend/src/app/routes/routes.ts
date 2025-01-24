@@ -17,6 +17,7 @@ import {
 } from '../../modules/authentication/authenticationController';
 import characterController from '../../modules/character/characterController';
 import { getApplicationData } from '../../shared/controllers/applicationDataController';
+import raidSessionController from '../../modules/raidSession/raidSessionController';
 
 const router: Router = Router();
 
@@ -62,5 +63,16 @@ router.get(
 );
 
 router.get('/applicationData', getApplicationData);
+
+router.post(
+  '/raid-session',
+  authorizationMiddleware,
+  raidSessionController.createRaidSession
+);
+router.get(
+  '/raid-sessions',
+  authorizationMiddleware,
+  raidSessionController.getRaidSessions
+);
 
 export const routes: Router = router;

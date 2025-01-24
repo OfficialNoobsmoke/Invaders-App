@@ -86,6 +86,35 @@ CREATE TABLE "session" (
 	"expire" timestamp with time zone NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "raid_instances" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"raid_session_id" uuid NOT NULL,
+	"instance_id" uuid NOT NULL,
+	"faction" varchar(32) NOT NULL,
+	"description" varchar(255) NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "raid_sessions" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"realm_server_id" uuid NOT NULL,
+	"date_time" timestamp with time zone NOT NULL,
+	"duration" smallint NOT NULL,
+	"is_locked" boolean NOT NULL,
+	"is_active" boolean NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "raid_sign_ups" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"raid_schedule_id" uuid NOT NULL,
+	"user_id" uuid NOT NULL,
+	"can_attend_for" smallint NOT NULL,
+	"can_log_at" time NOT NULL,
+	"faction" varchar(32) NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 ALTER TABLE "characters" ADD CONSTRAINT "characters_owner_id_users_id_fk" FOREIGN KEY ("owner_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "characters" ADD CONSTRAINT "characters_realm_server_id_realm_servers_id_fk" FOREIGN KEY ("realm_server_id") REFERENCES "public"."realm_servers"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "character_specializations" ADD CONSTRAINT "character_specializations_character_id_characters_id_fk" FOREIGN KEY ("character_id") REFERENCES "public"."characters"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -97,4 +126,9 @@ ALTER TABLE "characters_preferred_instances" ADD CONSTRAINT "characters_preferre
 ALTER TABLE "characters_preferred_instances" ADD CONSTRAINT "characters_preferred_instances_instance_id_instances_id_fk" FOREIGN KEY ("instance_id") REFERENCES "public"."instances"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "characters_saved_instances" ADD CONSTRAINT "characters_saved_instances_character_id_characters_id_fk" FOREIGN KEY ("character_id") REFERENCES "public"."characters"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "characters_saved_instances" ADD CONSTRAINT "characters_saved_instances_instance_id_instances_id_fk" FOREIGN KEY ("instance_id") REFERENCES "public"."instances"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "raid_instances" ADD CONSTRAINT "raid_instances_raid_session_id_instances_id_fk" FOREIGN KEY ("raid_session_id") REFERENCES "public"."instances"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "raid_instances" ADD CONSTRAINT "raid_instances_instance_id_instances_id_fk" FOREIGN KEY ("instance_id") REFERENCES "public"."instances"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "raid_sessions" ADD CONSTRAINT "raid_sessions_realm_server_id_realm_servers_id_fk" FOREIGN KEY ("realm_server_id") REFERENCES "public"."realm_servers"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "raid_sign_ups" ADD CONSTRAINT "raid_sign_ups_raid_schedule_id_raid_sessions_id_fk" FOREIGN KEY ("raid_schedule_id") REFERENCES "public"."raid_sessions"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "raid_sign_ups" ADD CONSTRAINT "raid_sign_ups_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "IDX_session_expire" ON "session" USING btree ("expire");

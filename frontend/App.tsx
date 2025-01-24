@@ -11,6 +11,8 @@ import Profile from './src/pages/Profile';
 import { AuthenticationContextProvider } from './src/context/AuthenticationContextProvider';
 import CharacterDetails from './src/pages/CharacterDetails';
 import { ApplicationDataContextProvider } from './src/context/ApplicationDataContextProvider';
+import RaidSchedule from './src/pages/RaidSchedule';
+import RaidSessionDetails from './src/pages/RaidSessionDetails';
 
 const App: React.FC = () => {
   return (
@@ -50,6 +52,22 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <CharacterDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/raid-schedule"
+              element={
+                <ProtectedRoute>
+                  <RaidSchedule />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/raid-session-details"
+              element={
+                <ProtectedRoute>
+                  <RaidSessionDetails />
                 </ProtectedRoute>
               }
             />

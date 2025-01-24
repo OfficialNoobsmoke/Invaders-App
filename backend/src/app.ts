@@ -19,6 +19,7 @@ envChecker();
 const sessionSecret = process.env.SESSION_SECRET!;
 
 export const app: Application = express();
+app.use(express.static(__dirname + '/assets'));
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -33,21 +34,20 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV !== general.DEV_MODE,
-      maxAge: 1000 * 60 * 60 * 24,
     },
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(
   cors({
     origin: process.env.FRONTEND_URL!,
     credentials: true,
   })
 );
-app.use(passport.initialize());
-app.use(passport.session());
 
 initializeDatabase();
 
@@ -59,8 +59,6 @@ if (process.env.NODE_ENV !== general.DEV_MODE) {
   app.use(limiter);
 }
 app.use('/api', routes);
-
-app.use(express.static(__dirname + '/assets'));
 app.use(errorHandler); //has to be last
 
 const PORT = process.env.PORT || 4000;

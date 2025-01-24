@@ -17,4 +17,6 @@ export const apiRoutes = Object.freeze({
   CHARACTERS: '/characters',
   CHARACTER: '/character',
   CHARACTER_EXTERNAL: '/character/{0}/{1}/external',
+  RAID_SESSION: '/raid-session',
+  RAID_SESSIONS: '/raid-sessions',
 });
