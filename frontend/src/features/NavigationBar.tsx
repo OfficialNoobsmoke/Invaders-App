@@ -14,7 +14,7 @@ export const NavigationBar = () => {
 
   const queryClient = useQueryClient();
 
-  const navBarPaths = ['/home', '/characters', '/profile', '/character-details', '/raid-schedule'];
+  const navBarPaths = ['/home', '/characters', '/profile', '/character-details', '/raid-sessions'];
   const shouldShowNavBar = navBarPaths.includes(location.pathname);
 
   const logoutMutation = useMutation({
@@ -56,7 +56,7 @@ export const NavigationBar = () => {
         links={[
           { label: 'Home', path: '/home' },
           { label: 'Characters', path: '/characters' },
-          { label: 'Raid Schedule', path: '/raid-schedule' },
+          { label: 'Raid Schedule', path: '/raid-sessions' },
         ]}
         menuItems={[
           { id: 1, label: 'Profile' },

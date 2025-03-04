@@ -16,13 +16,13 @@ interface DateTimePickerWrapperProps {
   fullWidth?: boolean; // Make the input full width
 }
 
-const DateTimePickerWrapper: React.FC<DateTimePickerWrapperProps> = ({
+export const DateTimePickerWrapper = ({
   label,
   value,
   onChange,
   minDateTime,
   maxDateTime,
-}) => {
+}: DateTimePickerWrapperProps) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateTimePicker
@@ -35,5 +35,3 @@ const DateTimePickerWrapper: React.FC<DateTimePickerWrapperProps> = ({
     </LocalizationProvider>
   );
 };
-
-export default DateTimePickerWrapper;

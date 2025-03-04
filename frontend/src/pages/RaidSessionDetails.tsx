@@ -86,19 +86,6 @@ const RaidSessionDetails = () => {
     }
   }, [getCharacterDataFromExternalSource, createCharacterData]);
 
-  const formatCharacterName = (characterName: string) => {
-    const sanitizedName = characterName.replace(/[^a-zA-Z]/g, '').slice(0, 12);
-    if (sanitizedName.length > 0) {
-      return sanitizedName.charAt(0).toUpperCase() + sanitizedName.slice(1).toLowerCase();
-    }
-    return sanitizedName;
-  };
-
-  const characterNameInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newName = formatCharacterName(event.target.value);
-    setCreateCharacterData({ ...createCharacterData, name: newName });
-  };
-
   const factionChangeHandler = (event: SelectChangeEvent<unknown>) => {
     setCreateCharacterData({ ...createCharacterData, faction: event.target.value as string });
   };
@@ -197,33 +184,21 @@ const RaidSessionDetails = () => {
     }
   }, [createCharacterData?.class]);
 
-  useEffect(() => {
-    const realmServerReadonlyCondition = isGetCharacterDataFromExternalSourceLoading || mode === 'edit';
-    setIsRealmServerReadOnly(realmServerReadonlyCondition);
-  }, [isGetCharacterDataFromExternalSourceLoading, mode]);
-
-  useEffect(() => {
-    const characterNameReadonlyCondition =
-      isGetCharacterDataFromExternalSourceLoading || !createCharacterData?.realmServerId;
-    setIsCharacterNameReadOnly(characterNameReadonlyCondition);
-  }, [isGetCharacterDataFromExternalSourceLoading, createCharacterData?.realmServerId]);
-
   return (
     <Container maxWidth="md">
       <Stack spacing={2}>
         <SelectWrapper
           label="Realm-Server"
           options={realmServerOptions}
-          readOnly={isRealmServerReadOnly}
           value={createCharacterData?.realmServerId || ''}
           onChangeHandler={realmServerChangeHandler}
         />
-        <TextFieldWrapper
+        {/* <TextFieldWrapper
           label="Duration"
           type="number"
-          value={spec.gearScore}
+          value="3"
           onChangeHandler={(event) => specializationGearScoreHandler(index, event)}
-        />
+        /> */}
         <SelectWrapper
           label="Faction"
           options={[
