@@ -3,6 +3,7 @@ import characterService from './characterService';
 import { HttpStatusCode } from 'axios';
 import { validationResult } from 'express-validator';
 import { ValidationError } from '../../shared/exceptions/validationError';
+import { errorMessages } from '../../shared/constants/constants';
 
 export const createCharacter = async (req: Request, res: Response) => {
   const {
@@ -15,6 +16,11 @@ export const createCharacter = async (req: Request, res: Response) => {
     charactersSavedInstances,
   } = req.body;
 
+  const userId = req.user?.id;
+  if (!userId) {
+    return res.status(401).send('Unauthorized');
+  }
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new ValidationError(errors.array().map((error) => error.msg));
@@ -24,7 +30,7 @@ export const createCharacter = async (req: Request, res: Response) => {
     name,
     faction,
     characterClass,
-    req.user.id,
+    userId,
     realmServerId,
     specializations,
     charactersPreferredInstances,
@@ -39,6 +45,9 @@ export const getCharactersByUserId = async (req: Request, res: Response) => {
   let { userId } = req.params;
   const { page = '1', limit = '25' } = req.query;
   if (!userId) {
+    if (!req.user?.id) {
+      return res.status(401).send(errorMessages.UNAUTHORIZED);
+    }
     userId = req.user.id;
   }
   const pageNum = parseInt(page as string, 10);

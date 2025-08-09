@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as userService from './userService';
+import { errorMessages } from '../../shared/constants/constants';
 
 export const createUser = async (req: Request, res: Response) => {
   const { discordId, username, displayName, email, profileImageUrl } = req.body;
@@ -15,7 +16,12 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const getUser = async (req: Request, res: Response) => {
-  const user = await userService.getUserById(req.user.id);
+  const userId = req.user?.id;
+  if (!userId) {
+    return res.status(401).send(errorMessages.UNAUTHORIZED);
+  }
+
+  const user = await userService.getUserById(userId);
 
   res.status(200).json(user);
 };
