@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -8,11 +8,9 @@ import { ReadCharacter } from '../dto/readCharacter';
 import TextFieldWrapper from '../components/common/TextFieldWrapper';
 import SelectWrapper from '../components/common/SelectWrapper';
 import { Container, List, ListItem, SelectChangeEvent, Stack } from '@mui/material';
-import externalService from '../services/externalService';
 import { getAllClasses, getClassSpecializations } from '../utils/classAndSpecs';
 import { ApplicationDataContext } from '../context/applicationDataContexts';
 import { DropdownOptions } from '../interfaces/dropDownOptions';
-import { useDebounce } from '@uidotdev/usehooks';
 import { general } from '../constants/constants';
 import { CreateCharacter } from '../dto/createCharacter';
 
@@ -35,7 +33,6 @@ const RaidSessionDetails = () => {
   const [realmServerOptions, setRealmServerOptions] = React.useState<DropdownOptions[]>([]);
   const [specializationOptions, setSpecializationOptions] = useState<DropdownOptions[]>([]);
   const [instancesOptions, setInstancesOptions] = useState<DropdownOptions[]>([]);
-  const characterNameDebounce = useDebounce(createCharacterData.name, 1000);
 
   useEffect(() => {
     if (applicationData) {
@@ -50,20 +47,6 @@ const RaidSessionDetails = () => {
     }
   }, [mode, navigate]);
 
-  const { data: getCharacterDataFromExternalSource, isLoading: isGetCharacterDataFromExternalSourceLoading } = useQuery(
-    {
-      queryFn: () => {
-        return externalService.getCharacterDataFromExternalSource(
-          createCharacterData.name,
-          createCharacterData.realmServerId
-        );
-      },
-      queryKey: ['externalCharacterData', characterNameDebounce, createCharacterData.realmServerId],
-      retry: false,
-      enabled: !!createCharacterData.name && !!createCharacterData.realmServerId,
-    }
-  );
-
   const createCharacterMutation = useMutation({
     mutationFn: () => {
       if (!createCharacterData.name || !createCharacterData.realmServerId) {
@@ -75,16 +58,6 @@ const RaidSessionDetails = () => {
       console.error('Character creation failed:', error.response?.data || error.message);
     },
   });
-
-  useEffect(() => {
-    if (getCharacterDataFromExternalSource) {
-      setCreateCharacterData({
-        ...createCharacterData,
-        class: getCharacterDataFromExternalSource.class,
-        faction: getCharacterDataFromExternalSource.faction,
-      });
-    }
-  }, [getCharacterDataFromExternalSource, createCharacterData]);
 
   const factionChangeHandler = (event: SelectChangeEvent<unknown>) => {
     setCreateCharacterData({ ...createCharacterData, faction: event.target.value as string });

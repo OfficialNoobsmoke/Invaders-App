@@ -56,7 +56,7 @@ export const NavigationBar = () => {
         links={[
           { label: 'Home', path: '/home' },
           { label: 'Characters', path: '/characters' },
-          { label: 'Raid Schedule', path: '/raid-sessions' },
+          { label: 'Raid Sessions', path: '/raid-sessions' },
         ]}
         menuItems={[
           { id: 1, label: 'Profile' },

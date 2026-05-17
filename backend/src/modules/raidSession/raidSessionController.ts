@@ -24,6 +24,16 @@ export const createRaidSession = async (req: Request, res: Response) => {
 };
 
 export const getRaidSessions = async (req: Request, res: Response) => {
+  res.status(HttpStatusCode.Ok).json({
+    id: '1',
+    realmServerId: '1',
+    dateTime: '1',
+    duration: '1',
+    isLocked: '1',
+    isActive: '1',
+    createdAt: '1',
+  });
+
   const raidSessions = await raidSessionService.getRaidSessions();
 
   res.status(HttpStatusCode.Ok).json(raidSessions);
