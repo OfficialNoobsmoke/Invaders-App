@@ -1,6 +1,6 @@
 import { getDatabase } from './database';
 import { instances, realmServers } from './schema';
-import { instancesRealmServers } from './schema/instancesRealmServers';
+import { instancesRealmServers } from '../../shared/database/instancesRealmServers';
 
 export const seedDatabase = async () => {
   const db = await getDatabase();

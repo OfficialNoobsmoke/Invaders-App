@@ -1,5 +1,5 @@
 {
-  "id": "d62dd485-422f-4061-a548-3384ff35ffad",
+  "id": "8442f89f-efcb-4c12-83e6-2b81e1a4f500",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -667,49 +667,39 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
-    }
-  },
-  "enums": {},
-  "schemas": {},
-  "sequences": {},
-  "roles": {},
-  "policies": {},
-  "views": {
-    "public.character_details": {
+    },
+    "public.raid_instances": {
+      "name": "raid_instances",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "raid_session_id": {
+          "name": "raid_session_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
-        "name": {
-          "name": "name",
-          "type": "varchar(12)",
+        "instance_id": {
+          "name": "instance_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
         "faction": {
           "name": "faction",
-          "type": "varchar(10)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "class": {
-          "name": "class",
           "type": "varchar(32)",
           "primaryKey": false,
           "notNull": true
         },
-        "owner_id": {
-          "name": "owner_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "realm_server_id": {
-          "name": "realm_server_id",
-          "type": "uuid",
+        "description": {
+          "name": "description",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
@@ -717,45 +707,207 @@
           "name": "created_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true
-        },
-        "specialization_id": {
-          "name": "specialization_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "specialization_name": {
-          "name": "specialization_name",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "specialization_gear_score": {
-          "name": "specialization_gear_score",
-          "type": "numeric(4, 0)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "characters_preferred_instances": {
-          "name": "characters_preferred_instances",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "characters_saved_instances": {
-          "name": "characters_saved_instances",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "now()"
         }
       },
-      "name": "character_details",
-      "schema": "public",
-      "isExisting": true,
-      "materialized": false
+      "indexes": {},
+      "foreignKeys": {
+        "raid_instances_raid_session_id_instances_id_fk": {
+          "name": "raid_instances_raid_session_id_instances_id_fk",
+          "tableFrom": "raid_instances",
+          "tableTo": "instances",
+          "columnsFrom": [
+            "raid_session_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "raid_instances_instance_id_instances_id_fk": {
+          "name": "raid_instances_instance_id_instances_id_fk",
+          "tableFrom": "raid_instances",
+          "tableTo": "instances",
+          "columnsFrom": [
+            "instance_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.raid_sessions": {
+      "name": "raid_sessions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "realm_server_id": {
+          "name": "realm_server_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date_time": {
+          "name": "date_time",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "duration": {
+          "name": "duration",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_locked": {
+          "name": "is_locked",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "raid_sessions_realm_server_id_realm_servers_id_fk": {
+          "name": "raid_sessions_realm_server_id_realm_servers_id_fk",
+          "tableFrom": "raid_sessions",
+          "tableTo": "realm_servers",
+          "columnsFrom": [
+            "realm_server_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.raid_sign_ups": {
+      "name": "raid_sign_ups",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "raid_schedule_id": {
+          "name": "raid_schedule_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "can_attend_for": {
+          "name": "can_attend_for",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "can_log_at": {
+          "name": "can_log_at",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "faction": {
+          "name": "faction",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "raid_sign_ups_raid_schedule_id_raid_sessions_id_fk": {
+          "name": "raid_sign_ups_raid_schedule_id_raid_sessions_id_fk",
+          "tableFrom": "raid_sign_ups",
+          "tableTo": "raid_sessions",
+          "columnsFrom": [
+            "raid_schedule_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "raid_sign_ups_user_id_users_id_fk": {
+          "name": "raid_sign_ups_user_id_users_id_fk",
+          "tableFrom": "raid_sign_ups",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},

@@ -19,7 +19,7 @@ interface DataGridWrapperProps {
   rowCount?: number;
   limit?: number;
   page?: number;
-  handlePaginationChange: (page: number, limit: number) => void;
+  handlePaginationChange?: (page: number, limit: number) => void;
   handleFilterModelChange?: (filterModel: GridFilterModel) => void;
   columnVisibilityModel?: GridColumnVisibilityModel;
   checkboxSelection?: boolean;
@@ -44,7 +44,7 @@ export const DataGridWrapper = ({
   toolbar,
 }: DataGridWrapperProps) => {
   function handlePaginationModelChange(model: GridPaginationModel, details: GridCallbackDetails<'pagination'>): void {
-    if (details.reason !== 'setPaginationModel') return;
+    if (details.reason !== 'setPaginationModel' || !handlePaginationChange) return;
     handlePaginationChange(model.page, model.pageSize);
   }
 

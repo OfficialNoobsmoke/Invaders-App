@@ -7,8 +7,8 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { instancesRealmServers } from './instancesRealmServers';
-import { charactersPreferredInstances } from '../../../modules/character/database/charactersPreferredInstances';
-import { charactersSavedInstances } from '../../../modules/character/database/charactersSavedInstances';
+import { charactersPreferredInstances } from '../../modules/character/database/charactersPreferredInstances';
+import { charactersSavedInstances } from '../../modules/character/database/charactersSavedInstances';
 
 export const instances = pgTable('instances', {
   id: uuid().defaultRandom().primaryKey(),

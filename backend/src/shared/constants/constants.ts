@@ -4,6 +4,7 @@ export const errorMessages = Object.freeze({
   TOKEN_EXPIRED: 'Unauthorized: Token expired',
   TOKEN_NOT_VERIFIED: 'Unauthorized: Token could not be verified',
   INTERNAL_SERVER_ERROR: 'Internal server error',
+  UNAUTHORIZED: 'Unauthorized',
 });
 
 export const general = Object.freeze({
